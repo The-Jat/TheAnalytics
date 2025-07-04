@@ -1,0 +1,6 @@
+[04-Jul-2025 13:18:03 Europe/Berlin] PHP Fatal error:  During class fetch: Uncaught Error: Call to undefined function mb_strtolower() in C:\xampp\htdocs\analytics\app\init.php:81
+Stack trace:
+#0 C:\xampp\htdocs\analytics\app\core\Controller.php(24): {closure}('Altum\\Traits\\Pa...')
+#1 C:\xampp\htdocs\analytics\app\init.php(92): require_once('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\analytics\index.php(20): require_once('C:\\xampp\\htdocs...')
+#3 {main} in C:\xampp\htdocs\analytics\app\core\Controller.php on line 24
