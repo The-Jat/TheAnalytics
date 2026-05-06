@@ -36,6 +36,7 @@ class ApiDocumentation extends Controller {
             }
 
             $title = match($endpoint) {
+                'statistics' => l('statistics.breadcrumb'),
                 'users_logs' => l('account_logs.title'),
                 'payments' => l('account_payments.title'),
                 'user' => l('api_documentation.user'),
@@ -53,7 +54,7 @@ class ApiDocumentation extends Controller {
             $view = new \Altum\View('api-documentation/index', (array) $this);
         }
 
-        
+
 
         $this->add_view_content('content', $view->run());
 

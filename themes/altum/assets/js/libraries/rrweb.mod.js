@@ -2636,7 +2636,7 @@ var rrweb = (function (exports) {
         const disableMap = sampling.mouseInteraction === true || sampling.mouseInteraction === void 0 ? {} : sampling.mouseInteraction;
         const handlers = [];
         const getHandler = (eventKey) => {
-            return (event) => {
+            return event => {
                 const target = getEventTarget(event);
                 if(isBlocked(target, blockClass, blockSelector, true)) {
                     return;
@@ -3792,7 +3792,7 @@ var rrweb = (function (exports) {
             const canvasContextReset = initCanvasContextObserver(win, blockClass, blockSelector);
             const snapshotInProgressMap = /* @__PURE__ */ new Map();
             const worker = new WorkerFactory();
-            worker.onmessage = (e) => {
+            worker.onmessage = event => {
                 const { id } = e.data;
                 snapshotInProgressMap.set(id, false);
                 if(!("base64" in e.data))
@@ -4086,7 +4086,7 @@ var rrweb = (function (exports) {
             if(plugin.getMirror)
                 plugin.getMirror(mirror);
         }
-        const eventProcessor = (e) => {
+        const eventProcessor = event => {
             for (const plugin of plugins || []) {
                 if(plugin.eventProcessor) {
                     e = plugin.eventProcessor(e);

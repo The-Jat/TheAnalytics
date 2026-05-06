@@ -41,6 +41,7 @@ return [
     'global.close' => 'Close',
     'global.search' => 'Search',
     'global.no_data' => 'No data available',
+    'global.na' => 'N/A',
     'global.unknown' => 'Unknown',
     'global.none' => 'None',
     'global.yes' => 'Yes',
@@ -50,6 +51,8 @@ return [
     'global.disabled' => 'Disabled',
     'global.all' => 'All',
     'global.order' => 'Order',
+    'global.order_int_help' => 'Set a number to control the display position. Smaller numbers show first (ascending order).',
+    'global.statistics' => 'Statistics',
     'global.download' => 'Download',
     'global.download_as' => 'Download as %s',
     'global.export' => 'Export',
@@ -128,13 +131,28 @@ return [
     'global.crop' => 'Crop image',
     'global.crop_selection' => 'Crop selection',
     'global.no_crop' => 'Continue without cropping',
+    'global.prefilled_dynamic_name' => '%1$s %2$s - %3$s, %4$s',
+    'global.day_part_late_night' => 'Late Night',
+    'global.day_part_early_morning' => 'Early Morning',
+    'global.day_part_morning' => 'Morning',
+    'global.day_part_afternoon' => 'Afternoon',
+    'global.day_part_evening' => 'Evening',
+    'global.day_part_night' => 'Night',
+    'global.csv_file' => 'CSV file',
+    'global.csv_file_help' => 'The CSV file must contain at least the following columns: %1$s. Optional columns: %2$s.',
+    'global.csv_file_help2' => 'Download CSV file example',
 
     'global.info_message.user_plan_is_expired' => 'Your current plan has expired and your access is now limited.',
     'global.info_message.team_not_allowed' => 'You must be logged out of the current team to access this functionality.',
     'global.info_message.plan_feature_no_access' => 'Your current plan does not allow you to access this feature.',
     'global.info_message.plan_upgrade' => 'Upgrade your plan 🔐',
     'global.info_message.plan_feature_limit' => 'Your have exceeded the limits of your current plan.',
+    'global.info_message.plan_feature_limit_removal' => 'You must delete %1$s %2$s as you have exceeded your plan limits.',
+    'global.info_message.plan_feature_limit_removal_with_upgrade' => 'You must delete %1$s %2$s or %3$s as you have exceeded your plan limits.',
     'global.info_message.plan_feature_limit_info' => '%1$s out of %2$s used <br /> %3$s remaining',
+    'global.info_message.plan_feature_limit_month_info' => '%1$s out of %2$s used <br /> %3$s remaining this month',
+    'global.info_message.admin_feature_disabled' => 'This feature is disabled from the <a href="%s" target="_blank">settings page</a>.',
+    'global.info_message.admin_feature_partially_disabled' => 'This feature is partially disabled from the <a href="%s" target="_blank">settings page</a>.',
 
     'global.success_message.create1' => '%s has been successfully created.',
     'global.success_message.create2' => 'Successfully created.',
@@ -142,6 +160,7 @@ return [
     'global.success_message.update2' => 'Successfully updated.',
     'global.success_message.delete1' => '%s has been successfully deleted.',
     'global.success_message.delete2' => 'Successfully deleted.',
+    'global.success_message.csv_imported' => '%1$s %2$s have been successfully imported.',
 
     'global.error_message.directory_not_writable' => 'Directory <strong>%s</strong> is not writable. Please set the CHMOD permissions so this folder can be written.',
     'global.error_message.file_not_writable' => 'File <strong>%s</strong> is not writable . Please set the CHMOD permissions so this file can be written.',
@@ -174,6 +193,7 @@ return [
     'global.pagination.next' => 'Next',
     'global.pagination.results' => 'Showing %1$s-%2$s out of %3$s results.',
 
+    'global.filters.tooltip' => 'Filters<br />(CMD/CTRL + SHIFT + F)',
     'global.filters.header' => 'Filters',
     'global.filters.reset' => 'Reset',
     'global.filters.clear' => 'Clear filters',
@@ -203,10 +223,13 @@ return [
     'global.date.custom' => 'Custom',
     'global.date.today' => 'Today',
     'global.date.yesterday' => 'Yesterday',
-    'global.date.last_7_days' => 'Last 7 days',
+    'global.date.this_week' => 'This week',
+    'global.date.last_week' => 'Last week',
     'global.date.last_30_days' => 'Last 30 days',
     'global.date.this_month' => 'This month',
     'global.date.last_month' => 'Last month',
+    'global.date.this_year' => 'This year',
+    'global.date.last_year' => 'Last year',
     'global.date.all_time' => 'All time',
     'global.date.short_milliseconds' => 'ms',
     'global.date.short_seconds' => 's',
@@ -317,22 +340,22 @@ return [
     'global.emails.user_sessions_replays_limit.body' => 'Hello <strong>{{NAME}}</strong>,<br /><br />This is a friendly notice that your <strong>{{WEBSITE_NAME}}</strong> session replays tracking has stopped because you\'ve reached the limit of your plan.<br /><br />Your <strong>{{PLAN_NAME}}</strong> plan allows <strong>{{SESSIONS_REPLAYS_LIMIT}}</strong> session replays per month.<br /><br /> To continue tracking your website, please renew your plan or upgrade to a higher one.<br /><br /><a href="{{USER_PLAN_RENEW_LINK}}" class="cta">Renew/upgrade plan</a><br /><br /> Regards,<br /> The {{WEBSITE_TITLE}} team.',
 
     'global.emails.admin_new_user_notification.subject' => 'New user registered - {{WEBSITE_TITLE}}',
-    'global.emails.admin_new_user_notification.body' => 'Welcome to <strong>{{NAME}}</strong> ({{EMAIL}}) to your website!',
+    'global.emails.admin_new_user_notification.body' => '<strong>{{NAME}}</strong> ({{EMAIL}}) has signed up successfully.<br /><br /><strong>Source:</strong> {{SOURCE}}<br /><strong>IP:</strong> {{IP}}<br /><strong>Country:</strong> {{COUNTRY_NAME}}<br /><strong>City:</strong> {{CITY_NAME}}<br /><strong>Device:</strong> {{DEVICE_TYPE}}<br /><strong>OS:</strong> {{OS_NAME}}<br /><strong>Browser:</strong> {{BROWSER_NAME}}<br /><br /><a href="{{USER_LINK}}" class="cta">View user</a>',
 
     'global.emails.admin_delete_user_notification.subject' => 'User deleted his account - {{WEBSITE_TITLE}}',
-    'global.emails.admin_delete_user_notification.body' => 'All data of <strong>{{NAME}}</strong> ({{EMAIL}}) has been deleted.',
+    'global.emails.admin_delete_user_notification.body' => 'All data of <strong>{{NAME}}</strong> ({{EMAIL}}) has been deleted.<br /><br /><strong>Account age:</strong> {{ACCOUNT_AGE}}<br /><strong>Source:</strong> {{SOURCE}}<br /><strong>IP:</strong> {{IP}}<br /><strong>Country:</strong> {{COUNTRY_NAME}}<br /><strong>City:</strong> {{CITY_NAME}}<br /><strong>Device:</strong> {{DEVICE_TYPE}}<br /><strong>OS:</strong> {{OS_NAME}}<br /><strong>Browser:</strong> {{BROWSER_NAME}}<br /><br />All of the data related to this user has been deleted.',
 
     'global.emails.admin_new_payment_notification.subject' => 'New payment via {{PROCESSOR}} of {{TOTAL_AMOUNT}} {{CURRENCY}} - {{WEBSITE_TITLE}}',
-    'global.emails.admin_new_payment_notification.body' => '<strong>{{NAME}}</strong> ({{EMAIL}}) user just paid <strong>{{TOTAL_AMOUNT}} {{CURRENCY}}</strong> to your website!<br /><br />Here\'s to more earnings!',
+    'global.emails.admin_new_payment_notification.body' => '<strong>{{NAME}}</strong> ({{EMAIL}}) just paid <strong>{{TOTAL_AMOUNT}} {{CURRENCY}}</strong> for the <strong>{{PLAN_NAME}} plan</strong>.<br /><br /><strong>Type:</strong> {{PAYMENT_TYPE}}<br /><strong>Frequency:</strong> {{PAYMENT_FREQUENCY}}<br /><strong>Processor:</strong> {{PROCESSOR}}<br /><strong>Code:</strong> {{CODE}} {{CODE_DETAILS}}<br /><strong>Payment ID:</strong> {{PAYMENT_ID}}<br /><strong>Processor payment ID:</strong> {{EXTERNAL_PAYMENT_ID}}<br /><strong>Status:</strong> {{PAYMENT_STATUS}}<br /><strong>Date:</strong> {{DATE}} {{DATE_TIMEZONE}}<br /><br /><a href="{{PAYMENT_LINK}}" class="cta">View payment</a>',
 
     'global.emails.admin_new_affiliate_withdrawal_notification.subject' => 'New affiliate withdrawal request for {{TOTAL_AMOUNT}} {{CURRENCY}} - {{WEBSITE_TITLE}}',
-    'global.emails.admin_new_affiliate_withdrawal_notification.body' => '<strong>{{NAME}}</strong> ({{EMAIL}}) user just submitted an affiliate withdrawal request for <strong>{{TOTAL_AMOUNT}} {{CURRENCY}}</strong> with the following note: "{{AFFILIATE_WITHDRAWAL_NOTE}}".<br /><br /><a href="{{ADMIN_AFFILIATE_WITHDRAWAL_LINK}}">View affiliate withdrawal</a>',
+    'global.emails.admin_new_affiliate_withdrawal_notification.body' => '<strong>{{NAME}}</strong> ({{EMAIL}}) user just submitted an affiliate withdrawal request for <strong>{{TOTAL_AMOUNT}} {{CURRENCY}}</strong> with the following note: "{{AFFILIATE_WITHDRAWAL_NOTE}}".<br /><br /><a href="{{ADMIN_AFFILIATE_WITHDRAWAL_LINK}}" class="cta">View affiliate withdrawal</a>',
 
     'global.emails.admin_new_domain_notification.subject' => 'New custom domain is pending approval - {{WEBSITE_TITLE}}',
-    'global.emails.admin_new_domain_notification.body' => '<strong>{{NAME}}</strong> ({{EMAIL}}) user\'s custom domain ({{DOMAIN_HOST}}) is now pending approval.<br /><br /> <a href="{{ADMIN_DOMAIN_UPDATE_LINK}}">View domain</a>',
+    'global.emails.admin_new_domain_notification.body' => '<strong>{{NAME}}</strong> ({{EMAIL}}) user\'s custom domain ({{DOMAIN_HOST}}) is now pending approval.<br /><br /> <a href="{{ADMIN_DOMAIN_UPDATE_LINK}}" class="cta">View domain</a>',
 
     'global.emails.admin_contact.subject' => '{{SUBJECT}} - {{NAME}} - {{WEBSITE_TITLE}}',
-    'global.emails.admin_contact.body' => '<strong>{{NAME}}</strong> - {{EMAIL}} has sent you the following message:<br /><br />{{MESSAGE}}',
+    'global.emails.admin_contact.body' => '<strong>{{NAME}}</strong> ({{EMAIL}}) has sent you the following message:<br /><br />{{MESSAGE}}',
 
 
     'global.notifications.new_user.title' => 'New user!',
@@ -379,11 +402,16 @@ return [
 
     'global.footer.copyright' => 'Copyright &copy; %1$s %2$s.',
 
+    'global.plan_settings.price_savings' => '%s%% off',
+    'global.plan_settings.quarterly_price_savings' => 'You save %s by purchasing the quarterly plan',
+    'global.plan_settings.biannual_price_savings' => 'You save %s by purchasing the biannual plan',
     'global.plan_settings.annual_price_savings' => 'You save %s by purchasing the annual plan',
     'global.plan_settings.no_ads' => 'No ads',
     'global.plan_settings.no_ads_help' => 'No ads for everything related to your account and experience.',
     'global.plan_settings.export' => '%s export features',
     'global.plan_settings.teams_is_enabled' => 'Teams',
+	'global.plan_settings.additional_domains' => '%s additional domains',
+	'global.plan_settings.additional_domains_help' => 'You get to choose from multiple domains when creating pixel links. %s',
     'global.plan_settings.email_reports_is_enabled' => 'Email reports',
     'global.plan_settings.email_reports_is_enabled_weekly' => 'Weekly email reports',
     'global.plan_settings.email_reports_is_enabled_monthly' => 'Monthly email reports',
@@ -458,7 +486,7 @@ return [
 
 
     'bulk_delete_modal.header' => 'Delete in bulk',
-    'bulk_delete_modal.subheader' => 'You\'ve selected multiple entries to be deleted, this may take a while & it action cannot be undone.',
+    'bulk_delete_modal.subheader' => 'You\'ve selected multiple entries for deletion. This may take a while and cannot be undone.',
     'bulk_delete_modal.success_message' => 'The bulk deletion process was performed successfully.',
 
 
@@ -470,6 +498,8 @@ return [
     'analytics.replays' => 'Replays',
     'analytics.bounce_rate' => 'Bounce',
     'analytics.goals' => 'Goals',
+    'analytics.clicks' => 'Clicks',
+    'analytics.outbound_clicks' => 'Outbound clicks',
     'analytics.conversions' => 'Conversions',
 
     'analytics.pageview.name' => 'Pageview',
@@ -669,7 +699,7 @@ return [
     'help.custom_parameters.menu' => 'Custom parameters',
     'help.custom_parameters.header' => 'Custom parameters',
     'help.custom_parameters.p1' => 'To identify visitors via custom parameters, follow these steps:',
-    'help.custom_parameters.p2' => 'This is useful for websites with membership systems. When users log in, you can specify their identifier (ex: email, user_id, name) with our tracking code.',
+    'help.custom_parameters.p2' => 'This is useful for websites with membership systems. When users log in, you can specify their identifier (e.g. email, user_id, name) with our tracking code.',
     'help.custom_parameters.p3' => 'This helps you understand user behavior and identify any issues they encounter.',
     'help.custom_parameters.p4' => 'Add <code>data-custom-parameters=\'{JSON_PARAMETERS_HERE}\'</code> as shown in the example:',
     'help.custom_parameters.p5' => 'If this parameter is provided, you will see the <i class="fas fa-fw fa-fingerprint text-primary"></i> icon next to the visitor on the Visitors page, indicating they have been identified with custom parameters.',
@@ -726,13 +756,12 @@ return [
     'plans.lifetime' => 'Lifetime',
 
     'plan.why.header' => 'Why us?',
-    'plan.why.subheader' => '',
     'plan.why.one.header' => 'Customer service',
-    'plan.why.one.subheader' => 'Our support team will help you with any questions you may have regarding our service.',
+    'plan.why.one.subheader' => 'Our support team is here to assist with any questions about our service.',
     'plan.why.two.header' => 'Privacy',
     'plan.why.two.subheader' => 'You control all the data that you bring within your account on our website.',
     'plan.why.three.header' => 'Quality',
-    'plan.why.three.subheader' => 'We focus on delivering the best experience to you, as we fully understand how valuable time is.',
+    'plan.why.three.subheader' => 'We aim to give you the best experience because we know your time is valuable.',
 
     'plan.faq.header' => 'Frequently asked questions',
     'plan.faq.one.question' => 'What forms of payment do you accept?',
@@ -767,7 +796,18 @@ return [
 
     'pay.custom_plan.header' => 'Purchase the %s plan',
     'pay.custom_plan.subheader' => 'You are almost there, complete the following form and checkout.',
-    'pay.custom_plan.paypal' => 'PayPal',
+    'pay.custom_plan.plisio_whitelabel' => 'Cryptocurrency',
+    'pay.custom_plan.plisio_whitelabel.header' => 'Pay with cryptocurrency',
+    'pay.custom_plan.plisio_whitelabel.subheader' => 'Send the payment as per the following details below.<br />Once the payment is fully confirmed, you will receive a confirmation email.',
+    'pay.custom_plan.plisio_whitelabel.success_button' => 'Confirm payment',
+    'pay.custom_plan.plisio_whitelabel.wallet' => 'Wallet address',
+    'pay.custom_plan.plisio_whitelabel.amount' => '%s amount',
+    'pay.custom_plan.plisio_whitelabel.expiration' => 'Invoice expiration date',
+    'pay.custom_plan.plisio' => 'Plisio',
+    'pay.custom_plan.revolut' => 'Revolut',
+    'pay.custom_plan.cryptocurrency' => 'Cryptocurrency',
+    'pay.custom_plan.klarna' => 'Klarna',
+	'pay.custom_plan.paypal' => 'PayPal',
     'pay.custom_plan.stripe' => 'Stripe',
     'pay.custom_plan.offline_payment' => 'Offline payment',
     'pay.custom_plan.coinbase' => 'Coinbase',
@@ -779,6 +819,7 @@ return [
     'pay.custom_plan.yookassa' => 'Yookassa',
     'pay.custom_plan.crypto_com' => 'Crypto.com',
     'pay.custom_plan.paddle' => 'Paddle',
+    'pay.custom_plan.paddle_billing' => 'Paddle',
     'pay.custom_plan.mercadopago' => 'MercadoPago',
     'pay.custom_plan.midtrans' => 'Midtrans',
     'pay.custom_plan.flutterwave' => 'Flutterwave',
@@ -789,7 +830,7 @@ return [
     'pay.custom_plan.quarterly' => 'Quarterly payments',
     'pay.custom_plan.biannual' => 'Biannual payments',
     'pay.custom_plan.annual' => 'Annual payments',
-    'pay.custom_plan.annual_savings' => '%1$s %2$s',
+    'pay.custom_plan.savings' => '%1$s %2$s',
     'pay.custom_plan.lifetime' => 'Lifetime deal',
     'pay.custom_plan.lifetime_help' => 'One time payment',
     'pay.custom_plan.code_button' => 'Use discount code',
@@ -840,10 +881,10 @@ return [
     'pay_thank_you.title' => 'Thank you',
     'pay_thank_you.header' => 'Thank you!',
     'pay_thank_you.button' => 'Go to my dashboard',
-    'pay_thank_you.plan_trial_start' => 'Your %s day trial period just started!',
-    'pay_thank_you.plan_redeemed' => 'You redeemed %s days!',
-    'pay_thank_you.plan_custom_will_start' => 'Your payment was sent and your new membership will be activated!',
-    'pay_thank_you.plan_custom_pending' => 'Your payment order was sent and your new membership will be activated if the proof will be accepted!',
+    'pay_thank_you.plan_trial_start' => 'Your %s day trial period just started.',
+    'pay_thank_you.plan_redeemed' => 'You redeemed %s days.',
+    'pay_thank_you.plan_custom_will_start' => 'Your payment was sent and your new membership will be activated shortly.',
+    'pay_thank_you.plan_custom_pending' => 'Your payment order was sent and your new membership will be activated once the transaction is confirmed.',
 
     'account.title' => 'Account',
     'account.menu' => 'Account',
@@ -872,6 +913,7 @@ return [
     'account.billing.type_business' => 'Business',
     'account.billing.name' => 'Name',
     'account.billing.address' => 'Address',
+    'account.billing.state' => 'State',
     'account.billing.county' => 'County',
     'account.billing.zip' => 'ZIP',
     'account.billing.phone' => 'Phone',
@@ -890,7 +932,7 @@ return [
     'account.twofa.subheader' => 'Use a mobile authentication app to get a verification code to enter every time you log in.',
     'account.twofa.is_enabled' => 'Enable Two-factor authentication',
     'account.twofa.qr' => '1. Scan QR Code',
-    'account.twofa.qr_help' => 'Open your authentication app (ex: Authy, Google Authenticator) on your mobile device and scan the QR code using your camera.',
+    'account.twofa.qr_help' => 'Open your authentication app (e.g. Authy, Google Authenticator) on your mobile device and scan the QR code using your camera.',
     'account.twofa.secret' => 'Can\'t scan the QR Code?',
     'account.twofa.secret_help' => 'Copy the following secret code into your app for a manual setup.',
     'account.twofa.verify' => '2. Enter freshly generated token',
@@ -940,27 +982,28 @@ return [
     'account_redeem_code.plan_id' => 'Plan',
     'account_redeem_code.code' => 'Code',
     'account_redeem_code.success_message' => 'You redeemed %1$s days of the %2$s plan.',
-    'account_redeem_code.success_message_lifetime' => 'You redeemed the %2$s plan for lifetime.',
+    'account_redeem_code.success_message_lifetime' => 'You redeemed the %s plan for lifetime.',
     'account_redeem_code.info_message' => 'Your current plan will be overwritten if you redeem a code that is different than your already existing plan.',
     'account_redeem_code.error_message.code_invalid' => 'This code is invalid.',
     'account_redeem_code.error_message.code_used' => 'You have already used this code.',
 
 
-    'account_plan.title' => 'Account Plan',
+    'account_plan.title' => 'Account plan',
     'account_plan.menu' => 'Plan',
-    'account_plan.header' => 'Account Plan',
-
+    'account_plan.header' => '%s plan',
     'account_plan.plan.renews' => 'Plan will renew on %1$s via %2$s (%3$s %4$s)',
     'account_plan.plan.expires' => 'Plan ends on %s',
     'account_plan.plan.lifetime' => 'Plan is for lifetime, it does not expire.',
-
     'account_plan.cancel.header' => 'Cancel subscription',
     'account_plan.cancel.subheader' => 'By cancelling your subscription no further payments will be made. You will still have access to your features that you paid for until the expiration date.',
     'account_plan.cancel.cancel' => 'Cancel subscription',
     'account_plan.cancel.confirm_message' => 'Are you sure you want to cancel your subscription?',
     'account_plan.cancel.reason' => 'Cancelled from %s',
-
     'account_plan.success_message.subscription_canceled' => 'Your recurring subscription was canceled.',
+    'account_plan.upgrade.header' => 'Upgrade',
+    'account_plan.upgrade.header_discount' => 'Upgrade for %s off',
+    'account_plan.upgrade.subheader' => 'In need of more? Choose the %s plan.',
+    'account_plan.upgrade.discount_button' => 'Checkout at %s off',
 
     'account_payments.title' => 'Account payments',
     'account_payments.menu' => 'Payments',
@@ -971,7 +1014,7 @@ return [
     'account_payments.total_amount' => 'Total amount',
     'account_payments.plan_id' => 'Plan',
     'account_payments.invoice' => 'Invoice',
-    'account_payments.status_pending' => 'Pending approval',
+    'account_payments.status_pending' => 'Pending',
     'account_payments.status_approved' => 'Approved',
     'account_payments.no_data' => 'No payments found',
 
@@ -1129,8 +1172,10 @@ return [
     'register.login_help' => 'Sign in',
     'register.error_message.name_length' => 'Name must be between 1 and 64 characters.',
     'register.error_message.email_exists' => 'This email address is already in use.',
+    'register.error_message.email_aliases_not_allowed' => 'Email aliases are not allowed.',
     'register.error_message.blacklisted_domain' => 'This email domain has been blacklisted.',
     'register.error_message.blacklisted_country' => 'Your country has been blacklisted.',
+    'register.error_message.blacklisted_ip' => 'Your IP has been blacklisted.',
     'register.success_message.registration' => 'We\'ve emailed you the activation link.',
     'register.success_message.login' => 'Welcome to our platform, we are grateful to have you here.',
 
@@ -1173,6 +1218,9 @@ return [
     'dashboard.referrer_paths.referrer_path' => 'Path',
     'dashboard.referrer_paths.null' => 'Home',
 
+    'dashboard.outbound_clicks_paths.header' => 'Outbound clicks paths',
+    'dashboard.outbound_clicks_paths.path' => 'Path',
+
     'dashboard.social_media_referrers.header' => 'Social media',
     'dashboard.social_media_referrers.referrer_host' => 'Website',
 
@@ -1211,11 +1259,22 @@ return [
     'dashboard.goals.header' => 'Goals',
     'dashboard.goals.goal' => 'Goal',
 
+    'dashboard.outbound_clicks.header' => 'Outbound clicks',
+    'dashboard.outbound_clicks.domain' => 'Domain',
+    'dashboard.outbound_clicks.clicks' => 'Clicks',
+
 
     'goals.breadcrumb' => 'Goals',
     'goals.title' => 'Goals',
     'goals.header' => 'Goals',
     'goals.subheader' => 'Track specific events of your visitors, such as button clicks or form submissions or even page visits.',
+
+
+    'outbound_clicks.breadcrumb' => 'Outbound clicks',
+    'outbound_clicks.title' => 'Outbound clicks',
+    'outbound_clicks.header' => 'Outbound clicks',
+    'outbound_clicks.subheader' => 'Track clicks to links going outside of your website domain.',
+
 
     'realtime.breadcrumb' => 'Realtime analytics',
     'realtime.title' => 'Realtime analytics',
@@ -1244,6 +1303,7 @@ return [
     'statistics.password.error_message' => 'The password is incorrect.',
 
 
+    'outbound_clicks_paths_modal.header' => 'Outbound clicks paths',
     'referrer_paths_modal.header' => 'Referrer paths',
     'utms_medium_campaign_modal.header' => 'UTMs',
 
@@ -1388,12 +1448,24 @@ return [
     'replay_events_modal.help' => 'Only pageviews type events show up in this modal.',
 
 
+    'website_create.breadcrumb' => 'Add website',
+    'website_create.title' => 'Add website',
+    'website_create.header' => 'Add website',
+
+
+    'website_update.breadcrumb' => 'Edit website',
+    'website_update.title' => 'Edit website',
+    'website_update.header' => 'Edit website',
+
+
+    'websites.breadcrumb' => 'Websites',
     'websites.title' => 'Websites',
     'websites.menu' => 'Websites',
     'websites.header' => 'Websites',
     'websites.subheader' => 'View and manage all your added websites.',
     'websites.create' => 'Add website',
 
+    'websites.advanced' => 'Advanced',
     'websites.website' => 'Website',
     'websites.this_month' => 'This month',
     'websites.usage' => 'Usage',
@@ -1416,15 +1488,20 @@ return [
     'websites.domain_id_help' => 'Use a custom domain for your tracking code URL. Helpful to bypass ad-blockers.',
     'websites.host' => 'Website',
     'websites.host_help' => 'Tracking will only work on the <strong>domain.com</strong>, <strong>sub.domain.com</strong> or <strong>domain.com/path</strong> that you specify.',
+    'websites.outbound_clicks_is_enabled' => 'Track outbound clicks',
+    'websites.outbound_clicks_is_enabled_help' => 'Enable or disable tracking for user clicks on links that go outside of the website.',
     'websites.events_children_is_enabled' => 'Track visitors events',
     'websites.events_children_is_enabled_help' => 'Enable or disable tracking for mouse clicks, form submissions, resizes or scrolls.',
     'websites.sessions_replays_is_enabled' => 'Session replays',
     'websites.sessions_replays_is_enabled_help' => 'Enable or disable visual session replays tracking. This is a more advanced tracking type compared to the normal option.',
+    'websites.sessions_replays_hide_text_selector' => 'Session replays - Hide text selector',
+    'websites.sessions_replays_hide_text_selector_placeholder' => '.custom-class,.another-custom-class',
+    'websites.sessions_replays_hide_text_selector_help' => 'The CSS selector(s) that dictates which text should be hidden.',
     'websites.email_reports_is_enabled_help' => 'Receive simple and easy to understand analytics for your site via email.',
     'websites.is_enabled' => 'Tracking',
     'websites.is_enabled_help' => 'Enable or disable tracking of the website completely.',
     'websites.bot_exclusion_is_enabled' => 'Bot exclusion',
-    'websites.bot_exclusion_is_enabled_help' => 'Exclude widely known bots from being tracked (ex: Google Bot, Yahoo Bot ...etc).',
+    'websites.bot_exclusion_is_enabled_help' => 'Exclude widely known bots from being tracked (e.g. Google Bot, Yahoo Bot ...etc).',
     'websites.query_parameters_tracking_is_enabled' => 'Track query parameters',
     'websites.query_parameters_tracking_is_enabled_help' => 'Enabling this will allow query parameters to be tracked instead of ignored.',
     'websites.public_statistics_is_enabled' => 'Public statistics',
@@ -1438,11 +1515,10 @@ return [
     'websites.no_data_help' => 'Click on the top right button to add one.',
 
 
-    'website_create_modal.header' => 'Add a new website',
-    'website_create_modal.subheader' => 'Easily add a new website that you want to track.',
-
-
-    'website_update_modal.header' => 'Edit website',
+    'websites_import.breadcrumb' => 'Import websites',
+    'websites_import.title' => 'Import websites',
+    'websites_import.menu' => 'Import websites',
+    'websites_import.header' => 'Import websites',
 
 
     'website_pixel_key_modal.header' => 'Install pixel',
@@ -1598,6 +1674,14 @@ return [
     'index.realtime_data.devices' => 'Used devices',
     'index.realtime_data.pages' => 'Accessed pages',
 
+    'index.outbound_clicks.name' => 'Outbound clicks',
+    'index.outbound_clicks.header' => 'Track outbound link clicks',
+    'index.outbound_clicks.subheader' => 'Monitor when and where your visitors click links that lead away from your site.',
+    'index.outbound_clicks.total_clicks' => 'Total outbound clicks',
+    'index.outbound_clicks.top_links' => 'Most clicked outbound links',
+    'index.outbound_clicks.top_domains' => 'Most clicked domains',
+    'index.outbound_clicks.recent_activity' => 'Recent outbound click activity',
+
     'index.session_recording.name' => 'Session recording',
     'index.session_recording.header' => 'Record & replay visitors sessions',
     'index.session_recording.subheader' => 'Get to watch a full video representation of what a user did on your website.',
@@ -1612,29 +1696,35 @@ return [
     'index.heatmaps.devices' => 'Desktop, Tablet, Mobile versioned heatmaps',
     'index.heatmaps.dynamic' => 'Full page heatmaps',
 
-    'index.testimonials.header' => 'Here\'s what people are saying',
-    'index.testimonials.one.text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare ex. Vivamus eu ex non orci condimentum placerat ac ac nisi. Nam velit libero, hendrerit vitae auctor eget, congue ut ante.',
-    'index.testimonials.one.name' => 'Andrea',
-    'index.testimonials.one.attribute' => 'Writer Magazine',
-    'index.testimonials.two.text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus vestibulum porta. Sed id eros quam. Nunc at nisi vel arcu placerat gravida.',
-    'index.testimonials.two.name' => 'George',
-    'index.testimonials.two.attribute' => 'Lorem Ipsum Founder',
-    'index.testimonials.three.text' => 'Praesent finibus vestibulum porta. Sed id eros quam. Proin lacinia ipsum porttitor, sollicitudin est in, ornare ex. Vivamus eu ex non orci condimentum placerat ac ac nisi. Nam velit libero, hendrerit vitae auctor eget, congue ut ante.',
-    'index.testimonials.three.name' => 'Calvin',
-    'index.testimonials.three.attribute' => 'SAAS Lorem Owner',
+    'index.testimonials.header' => 'Why people love us',
+    'index.testimonials.one.text' => 'This platform completely transformed the way we manage our workflows. It’s intuitive, fast, and has saved our team countless hours every week.',
+    'index.testimonials.one.name' => 'Andrea Wilson',
+    'index.testimonials.one.attribute' => 'Editor, Writer\'s Weekly',
+    'index.testimonials.two.text' => 'I was skeptical at first, but within days, I saw how much more productive our team became. The support team is also incredibly responsive.',
+    'index.testimonials.two.name' => 'George Parker',
+    'index.testimonials.two.attribute' => 'Founder, BrightPath Solutions',
+    'index.testimonials.three.text' => 'We’ve tried multiple tools before, but nothing comes close to this. The onboarding was smooth, and our entire team was up and running in no time.',
+    'index.testimonials.three.name' => 'Calvin Mitchell',
+    'index.testimonials.three.attribute' => 'CEO, FlowWorks Inc.',
 
-    'index.faq.header' => '%1$sAnswers%2$s for your common %1$squestions%2$s',
-    'index.faq.one.question' => 'How do you edit this?',
-    'index.faq.one.answer' => 'All the FAQ section can be edited from the admin panel - languages section.',
-    'index.faq.two.question' => 'Lorem ipsum dolor sit amet',
-    'index.faq.two.answer' => 'Lorem ipsum dolor sit amet, vim eu quem nonumes omittam. Mutat facete patrioque et est, nusquam abhorreant definiebas te sit, albucius urbanitas pro ad. Ne nemore officiis sed. Cu mundi docendi qui, nam nonumes maluisset constituto an, vix ea solum accusamus consequuntur.',
-    'index.faq.three.question' => 'Virtute feugiat ocurreret ad cum',
-    'index.faq.three.answer' => 'Virtute feugiat ocurreret ad cum, pro in posse ullum adversarium, te qui stet graece antiopam. Amet omnesque indoctum ut mel, ea eam sonet saperet nostrum. Te modus delectus mel, pri populo definitionem ne, an eam hinc labitur inciderint. Novum vivendum gloriatur ex nec, ad vocibus eleifend deterruisset pro, mutat voluptaria repudiandae eum ea. Ipsum soluta cotidieque sea ut, aliquando scripserit no has, iisque impetus erroribus pro ad. Case labitur scaevola vis ut, clita meliore te eos.',
-    'index.faq.four.question' => 'Mel iusto putant feugiat et',
-    'index.faq.four.answer' => 'Mel iusto putant feugiat et, qui alii virtute eu. Diceret corrumpit mei an. Ius ei congue iudico, ex quo delectus indoctum. Mnesarchum reprehendunt pro ex, ea vix amet maluisset, in autem omnes consectetuer eum.',
+    'index.faq.header' => '<span class="text-primary">Answer</span> for your common <span class="text-primary">question</span>',
+    'index.faq.one.question' => 'How do I get started?',
+    'index.faq.one.answer' => 'Simply sign up for an account and follow the onboarding steps. You’ll be ready to use the platform in just a few minutes.',
+    'index.faq.two.question' => 'Do you offer customer support?',
+    'index.faq.two.answer' => 'Yes, our support team is available 24/7 via email and live chat. We aim to respond to all inquiries within a few hours.',
+    'index.faq.three.question' => 'Is my data secure?',
+    'index.faq.three.answer' => 'We take data security seriously. All information is encrypted and backed up regularly to ensure your data is safe and protected.',
+    'index.faq.four.question' => 'Will I need technical skills to use this?',
+    'index.faq.four.answer' => 'Not at all. Our platform is designed to be user-friendly, with no coding required to get started.',
+    'index.faq.five.question' => 'What makes this different from other tools?',
+    'index.faq.five.answer' => 'We focus on simplicity and performance. Our platform is lightweight, easy to use, and designed to help you achieve results faster.',
 
     'index.pricing.header' => 'Simple, transparent pricing.',
     'index.pricing.subheader' => 'Choose the plan that is right for you and your budget.',
+
+    'index.api.name' => 'API system ',
+    'index.api.header' => 'Developer ready',
+    'index.api.subheader' => 'Fully featured & easy to use API system for developers.',
 
     'index.cta.header' => 'Own your analytics.',
     'index.cta.subheader' => 'Simple to understand analytics, yet highly powerful.',
@@ -1710,7 +1800,7 @@ return [
     'contact.title' => 'Contact',
     'contact.menu' => 'Contact',
     'contact.header' => 'Contact us',
-    'contact.subheader' => 'Get in touch with us via email.',
+    'contact.subheader' => 'Get in touch with us.',
     'contact.email' => 'Email address',
     'contact.name' => 'Full name',
     'contact.subject' => 'Subject',

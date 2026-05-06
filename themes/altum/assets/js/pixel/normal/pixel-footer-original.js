@@ -23,6 +23,15 @@ let altumcodestart = async () => {
 
         await altumcode_events.initiate();
 
+        /* Outbound clicks */
+        if (typeof track_outbound_links === 'function') {
+            track_outbound_links({
+                visitor_uuid: altumcode_events.visitor_uuid,
+                visitor_session_uuid: altumcode_events.visitor_session_uuid,
+                visitor_session_event_uuid: altumcode_events.visitor_session_event_uuid,
+            });
+        }
+
     } else {
 
         if(is_dnt) {
@@ -36,20 +45,6 @@ let altumcodestart = async () => {
 };
 
 let altumcodeprestart = () => {
-    // let pushState;
-    // let history = window.history;
-    //
-    // if(history.pushState) {
-    //     pushState = history.pushState;
-    //
-    //     history.pushState = () => {
-    //         pushState.apply(this, arguments);
-    //         altumcodestart();
-    //     };
-    //
-    //     window.addEventListener('popstate', altumcodestart);
-    // }
-
     altumcodestart();
 }
 

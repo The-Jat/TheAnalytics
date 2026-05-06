@@ -3,7 +3,7 @@
 <div class="container">
     <nav class="navbar app-navbar navbar-expand-lg navbar-light bg-white rounded-2x">
 
-        <?php if(count($this->websites)): ?>
+        <?php if (!empty($this->websites)): ?>
             <div class="dropdown">
                 <a class="text-decoration-none d-flex align-items-center" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
                     <img referrerpolicy="no-referrer" src="<?= get_favicon_url_from_domain($this->website->host) ?>" class="img-fluid icon-favicon mr-2" loading="lazy" />
@@ -40,6 +40,8 @@
 
         <?php ob_start() ?>
             <script>
+    'use strict';
+    
                 $('#team_logout').on('click', event => {
                     delete_cookie('selected_team_id', <?= json_encode(COOKIE_PATH) ?>);
                     redirect('dashboard');

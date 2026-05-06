@@ -72,6 +72,11 @@ class Replays extends Controller {
                 `websites_visitors`.`ip`,
                 `websites_visitors`.`visitor_id`,
                 `websites_visitors`.`date`,
+                `websites_visitors`.`country_code`,
+                `websites_visitors`.`city_name`,
+                `websites_visitors`.`device_type`,
+                `websites_visitors`.`os_name`,
+                `websites_visitors`.`browser_name`,
                 
                 `sessions_replays`.`replay_id`,
                 `sessions_replays`.`events`,
@@ -159,6 +164,8 @@ class Replays extends Controller {
 
             set_time_limit(0);
 
+            session_write_close();
+
             switch($_POST['type']) {
                 case 'delete':
 
@@ -171,6 +178,8 @@ class Replays extends Controller {
 
                     break;
             }
+
+            session_start();
 
             /* Set a nice success message */
             Alerts::add_success(l('bulk_delete_modal.success_message'));

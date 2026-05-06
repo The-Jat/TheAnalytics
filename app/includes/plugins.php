@@ -23,4 +23,5 @@ return [
     'offload',
     'image-optimizer',
     'dynamic-og-images',
+    'email-shield',
 ];

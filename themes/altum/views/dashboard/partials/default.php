@@ -227,7 +227,7 @@
         </div>
     </div>
 
-    <div class="col-12 col-lg-6 p-3">
+    <div class="col-12 col-lg-4 p-3">
         <div class="card border-0 position-relative">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
@@ -243,7 +243,7 @@
         </div>
     </div>
 
-    <div class="col-12 col-lg-6 p-3">
+    <div class="col-12 col-lg-4 p-3">
         <div class="card border-0 position-relative">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
@@ -258,13 +258,31 @@
             </div>
         </div>
     </div>
+
+    <div class="col-12 col-lg-4 p-3">
+        <div class="card border-0 position-relative">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <a href="<?= url($data->base_url_path . 'outbound-clicks') ?>" class="small text-decoration-none text-body text-uppercase font-weight-bold stretched-link"><?= l('analytics.outbound_clicks') ?></a>
+                    </div>
+
+                    <span class="round-circle-sm bg-gray-200 text-primary-700 p-3">
+                        <i class="fas fa-fw fa-sm fa-external-link-alt"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php require THEME_PATH . 'views/partials/js_chart_defaults.php' ?>
 
 <?php ob_start() ?>
-<?php if(count($data->logs)): ?>
+<?php if (!empty($data->logs)): ?>
 <script>
+    'use strict';
+    
     let css = window.getComputedStyle(document.body);
     let color = css.getPropertyValue('--primary');
     let color_gradient = null;

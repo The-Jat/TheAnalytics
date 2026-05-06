@@ -124,6 +124,38 @@ class App {
         settings()->main->logo_dark_full_url = \Altum\Uploads::get_full_url('logo_dark') . settings()->main->logo_dark;
         settings()->main->favicon_full_url = \Altum\Uploads::get_full_url('favicon') . settings()->main->favicon;
 
+        /* Auto currency detection */
+        if(!is_logged_in() && settings()->payment->auto_currency_detection && settings()->payment->is_enabled && !isset($_COOKIE['set_currency'])) {
+            /* Detect the location */
+            try {
+                $maxmind = get_maxmind_reader_country()->get(get_ip());
+                $continent_code = isset($maxmind) && isset($maxmind['continent']) ? $maxmind['continent']['code'] : null;
+                $country_code = isset($maxmind) && isset($maxmind['country']) ? $maxmind['country']['iso_code'] : null;
+            } catch(\Exception $exception) {
+                /* :) */
+            }
+
+            /* Try association with the country */
+            if(isset($country_code)) {
+                $potential_currency = get_currency_for_country($country_code);
+
+                if(array_key_exists($potential_currency, (array) settings()->payment->currencies)) {
+                    setcookie('set_currency', $potential_currency, time() + 60*60*24*30, COOKIE_PATH);
+                    \Altum\Currency::$currency = $potential_currency;
+                }
+            }
+
+            /* Try association with the continent */
+            if(!isset($_COOKIE['set_currency']) && isset($continent_code)) {
+                $potential_currency = get_currency_for_continent($continent_code);
+
+                if(array_key_exists($potential_currency, (array) settings()->payment->currencies)) {
+                    setcookie('set_currency', $potential_currency, time() + 60*60*24*30, COOKIE_PATH);
+                    \Altum\Currency::$currency = $potential_currency;
+                }
+            }
+        }
+
         /* Check for a potential logged in account and do some extra checks */
         if(is_logged_in()) {
 
@@ -155,7 +187,7 @@ class App {
 
             /* Update last activity */
             /* Do not update if user is impersonated by an admin */
-            if(!$user->last_activity || (new \DateTime($user->last_activity))->modify('+15 minutes') < (new \DateTime()) && !isset($_SESSION['admin_user_id'])) {
+            if(!$user->last_activity || (new \DateTime($user->last_activity))->modify('+15 minutes') < (new \DateTime()) && !session_has('admin_user_id')) {
                 (new User())->update_last_activity(\Altum\Authentication::$user_id);
             }
 
@@ -271,19 +303,19 @@ class App {
 
             /* Custom plan limit notice */
             if($website && $user->plan_settings->sessions_events_limit != -1 && $website->current_month_sessions_events > $user->plan_settings->sessions_events_limit && !isset($_COOKIE['plan_sessions_events_limit_notice_' . $website->website_id])) {
-                Alerts::add_warning('<strong>' . l('global.notifications.user_sessions_events_limit.title') . '</strong><br />' . sprintf(l('global.notifications.user_sessions_events_limit.description'), '<a href="' . url('plan') . '" class="font-weight-bold">', '</a>'));
+                Alerts::add_warning('<strong>' . l('global.notifications.user_sessions_events_limit.title') . '</strong>' . (settings()->payment->is_enabled ? '<br />' . sprintf(l('global.notifications.user_sessions_events_limit.description'), '<a href="' . url('plan') . '" class="font-weight-bold">', '</a>') : null));
                 setcookie('plan_sessions_events_limit_notice_' . $website->website_id, 1, time()+60*60*24*1, COOKIE_PATH);
             }
 
             /* Custom plan limit notice */
             if($website && $user->plan_settings->events_children_limit != -1 && $website->current_month_events_children > $user->plan_settings->events_children_limit && !isset($_COOKIE['plan_events_children_limit_notice_' . $website->website_id])) {
-                Alerts::add_warning('<strong>' . l('global.notifications.user_events_children_limit.title') . '</strong><br />' . sprintf(l('global.notifications.user_events_children_limit.description'), '<a href="' . url('plan') . '" class="font-weight-bold">', '</a>'));
+                Alerts::add_warning('<strong>' . l('global.notifications.user_events_children_limit.title') . '</strong>' . (settings()->payment->is_enabled ? '<br />' . sprintf(l('global.notifications.user_events_children_limit.description'), '<a href="' . url('plan') . '" class="font-weight-bold">', '</a>') : null));
                 setcookie('plan_events_children_limit_notice_' . $website->website_id, 1, time()+60*60*24*1, COOKIE_PATH);
             }
 
             /* Custom plan limit notice */
             if($website && $user->plan_settings->sessions_replays_limit != -1 && $website->current_month_sessions_replays > $user->plan_settings->sessions_replays_limit && !isset($_COOKIE['plan_sessions_replays_limit_notice_' . $website->website_id])) {
-                Alerts::add_warning('<strong>' . l('global.notifications.user_sessions_replays_limit.title') . '</strong><br />' . sprintf(l('global.notifications.user_sessions_replays_limit.description'), '<a href="' . url('plan') . '" class="font-weight-bold">', '</a>'));
+                Alerts::add_warning('<strong>' . l('global.notifications.user_sessions_replays_limit.title') . '</strong>' . (settings()->payment->is_enabled ? '<br />' . sprintf(l('global.notifications.user_sessions_replays_limit.description'), '<a href="' . url('plan') . '" class="font-weight-bold">', '</a>') : null));
                 setcookie('plan_sessions_replays_limit_notice_' . $website->website_id, 1, time()+60*60*24*1, COOKIE_PATH);
             }
         }
@@ -297,12 +329,12 @@ class App {
         }
 
         /* Initiate the Title system */
-        Title::initialize(settings()->main->title);
+        Title::initialize(settings()->main->title, settings()->main->title_separator ?? '-');
         Meta::initialize();
 
         /* Set a CSRF Token */
-        Csrf::set('token');
-        Csrf::set('global_token');
+//        \Altum\Csrf::set('token');
+//        \Altum\Csrf::set('global_token');
 
         /* If the language code is the default one, redirect to index */
         if(\Altum\Router::$language_code == Language::$default_code) {
@@ -312,13 +344,13 @@ class App {
         /* Redirect based on browser language if needed */
         $browser_language_code = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : null;
         if(settings()->main->auto_language_detection_is_enabled && \Altum\Router::$controller_settings['no_browser_language_detection'] == false && !\Altum\Router::$language_code && !is_logged_in() && $browser_language_code && Language::$default_code != $browser_language_code && array_search($browser_language_code, Language::$active_languages)) {
-            if(!isset($_SERVER['HTTP_REFERER']) || (isset($_SERVER['HTTP_REFERER']) && parse_url($_SERVER['HTTP_REFERER'])['host'] != parse_url(SITE_url, PHP_URL_HOST))) {
+            if(!isset($_SERVER['HTTP_REFERER']) || (isset($_SERVER['HTTP_REFERER']) && parse_url($_SERVER['HTTP_REFERER'])['host'] != parse_url(SITE_URL, PHP_URL_HOST))) {
                 header('Location: ' . SITE_URL . $browser_language_code . '/' . \Altum\Router::$original_request . (\Altum\Router::$original_request_query ? '?' . \Altum\Router::$original_request_query : null));
             }
         }
 
         /* Force HTTPS is needed */
-        if(settings()->main->force_https_is_enabled && ($_SERVER['HTTPS'] ?? '') != 'on' && php_sapi_name() != 'cli' && string_starts_with('https://', SITE_URL)) {
+        if(settings()->main->force_https_is_enabled && !is_https_request() && php_sapi_name() != 'cli' && string_starts_with('https://', SITE_URL)) {
             header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], true, 301); die();
         }
 

@@ -54,7 +54,7 @@ class TeamsAjax extends Controller {
     }
 
     private function create() {
-        $_POST['name'] = trim(query_clean($_POST['name']));
+        $_POST['name'] = input_clean($_POST['name'], 32);
         $websites_ids = [];
 
         /* Check for possible errors */
@@ -88,7 +88,7 @@ class TeamsAjax extends Controller {
 
     private function update() {
         $_POST['team_id'] = (int) $_POST['team_id'];
-        $_POST['name'] = trim(query_clean($_POST['name']));
+        $_POST['name'] = input_clean($_POST['name'], 32);
         $websites_ids = [];
 
         /* Check for possible errors */

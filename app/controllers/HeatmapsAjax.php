@@ -47,7 +47,7 @@ class HeatmapsAjax extends Controller {
             die();
         }
 
-        $_POST['name'] = trim(query_clean($_POST['name']));
+        $_POST['name'] = input_clean($_POST['name'], 256);
         $_POST['path'] = '/' . trim(query_clean($_POST['path']));
         $is_enabled = 1;
 
@@ -72,7 +72,7 @@ class HeatmapsAjax extends Controller {
             'datetime' => get_date(),
         ]);
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('website_heatmaps?website_id=' . $this->website->website_id);
 
         /* Set a nice success message */
@@ -90,7 +90,7 @@ class HeatmapsAjax extends Controller {
             die();
         }
 
-        $_POST['name'] = trim(query_clean($_POST['name']));
+        $_POST['name'] = input_clean($_POST['name'], 256);
         $_POST['is_enabled'] = (int) isset($_POST['is_enabled']);
         $_POST['heatmap_id'] = (int) $_POST['heatmap_id'];
 
@@ -107,7 +107,7 @@ class HeatmapsAjax extends Controller {
             'last_datetime' => get_date(),
         ]);
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('website_heatmaps?website_id=' . $this->website->website_id);
 
         /* Set a nice success message */
@@ -136,7 +136,7 @@ class HeatmapsAjax extends Controller {
             }
         }
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('website_heatmaps?website_id=' . $this->website->website_id);
 
         Response::json(l('heatmap_retake_snapshots_modal.success_message'), 'success');

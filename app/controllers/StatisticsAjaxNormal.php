@@ -852,7 +852,7 @@ class StatisticsAjaxNormal extends Controller {
 
         $filters = AnalyticsFilters::get_filters_sql(['websites_visitors', 'sessions_events']);
 
-        $convert_tz_sql = get_convert_tz_sql('`goals_conversions`.`date`', $this->user->timezone);
+        $convert_tz_sql = get_convert_tz_sql('`goals_conversions`.`date`', $this->user->timezone ?? \Altum\Date::$default_timezone);
 
         /* Get the visitors chart data */
         $logs_chart = [];
@@ -891,6 +891,113 @@ class StatisticsAjaxNormal extends Controller {
             'logs_chart_labels' => $logs_chart['labels'],
             'logs_chart_conversions' => $logs_chart['conversions'] ?? '[]',
         ]);
+    }
+
+    /* Outbound clicks */
+    private function outbound_clicks() {
+
+        /* Get the data */
+        $result = database()->query("
+            SELECT 
+                `outbound_clicks`.`host`,
+                COUNT(`outbound_clicks`.`outbound_click_id`) AS `total`
+            FROM 
+                `outbound_clicks`
+            LEFT JOIN
+                `sessions_events` ON `sessions_events`.`event_id` = `outbound_clicks`.`event_id`
+            LEFT JOIN
+                `websites_visitors` ON `websites_visitors`.`visitor_id` = `outbound_clicks`.`visitor_id`
+            WHERE
+                `outbound_clicks`.`website_id` = {$this->website->website_id} 
+                AND (`outbound_clicks`.`datetime` BETWEEN '{$this->date->start_date_query}' AND '{$this->date->end_date_query}')
+                {$this->filters}
+            GROUP BY
+                `outbound_clicks`.`host`
+            ORDER BY 
+                `total` DESC;
+        ");
+
+        $this->by = 'clicks';
+
+        $this->process_and_run($result);
+    }
+
+    private function outbound_clicks_chart() {
+
+        /* Establish the start and end date for the statistics */
+        list($start_date, $end_date) = AnalyticsFilters::get_date();
+
+        $datetime = \Altum\Date::get_start_end_dates_new($start_date, $end_date, Date::$default_timezone);
+
+        $filters = AnalyticsFilters::get_filters_sql(['websites_visitors']);
+
+        $convert_tz_sql = get_convert_tz_sql('`outbound_clicks`.`datetime`', $this->user->timezone ?? \Altum\Date::$default_timezone);
+
+        /* Get the visitors chart data */
+        $logs_chart = [];
+
+        $result = database()->query("
+            SELECT 
+                COUNT(*) AS `clicks`,
+                DATE_FORMAT({$convert_tz_sql}, '{$datetime['query_date_format']}') AS `formatted_date`
+            FROM 
+                `outbound_clicks` 
+            LEFT JOIN
+                `sessions_events` ON `sessions_events`.`event_id` = `outbound_clicks`.`event_id`
+            LEFT JOIN
+                `websites_visitors` ON `websites_visitors`.`visitor_id` = `outbound_clicks`.`visitor_id`
+            WHERE 
+                 `outbound_clicks`.`website_id` = {$this->website->website_id} 
+			    AND ({$convert_tz_sql} BETWEEN '{$datetime['query_start_date']}' AND '{$datetime['query_end_date']}')
+                {$filters}
+            GROUP BY
+                `formatted_date`
+        ");
+
+        /* Generate the raw chart data and save goals for later usage */
+        while($row = $result->fetch_object()) {
+            $formatted_date = $datetime['process']($row->formatted_date, true);
+
+            /* Insert data for the chart */
+            $logs_chart[$formatted_date] = [
+                'clicks' => $row->clicks,
+            ];
+        }
+
+        $logs_chart = get_chart_data($logs_chart);
+
+        Response::json('', 'success', [
+            'logs_chart_labels' => $logs_chart['labels'],
+            'logs_chart_clicks' => $logs_chart['clicks'] ?? '[]',
+        ]);
+    }
+
+    private function outbound_clicks_paths() {
+        $_GET['host'] = query_clean($_GET['host']);
+
+        /* Get the data */
+        $result = database()->query("
+            SELECT
+                `outbound_clicks`.`path`,
+                `outbound_clicks`.`host`,
+                COUNT(IFNULL(`outbound_clicks`.`path`, 1)) AS `total`
+            FROM
+            	`outbound_clicks`
+            LEFT JOIN 
+                `websites_visitors` ON `outbound_clicks`.`visitor_id` = `websites_visitors`.`visitor_id`
+			WHERE
+			    `outbound_clicks`.`website_id` = {$this->website->website_id} 
+			    AND `outbound_clicks`.`host` = '{$_GET['host']}'
+			    AND (`outbound_clicks`.`datetime` BETWEEN '{$this->date->start_date_query}' AND '{$this->date->end_date_query}')
+           GROUP BY
+                `outbound_clicks`.`path`
+            ORDER BY 
+                `total` DESC
+        ");
+
+        $this->by = 'clicks';
+
+        $this->process_and_run($result);
     }
 
     private function process($result) {

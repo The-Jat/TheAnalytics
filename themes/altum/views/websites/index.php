@@ -2,14 +2,20 @@
 
 <div class="container">
 
+    <?php if($this->user->plan_settings->websites_limit != -1 && $data->total_heatmaps > $this->user->plan_settings->websites_limit): ?>
+        <div class="alert alert-danger">
+            <i class="fas fa-fw fa-times-circle text-danger mr-2"></i> <?= sprintf(settings()->payment->is_enabled ? l('global.info_message.plan_feature_limit_removal_with_upgrade') : l('global.info_message.plan_feature_limit_removal'), '<strong>' . $data->total_heatmaps - $this->user->plan_settings->websites_limit, mb_strtolower(l('websites.title')) . '</strong>', '<a href="' . url('plan') . '" class="font-weight-bold text-reset">' . l('global.info_message.plan_upgrade') . '</a>') ?>
+        </div>
+    <?php endif ?>
+
     <div class="row mb-4">
         <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0 text-truncate">
             <h1 class="h4 m-0 text-truncate"><i class="fas fa-fw fa-xs fa-pager mr-1"></i> <?= l('websites.header') ?></h1>
 
             <div class="ml-2">
-                    <span data-toggle="tooltip" title="<?= l('websites.subheader') ?>">
-                        <i class="fas fa-fw fa-info-circle text-muted"></i>
-                    </span>
+                <span data-toggle="tooltip" title="<?= l('websites.subheader') ?>">
+                    <i class="fas fa-fw fa-info-circle text-muted"></i>
+                </span>
             </div>
         </div>
 
@@ -21,11 +27,17 @@
                             <i class="fas fa-fw fa-plus-circle fa-sm mr-1"></i> <?= l('websites.create') ?>
                         </button>
                     <?php else: ?>
-                        <button type="button" data-toggle="modal" data-target="#website_create_modal" class="btn btn-primary" data-tooltip data-toggle="tooltip" data-html="true" title="<?= get_plan_feature_limit_info(count($this->websites), $this->user->plan_settings->websites_limit, isset($data->filters) ? !$data->filters->has_applied_filters : true) ?>">
+                        <a href="<?= url('website-create') ?>" class="btn btn-primary" data-toggle="tooltip" data-html="true" title="<?= get_plan_feature_limit_info($data->total_websites, $this->user->plan_settings->websites_limit, isset($data->filters) ? !$data->filters->has_applied_filters : true) ?>">
                             <i class="fas fa-fw fa-plus-circle fa-sm mr-1"></i> <?= l('websites.create') ?>
-                        </button>
+                        </a>
                     <?php endif ?>
                 <?php endif ?>
+            </div>
+
+            <div>
+                <a href="<?= url('websites-import') ?>" class="btn btn-outline-primary" data-toggle="tooltip" data-html="true" title="<?= l('websites_import.menu') ?>">
+                    <i class="fas fa-fw fa-upload fa-sm"></i>
+                </a>
             </div>
 
             <div>
@@ -35,13 +47,13 @@
                     </button>
 
                     <div class="dropdown-menu dropdown-menu-right d-print-none">
-                        <a href="<?= url('websites?' . $data->filters->get_get() . '&export=csv')  ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->csv ? null : 'disabled' ?>">
+                        <a href="<?= url('websites?' . $data->filters->get_get() . '&export=csv')  ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->csv ? null : 'disabled pointer-events-all' ?>" <?= $this->user->plan_settings->export->csv ? null : get_plan_feature_disabled_info() ?>>
                             <i class="fas fa-fw fa-sm fa-file-csv mr-2"></i> <?= sprintf(l('global.export_to'), 'CSV') ?>
                         </a>
-                        <a href="<?= url('websites?' . $data->filters->get_get() . '&export=json') ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->json ? null : 'disabled' ?>">
+                        <a href="<?= url('websites?' . $data->filters->get_get() . '&export=json') ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->json ? null : 'disabled pointer-events-all' ?>" <?= $this->user->plan_settings->export->json ? null : get_plan_feature_disabled_info() ?>>
                             <i class="fas fa-fw fa-sm fa-file-code mr-2"></i> <?= sprintf(l('global.export_to'), 'JSON') ?>
                         </a>
-                        <a href="#" onclick="window.print();return false;" class="dropdown-item <?= $this->user->plan_settings->export->pdf ? null : 'disabled' ?>">
+                        <a href="#" class="dropdown-item <?= $this->user->plan_settings->export->pdf ? null : 'disabled pointer-events-all' ?>" <?= $this->user->plan_settings->export->pdf ? $this->user->plan_settings->export->pdf ? 'onclick="event.preventDefault(); window.print();"' : 'disabled pointer-events-all' : get_plan_feature_disabled_info() ?>>
                             <i class="fas fa-fw fa-sm fa-file-pdf mr-2"></i> <?= sprintf(l('global.export_to'), 'PDF') ?>
                         </a>
                     </div>
@@ -50,7 +62,7 @@
 
             <div>
                 <div class="dropdown">
-                    <button type="button" class="btn <?= $data->filters->has_applied_filters ? 'btn-dark' : 'btn-light' ?> filters-button dropdown-toggle-simple <?= count($data->websites) || $data->filters->has_applied_filters ? null : 'disabled' ?>" data-toggle="dropdown" data-boundary="viewport" data-tooltip title="<?= l('global.filters.header') ?>" data-tooltip-hide-on-click>
+                    <button type="button" class="btn <?= $data->filters->has_applied_filters ? 'btn-dark' : 'btn-light' ?> filters-button dropdown-toggle-simple <?= count($data->websites) || $data->filters->has_applied_filters ? null : 'disabled' ?>" data-toggle="dropdown" data-boundary="viewport" data-tooltip data-html="true" title="<?= l('global.filters.tooltip') ?>" data-tooltip-hide-on-click>
                         <i class="fas fa-fw fa-sm fa-filter"></i>
                     </button>
 
@@ -173,7 +185,7 @@
 
     <?= \Altum\Alerts::output_alerts() ?>
 
-    <?php if(count($data->websites)): ?>
+    <?php if (!empty($data->websites)): ?>
         <form id="table" action="<?= SITE_URL . 'websites/bulk' ?>" method="post" role="form">
             <input type="hidden" name="token" value="<?= \Altum\Csrf::get() ?>" />
             <input type="hidden" name="type" value="" data-bulk-type />
@@ -218,27 +230,7 @@
                             <td class="text-nowrap">
                                 <div class="d-flex flex-column">
                                     <div>
-                                        <a
-                                                href="#"
-                                                data-toggle="modal"
-                                                data-target="#website_update_modal"
-                                                data-website-id="<?= $row->website_id ?>"
-                                                data-domain-id="<?= $row->domain_id ?>"
-                                                data-name="<?= $row->name ?>"
-                                                data-scheme="<?= $row->scheme ?>"
-                                                data-host="<?= $row->host . $row->path ?>"
-                                                data-tracking-type="<?= $row->tracking_type ?>"
-                                                data-events-children-is-enabled="<?= (bool) $row->events_children_is_enabled ?>"
-                                                data-sessions-replays-is-enabled="<?= (bool) $row->sessions_replays_is_enabled ?>"
-                                                data-excluded-ips="<?= $row->excluded_ips ?>"
-                                                data-email-reports-is-enabled="<?= $row->email_reports_is_enabled ?>"
-                                                data-bot-exclusion-is-enabled="<?= (bool) $row->bot_exclusion_is_enabled ?>"
-                                                data-query-parameters-tracking-is-enabled="<?= (bool) $row->query_parameters_tracking_is_enabled ?>"
-                                                data-ip-storage-is-enabled="<?= (bool) $row->ip_storage_is_enabled ?>"
-                                                data-public-statistics-is-enabled="<?= (bool) $row->public_statistics_is_enabled ?>"
-                                                data-public-statistics-password="<?= $row->public_statistics_password ?>"
-                                                data-is-enabled="<?= (bool) $row->is_enabled ?>"
-                                        >
+                                        <a href="<?= url('website-update/' . $row->website_id) ?>">
                                             <?= $row->name ?>
                                         </a>
                                     </div>
@@ -348,6 +340,12 @@
                                         <?php endif ?>
                                     <?php endif ?>
 
+                                    <?php if($row->outbound_clicks_is_enabled): ?>
+                                        <span class="badge badge-success mx-1" data-toggle="tooltip" title="<?= l('websites.outbound_clicks_is_enabled') ?>"><i class="fas fa-fw fa-external-link-alt"></i></span>
+                                    <?php else: ?>
+                                        <span class="badge badge-warning mx-1" data-toggle="tooltip" title="<?= l('websites.outbound_clicks_is_enabled') ?>"><i class="fas fa-fw fa-external-link-alt"></i></span>
+                                    <?php endif ?>
+
                                     <?php if(settings()->analytics->email_reports_is_enabled): ?>
                                         <?php if($this->user->plan_settings->email_reports_is_enabled && $row->email_reports_is_enabled): ?>
                                             <span class="badge badge-success mx-1" data-toggle="tooltip" title="<?= l('websites.email_reports') ?>"><i class="fas fa-fw fa-envelope"></i></span>
@@ -367,7 +365,7 @@
                                                 data-toggle="modal"
                                                 data-target="#website_public_statistics_modal"
                                                 data-pixel-key="<?= $row->pixel_key ?>"
-                                                data-base-url="<?= $row->domain_id ? $data->domains[$row->domain_id]->scheme . $data->domains[$row->domain_id]->host . '/' : SITE_URL ?>"
+                                                data-base-url="<?= $row->domain_id && isset($data->domains[$row->domain_id]) ? $data->domains[$row->domain_id]->scheme . $data->domains[$row->domain_id]->host . '/' : SITE_URL ?>"
                                                 <?= $row->public_statistics_is_enabled ? null : 'disabled="disabled"' ?>
                                         ><i class="fas fa-fw fa-sm fa-paper-plane"></i></button>
                                     </div>
@@ -381,55 +379,12 @@
                                                 data-tracking-type="<?= $row->tracking_type ?>"
                                                 data-pixel-key="<?= $row->pixel_key ?>"
                                                 data-url="<?= $row->scheme . $row->host . $row->path ?>"
-                                                data-base-url="<?= $row->domain_id ? $data->domains[$row->domain_id]->scheme . $data->domains[$row->domain_id]->host . '/' : SITE_URL ?>"
+                                                data-base-url="<?= $row->domain_id && isset($data->domains[$row->domain_id]) ? $data->domains[$row->domain_id]->scheme . $data->domains[$row->domain_id]->host . '/' : SITE_URL ?>"
                                         ><i class="fas fa-fw fa-sm fa-code"></i></button>
                                     </div>
 
                                     <?php if(!$this->team): ?>
-                                        <div class="dropdown">
-                                            <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport">
-                                                <i class="fas fa-fw fa-ellipsis-v"></i>
-                                            </button>
-
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a
-                                                        href="#"
-                                                        class="dropdown-item"
-                                                        data-toggle="modal"
-                                                        data-target="#website_update_modal"
-                                                        data-website-id="<?= $row->website_id ?>"
-                                                        data-domain-id="<?= $row->domain_id ?>"
-                                                        data-name="<?= $row->name ?>"
-                                                        data-scheme="<?= $row->scheme ?>"
-                                                        data-host="<?= $row->host . $row->path ?>"
-                                                        data-tracking-type="<?= $row->tracking_type ?>"
-                                                        data-events-children-is-enabled="<?= (bool) $row->events_children_is_enabled ?>"
-                                                        data-sessions-replays-is-enabled="<?= (bool) $row->sessions_replays_is_enabled ?>"
-                                                        data-excluded-ips="<?= $row->excluded_ips ?>"
-                                                        data-email-reports-is-enabled="<?= $row->email_reports_is_enabled ?>"
-                                                        data-bot-exclusion-is-enabled="<?= (bool) $row->bot_exclusion_is_enabled ?>"
-                                                        data-query-parameters-tracking-is-enabled="<?= (bool) $row->query_parameters_tracking_is_enabled ?>"
-                                                        data-ip-storage-is-enabled="<?= (bool) $row->ip_storage_is_enabled ?>"
-                                                        data-public-statistics-is-enabled="<?= (bool) $row->public_statistics_is_enabled ?>"
-                                                        data-public-statistics-password="<?= $row->public_statistics_password ?>"
-                                                        data-is-enabled="<?= (bool) $row->is_enabled ?>"
-                                                >
-                                                    <i class="fas fa-fw fa-sm fa-pencil-alt mr-1"></i> <?= l('global.edit') ?>
-                                                </a>
-
-                                                <a href="#" data-toggle="modal" data-target="#website_reset_modal" data-website-id="<?= $row->website_id ?>" class="dropdown-item"><i class="fas fa-fw fa-sm fa-redo mr-2"></i> <?= l('global.reset') ?></a>
-
-                                                <a
-                                                        href="#"
-                                                        class="dropdown-item"
-                                                        data-toggle="modal"
-                                                        data-target="#website_delete_modal"
-                                                        data-website-id="<?= $row->website_id ?>"
-                                                >
-                                                    <i class="fas fa-fw fa-sm fa-trash-alt mr-1"></i> <?= l('global.delete') ?>
-                                                </a>
-                                            </div>
-                                        </div>
+                                        <?= include_view(THEME_PATH . 'views/websites/website_dropdown_button.php', ['id' => $row->website_id, 'resource_name' => $row->name]) ?>
                                     <?php endif ?>
                                 </div>
                             </td>
@@ -455,17 +410,15 @@
 
 </div>
 
-<?php \Altum\Event::add_content((new \Altum\View('websites/website_create_modal', (array) $this))->run($data), 'modals'); ?>
-<?php \Altum\Event::add_content((new \Altum\View('websites/website_update_modal', (array) $this))->run($data), 'modals'); ?>
 <?php \Altum\Event::add_content((new \Altum\View('websites/website_pixel_key_modal', (array) $this))->run($data), 'modals'); ?>
 <?php \Altum\Event::add_content((new \Altum\View('websites/website_public_statistics_modal', (array) $this))->run($data), 'modals'); ?>
-<?php \Altum\Event::add_content((new \Altum\View('websites/website_delete_modal', (array) $this))->run($data), 'modals'); ?>
 <?php require THEME_PATH . 'views/partials/js_bulk.php' ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/partials/bulk_delete_modal.php'), 'modals'); ?>
-<?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/partials/x_reset_modal.php', ['modal_id' => 'website_reset_modal', 'resource_id' => 'website_id', 'path' => 'websites/reset']), 'modals', 'website_reset_modal'); ?>
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+
     <?php if(isset($_GET['pixel_key_modal'])): ?>
     /* Open the pixel key modal */
     $('[data-target="#website_pixel_key_modal"][data-pixel-key="<?= $_GET['pixel_key_modal'] ?>"]').trigger('click');

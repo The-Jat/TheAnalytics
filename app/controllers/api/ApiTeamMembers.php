@@ -118,7 +118,7 @@ class ApiTeamMembers extends Controller {
         /* Check for any errors */
         $required_fields = ['team_id', 'user_email'];
         foreach($required_fields as $field) {
-            if(!isset($_POST[$field]) || (isset($_POST[$field]) && empty($_POST[$field]) && $_POST[$field] != '0')) {
+            if(!isset($_POST[$field]) || trim($_POST[$field]) === '') {
                 $this->response_error(l('global.error_message.empty_fields'), 401);
                 break 1;
             }

@@ -67,6 +67,18 @@
         <small class="form-text text-muted"><?= l('admin_settings.analytics.domains_is_enabled_help') ?></small>
     </div>
 
+    <div class="form-group custom-control custom-switch">
+        <input id="additional_domains_is_enabled" name="additional_domains_is_enabled" type="checkbox" class="custom-control-input" <?= settings()->analytics->additional_domains_is_enabled ? 'checked="checked"' : null?>>
+        <label class="custom-control-label" for="additional_domains_is_enabled"><?= l('admin_settings.analytics.additional_domains_is_enabled') ?></label>
+        <small class="form-text text-muted"><?= l('admin_settings.analytics.additional_domains_is_enabled_help') ?></small>
+    </div>
+
+    <div class="form-group custom-control custom-switch">
+        <input id="main_domain_is_enabled" name="main_domain_is_enabled" type="checkbox" class="custom-control-input" <?= settings()->analytics->main_domain_is_enabled ? 'checked="checked"' : null?>>
+        <label class="custom-control-label" for="main_domain_is_enabled"><?= l('admin_settings.analytics.main_domain_is_enabled') ?></label>
+        <small class="form-text text-muted"><?= l('admin_settings.analytics.main_domain_is_enabled_help') ?></small>
+    </div>
+
     <div class="form-group">
         <label for="domains_custom_main_ip"><?= l('admin_settings.analytics.domains_custom_main_ip') ?></label>
         <input id="domains_custom_main_ip" name="domains_custom_main_ip" type="text" class="form-control" value="<?= settings()->analytics->domains_custom_main_ip ?>" placeholder="<?= $_SERVER['SERVER_ADDR'] ?>">

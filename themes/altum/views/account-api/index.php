@@ -31,6 +31,10 @@
                     <div class="form-group <?= $this->user->plan_settings->api_is_enabled ? null : 'container-disabled' ?>">
                         <label for="api_key"><i class="fas fa-fw fa-sm fa-code text-muted mr-1"></i> <?= l('account_api.api_key') ?></label>
                         <div class="input-group">
+                            <?php
+                            //ALTUMCODE:DEMO if(DEMO) if($this->user->user_id == 1) $this->user->api_key = 'hidden on demo';
+                            ?>
+
                             <input type="text" id="api_key" name="api_key" value="<?= $this->user->api_key ?>" class="form-control" onclick="this.select();" readonly="readonly" />
                             <div class="input-group-append">
                                 <button
@@ -51,7 +55,7 @@
                     </div>
                 </div>
 
-                <button type="submit" name="submit" class="btn btn-block btn-outline-secondary" <?= $this->user->plan_settings->api_is_enabled ? null : 'data-toggle="tooltip" title="' . l('global.info_message.plan_feature_no_access') . '" disabled="disabled"' ?>><?= l('account_api.button') ?></button>
+                <button type="submit" name="submit" class="btn btn-block btn-outline-secondary" <?= $this->user->plan_settings->api_is_enabled ? null : get_plan_feature_disabled_info() ?>><?= l('account_api.button') ?></button>
             </form>
 
         </div>
@@ -82,6 +86,20 @@
 
                 <div class="card-body d-flex align-items-center">
                     <?= l('api_documentation.websites') ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-4 p-3 position-relative">
+            <div class="card d-flex flex-row h-100 overflow-hidden">
+                <div class="border-right border-gray-100 px-3 d-flex flex-column justify-content-center">
+                    <a href="<?= url('api-documentation/visitors') ?>" class="stretched-link">
+                        <i class="fas fa-fw fa-users text-primary-600"></i>
+                    </a>
+                </div>
+
+                <div class="card-body d-flex align-items-center">
+                    <?= l('visitors.title') ?>
                 </div>
             </div>
         </div>
@@ -160,6 +178,7 @@
             </div>
         <?php endif ?>
 
+        <?php if(settings()->payment->is_enabled): ?>
         <div class="col-12 col-sm-6 col-xl-4 p-3 position-relative">
             <div class="card d-flex flex-row h-100 overflow-hidden">
                 <div class="border-right border-gray-100 px-3 d-flex flex-column justify-content-center">
@@ -173,6 +192,7 @@
                 </div>
             </div>
         </div>
+        <?php endif ?>
 
         <div class="col-12 col-sm-6 col-xl-4 p-3 position-relative">
             <div class="card d-flex flex-row h-100 overflow-hidden">

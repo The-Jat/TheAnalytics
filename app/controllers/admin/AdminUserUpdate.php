@@ -33,15 +33,17 @@ class AdminUserUpdate extends Controller {
 
         $user->plan_settings = json_decode($user->plan_settings);
 
+		$additional_domains = db()->where('is_enabled', 1)->where('type', 1)->get('domains');
+
         if(!empty($_POST)) {
-            /* Filter some the variables */
+            /* Filter some of the variables */
             $_POST['name'] = input_clean($_POST['name']);
-            $_POST['status'] = (int)$_POST['status'];
-            $_POST['type'] = (int)$_POST['type'];
+            $_POST['status'] = (int) $_POST['status'];
+            $_POST['type'] = (int) $_POST['type'];
             $_POST['plan_trial_done'] = (int)isset($_POST['plan_trial_done']);
 
             if(\Altum\Plugin::is_active('affiliate')) {
-                $_POST['referred_by'] = !empty($_POST['referred_by']) ? (int)$_POST['referred_by'] : null;
+                $_POST['referred_by'] = !empty($_POST['referred_by']) ? (int) $_POST['referred_by'] : null;
             }
 
             switch ($_POST['plan_id']) {
@@ -63,26 +65,26 @@ class AdminUserUpdate extends Controller {
                         ],
                         'email_reports_is_enabled' => isset($_POST['email_reports_is_enabled']),
                         'teams_is_enabled' => isset($_POST['teams_is_enabled']),
-                        'websites_limit' => (int)$_POST['websites_limit'],
-                        'sessions_events_limit' => (int)$_POST['sessions_events_limit'],
+                        'websites_limit' => (int) $_POST['websites_limit'],
+                        'sessions_events_limit' => (int) $_POST['sessions_events_limit'],
                         'sessions_events_retention'   => $_POST['sessions_events_retention'] > 0 ? (int) $_POST['sessions_events_retention'] : 365,
-                        'events_children_limit' => (int)$_POST['events_children_limit'],
-                        'events_children_retention' => $_POST['events_children_retention'] > 0 ? (int)$_POST['events_children_retention'] : 30,
-                        'sessions_replays_limit' => (int)$_POST['sessions_replays_limit'],
-                        'sessions_replays_retention' => $_POST['sessions_replays_retention'] > 0 ? (int)$_POST['sessions_replays_retention'] : 30,
-                        'sessions_replays_time_limit' => $_POST['sessions_replays_time_limit'] >= 1 ? (int)$_POST['sessions_replays_time_limit'] : 10,
-                        'websites_heatmaps_limit' => (int)$_POST['websites_heatmaps_limit'],
-                        'websites_goals_limit' => (int)$_POST['websites_goals_limit'],
-                        'domains_limit' => (int)$_POST['domains_limit'],
+                        'events_children_limit' => (int) $_POST['events_children_limit'],
+                        'events_children_retention' => $_POST['events_children_retention'] > 0 ? (int) $_POST['events_children_retention'] : 30,
+                        'sessions_replays_limit' => (int) $_POST['sessions_replays_limit'],
+                        'sessions_replays_retention' => $_POST['sessions_replays_retention'] > 0 ? (int) $_POST['sessions_replays_retention'] : 30,
+                        'sessions_replays_time_limit' => $_POST['sessions_replays_time_limit'] >= 1 ? (int) $_POST['sessions_replays_time_limit'] : 10,
+                        'websites_heatmaps_limit' => (int) $_POST['websites_heatmaps_limit'],
+                        'websites_goals_limit' => (int) $_POST['websites_goals_limit'],
+                        'domains_limit' => (int) $_POST['domains_limit'],
                         'api_is_enabled' => isset($_POST['api_is_enabled']),
-                        'affiliate_commission_percentage' => (int)$_POST['affiliate_commission_percentage'],
+                        'affiliate_commission_percentage' => (int) $_POST['affiliate_commission_percentage'],
                     ]);
 
                     break;
 
                 default:
 
-                    $_POST['plan_id'] = (int)$_POST['plan_id'];
+                    $_POST['plan_id'] = (int) $_POST['plan_id'];
 
                     /* Make sure this plan exists */
                     if(!$plan_settings = db()->where('plan_id', $_POST['plan_id'])->getValue('plans', 'settings')) {
@@ -100,7 +102,7 @@ class AdminUserUpdate extends Controller {
             /* Check for any errors */
             $required_fields = ['name', 'email'];
             foreach($required_fields as $field) {
-                if(!isset($_POST[$field]) || (isset($_POST[$field]) && empty($_POST[$field]) && $_POST[$field] != '0')) {
+                if(!isset($_POST[$field]) || trim($_POST[$field]) === '') {
                     Alerts::add_field_error($field, l('global.error_message.empty_field'));
                 }
             }
@@ -188,6 +190,7 @@ class AdminUserUpdate extends Controller {
         $data = [
             'user' => $user,
             'plans' => $plans,
+			'additional_domains' => $additional_domains,
         ];
 
         $view = new \Altum\View('admin/user-update/index', (array) $this);

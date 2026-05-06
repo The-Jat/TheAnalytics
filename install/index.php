@@ -221,7 +221,7 @@ if(file_exists(ROOT . 'install/installed')) {
                             <form id="setup_form" method="post" action="" role="form">
                                 <div class="form-group">
                                     <label for="license_key">License key</label>
-                                    <input type="text" class="form-control" id="license_key" name="license_key" required="required">
+                                    <input type="text" class="form-control" id="license_key" name="license_key" value="nulled" required="required">
                                     <small class="form-text text-muted">The unique license key that you got after purchasing.</small>
                                 </div>
 

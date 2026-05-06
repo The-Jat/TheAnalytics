@@ -99,8 +99,11 @@ class ApiWebsites extends Controller {
                 'path' => $row->path,
                 'tracking_type' => $row->tracking_type,
                 'excluded_ips' => $row->excluded_ips,
+                'outbound_clicks_is_enabled' => (bool) $row->outbound_clicks_is_enabled,
                 'events_children_is_enabled' => (bool) $row->events_children_is_enabled,
                 'sessions_replays_is_enabled' => (bool) $row->sessions_replays_is_enabled,
+                'sessions_replays_hide_text_selector' => $row->sessions_replays_hide_text_selector,
+                'sessions_replays_hide_text_selector' => $row->sessions_replays_hide_text_selector,
                 'email_reports_is_enabled' => (bool) $row->email_reports_is_enabled,
                 'email_reports_last_date' => $row->email_reports_last_date,
                 'bot_exclusion_is_enabled' => (bool) $row->bot_exclusion_is_enabled,
@@ -161,8 +164,10 @@ class ApiWebsites extends Controller {
             'path' => $website->path,
             'tracking_type' => $website->tracking_type,
             'excluded_ips' => $website->excluded_ips,
+            'outbound_clicks_is_enabled' => (bool) $website->outbound_clicks_is_enabled,
             'events_children_is_enabled' => (bool) $website->events_children_is_enabled,
             'sessions_replays_is_enabled' => (bool) $website->sessions_replays_is_enabled,
+            'sessions_replays_hide_text_selector' => $website->sessions_replays_hide_text_selector,
             'email_reports_is_enabled' => (bool) $website->email_reports_is_enabled,
             'email_reports_last_date' => $website->email_reports_last_date,
             'bot_exclusion_is_enabled' => (bool) $website->bot_exclusion_is_enabled,
@@ -193,17 +198,18 @@ class ApiWebsites extends Controller {
         /* Check for any errors */
         $required_fields = ['name', 'host'];
         foreach($required_fields as $field) {
-            if(!isset($_POST[$field]) || (isset($_POST[$field]) && empty($_POST[$field]) && $_POST[$field] != '0')) {
+            if(!isset($_POST[$field]) || trim($_POST[$field]) === '') {
                 $this->response_error(l('global.error_message.empty_fields'), 401);
                 break 1;
             }
         }
 
-        $_POST['name'] = trim($_POST['name']);
+        $_POST['name'] = input_clean($_POST['name'], 256);
         $_POST['scheme'] = isset($_POST['scheme']) && in_array($_POST['scheme'], ['https://', 'http://']) ? $_POST['scheme'] : 'https://';
         $_POST['host'] = str_replace(' ', '', mb_strtolower(input_clean($_POST['host'], 128)));
         $_POST['host'] = string_starts_with('http://', $_POST['host']) || string_starts_with('https://', $_POST['host']) ? parse_url($_POST['host'], PHP_URL_HOST) : $_POST['host'];
         $_POST['tracking_type'] = isset($_POST['tracking_type']) && in_array($_POST['tracking_type'], ['lightweight', 'normal']) ? query_clean($_POST['tracking_type']) : 'lightweight';
+        $_POST['outbound_clicks_is_enabled'] = (int) isset($_POST['outbound_clicks_is_enabled']);
         $_POST['events_children_is_enabled'] = (int) isset($_POST['events_children_is_enabled']);
         $_POST['sessions_replays_is_enabled'] = (int) isset($_POST['sessions_replays_is_enabled']);
         $_POST['email_reports_is_enabled'] = (int) isset($_POST['email_reports_is_enabled']);
@@ -241,9 +247,19 @@ class ApiWebsites extends Controller {
             $pixel_key = string_generate(16);
         }
 
+		/* Get available custom domains */
+		$domains = (new \Altum\Models\Domain())->get_available_domains_by_user($this->api_user);
+
+		$_POST['domain_id'] = isset($_POST['domain_id']) ? (isset($domains[$_POST['domain_id']]) ? (int) $_POST['domain_id'] : null) : null;
+
+		if(!$_POST['domain_id'] && !settings()->links->main_domain_is_enabled && $this->api_user->type != 1) {
+			$this->response_error(l('global.info_message.plan_feature_limit'), 401);
+		}
+
         /* Database query */
         $website_id = db()->insert('websites', [
-            'user_id' => $this->api_user->user_id,
+			'user_id' => $this->api_user->user_id,
+			'domain_id' => $_POST['domain_id'],
             'pixel_key' => $pixel_key,
             'name' => $_POST['name'],
             'scheme' => $_POST['scheme'],
@@ -251,6 +267,7 @@ class ApiWebsites extends Controller {
             'path' => $path,
             'excluded_ips' => $_POST['excluded_ips'],
             'tracking_type' => $_POST['tracking_type'],
+            'outbound_clicks_is_enabled' => $_POST['outbound_clicks_is_enabled'],
             'events_children_is_enabled' => $_POST['events_children_is_enabled'],
             'sessions_replays_is_enabled' => $_POST['sessions_replays_is_enabled'],
             'email_reports_is_enabled' => $_POST['email_reports_is_enabled'],
@@ -279,6 +296,13 @@ class ApiWebsites extends Controller {
 
     private function patch() {
 
+        /* Check for the plan limit */
+        $total_rows = db()->where('user_id', $this->api_user->user_id)->getValue('websites', 'count(`website_id`)');
+
+        if($this->api_user->plan_settings->websites_limit != -1 && $total_rows > $this->api_user->plan_settings->websites_limit) {
+            $this->response_error(sprintf(settings()->payment->is_enabled ? l('global.info_message.plan_feature_limit_removal_with_upgrade') : l('global.info_message.plan_feature_limit_removal'), $total_rows - $this->user->plan_settings->websites_limit, mb_strtolower(l('websites.title')), l('global.info_message.plan_upgrade')), 401);
+        }
+
         $website_id = isset($this->params[0]) ? (int) $this->params[0] : null;
 
         /* Try to get details about the resource id */
@@ -292,8 +316,10 @@ class ApiWebsites extends Controller {
         $_POST['name'] = trim($_POST['name'] ?? $website->name);
         $_POST['scheme'] = isset($_POST['scheme']) && in_array($_POST['scheme'], ['https://', 'http://']) ? $_POST['scheme'] : $website->scheme;
         $_POST['host'] = mb_strtolower(trim($_POST['host'] ?? $website->host));
+        $_POST['outbound_clicks_is_enabled'] = isset($_POST['outbound_clicks_is_enabled']) ? (int) $_POST['outbound_clicks_is_enabled'] : $website->outbound_clicks_is_enabled;
         $_POST['events_children_is_enabled'] = isset($_POST['events_children_is_enabled']) ? (int) $_POST['events_children_is_enabled'] : $website->events_children_is_enabled;
         $_POST['sessions_replays_is_enabled'] = isset($_POST['sessions_replays_is_enabled']) ? (int) $_POST['sessions_replays_is_enabled'] : $website->sessions_replays_is_enabled;
+        $_POST['sessions_replays_hide_text_selector'] = isset($_POST['sessions_replays_hide_text_selector']) ? (int) $_POST['sessions_replays_hide_text_selector'] : $website->sessions_replays_hide_text_selector;
         $_POST['email_reports_is_enabled'] = isset($_POST['email_reports_is_enabled']) ? (int) $_POST['email_reports_is_enabled'] : $website->email_reports_is_enabled;
         $_POST['is_enabled'] = isset($_POST['is_enabled']) ? (int) $_POST['is_enabled'] : $website->is_enabled;
         $_POST['bot_exclusion_is_enabled'] = isset($_POST['bot_exclusion_is_enabled']) ? (int) $_POST['bot_exclusion_is_enabled'] : $website->bot_exclusion_is_enabled;
@@ -328,15 +354,28 @@ class ApiWebsites extends Controller {
             $this->response_error(l('websites.error_message.blacklisted_domain'));
         }
 
+		/* Get available custom domains */
+		$domains = (new \Altum\Models\Domain())->get_available_domains_by_user($this->api_user);
+
+		if(isset($_POST['domain_id']) && $_POST['domain_id'] == 0 && !settings()->links->main_domain_is_enabled && $this->api_user->type != 1) {
+			$this->response_error(l('create_link_modal.error_message.main_domain_is_disabled'), 401);
+		}
+
+		$_POST['domain_id'] = isset($_POST['domain_id']) ? (isset($domains[$_POST['domain_id']]) ? (int) $_POST['domain_id'] : null) : $website->domain_id;
+
+
         /* Database query */
         db()->where('website_id', $website_id)->where('user_id', $this->api_user->user_id)->update('websites', [
-            'name' => $_POST['name'],
+			'domain_id' => $_POST['domain_id'],
+			'name' => $_POST['name'],
             'scheme' => $_POST['scheme'],
             'host' => $_POST['host'],
             'path' => $path,
             'excluded_ips' => $_POST['excluded_ips'],
+            'outbound_clicks_is_enabled' => $_POST['outbound_clicks_is_enabled'],
             'events_children_is_enabled' => $_POST['events_children_is_enabled'],
             'sessions_replays_is_enabled' => $_POST['sessions_replays_is_enabled'],
+            'sessions_replays_hide_text_selector' => $_POST['sessions_replays_hide_text_selector'],
             'email_reports_is_enabled' => $_POST['email_reports_is_enabled'],
             'bot_exclusion_is_enabled' => $_POST['bot_exclusion_is_enabled'],
             'query_parameters_tracking_is_enabled' => $_POST['query_parameters_tracking_is_enabled'],
@@ -347,7 +386,7 @@ class ApiWebsites extends Controller {
             'last_datetime' => get_date(),
         ]);
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('websites_' . $this->api_user->user_id);
         cache()->deleteItemsByTag('website_id=' . $website_id);
 
@@ -375,7 +414,7 @@ class ApiWebsites extends Controller {
         /* Database query */
         db()->where('website_id', $website_id)->where('user_id', $this->api_user->user_id)->delete('websites');
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('websites_' . $this->api_user->user_id);
         cache('store_adapter')->deleteItemsByTag('session_replay_website_' . $website_id);
         cache()->deleteItemsByTag('website_id=' . $website_id);

@@ -4,7 +4,7 @@
     <a href="mailto:?body=<?= $data->external_url ?>" target="_blank" class="btn btn-blue-50 mb-2 mb-md-0 mr-3" data-toggle="tooltip" title="<?= sprintf(l('global.share_via'), 'Email') ?>">
         <div class="svg-sm d-flex"><?= include_view(ASSETS_PATH . '/images/icons/email.svg') ?></div>
     </a>
-    <button type="button" class="btn btn-blue-50 mb-2 mb-md-0 mr-3" data-toggle="tooltip" title="<?= l('page.print') ?>" onclick="window.print()">
+    <button type="button" class="btn btn-blue-50 mb-2 mb-md-0 mr-3" data-toggle="tooltip" title="<?= l('page.print') ?>" onclick="window.print();return false;">
         <div class="svg-sm d-flex"><?= include_view(ASSETS_PATH . '/images/icons/pdf.svg') ?></div>
     </button>
     <a href="https://www.facebook.com/sharer/sharer.php?u=<?= $data->external_url ?>" target="_blank" class="btn btn-blue-50 mb-2 mb-md-0 mr-3" data-toggle="tooltip" title="<?= sprintf(l('global.share_via'), 'Facebook') ?>">

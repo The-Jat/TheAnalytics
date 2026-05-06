@@ -109,8 +109,8 @@ class Visitors extends Controller {
         $average_sessions_per_visitor = $total_sessions && count($visitors) ? $total_sessions / count($visitors) : 0;
 
         /* Export handler */
-        process_export_csv($visitors, 'include', ['visitor_id', 'visitor_uuid_binary', 'website_id', 'ip', 'continent_code', 'country_code', 'city_name', 'os_name', 'os_version', 'browser_name', 'browser_version', 'browser_language', 'browser_timezone', 'screen_resolution', 'device_type', 'total_sessions', 'total_goals_conversions', 'date', 'last_date'], sprintf(l('visitors.title')));
-        process_export_json($visitors, 'include', ['visitor_id', 'visitor_uuid_binary', 'website_id', 'ip', 'custom_parameters', 'continent_code', 'country_code', 'city_name', 'os_name', 'os_version', 'browser_name', 'browser_version', 'browser_language', 'browser_timezone', 'screen_resolution', 'device_type', 'total_sessions', 'total_goals_conversions', 'date', 'last_date'], sprintf(l('visitors.title')));
+        process_export_csv($visitors, ['visitor_id', 'visitor_uuid_binary', 'website_id', 'ip', 'continent_code', 'country_code', 'city_name', 'os_name', 'os_version', 'browser_name', 'browser_version', 'browser_language', 'browser_timezone', 'screen_resolution', 'device_type', 'total_sessions', 'total_goals_conversions', 'date', 'last_date'], sprintf(l('visitors.title')));
+        process_export_json($visitors, ['visitor_id', 'visitor_uuid_binary', 'website_id', 'ip', 'custom_parameters', 'continent_code', 'country_code', 'city_name', 'os_name', 'os_version', 'browser_name', 'browser_version', 'browser_language', 'browser_timezone', 'screen_resolution', 'device_type', 'total_sessions', 'total_goals_conversions', 'date', 'last_date'], sprintf(l('visitors.title')));
 
         /* Prepare the pagination view */
         $pagination = (new \Altum\View('partials/pagination', (array) $this))->run(['paginator' => $paginator]);
@@ -166,6 +166,8 @@ class Visitors extends Controller {
 
             set_time_limit(0);
 
+            session_write_close();
+
             switch($_POST['type']) {
                 case 'delete':
 
@@ -176,8 +178,10 @@ class Visitors extends Controller {
                     break;
             }
 
-            /* Clear cache */
-            cache()->deleteItem('website_visitors?website_id=' . $this->website->website_id);
+            /* Clear the cache */
+            cache()->deleteItemsByTag('website_id=' . $this->website->website_id);
+
+            session_start();
 
             /* Set a nice success message */
             Alerts::add_success(l('bulk_delete_modal.success_message'));
@@ -211,13 +215,20 @@ class Visitors extends Controller {
             Alerts::add_error(l('global.error_message.invalid_csrf_token'));
         }
 
+        if(!$visitor = db()->where('visitor_id', $visitor_id)->where('website_id', $this->website->website_id)->getOne('visitors', ['visitor_id', 'visitor_uuid_binary'])) {
+            redirect('visitors');
+        }
+
         if(!Alerts::has_field_errors() && !Alerts::has_errors()) {
 
             /* Database query */
-            db()->where('visitor_id', $visitor_id)->where('website_id', $this->website->website_id)->delete('websites_visitors');
+            db()->where('visitor_id', $visitor_id)->delete('websites_visitors');
 
             /* Set a nice success message */
             Alerts::add_success(l('global.success_message.delete2'));
+
+            /* Clear the cache */
+            cache()->deleteItem('visitor?visitor_uuid=' . md5(bin2hex($visitor->visitor_uuid_binary)));
 
             redirect('visitors');
         }

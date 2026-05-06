@@ -1,6 +1,6 @@
 <?php defined('ALTUMCODE') || die() ?>
 
-<section class="container">
+<div class="container">
     <?php if(settings()->main->breadcrumbs_is_enabled): ?>
         <nav aria-label="breadcrumb">
             <ol class="custom-breadcrumbs small">
@@ -345,7 +345,7 @@
         </div>
     </div>
 
-</section>
+</div>
 
 
 <input type="hidden" name="start_date" value="<?= \Altum\Date::get($data->datetime['start_date'], 1) ?>" />
@@ -364,7 +364,7 @@
 <script>
     'use strict';
 
-    moment.tz.setDefault(<?= json_encode($this->user->timezone) ?>);
+moment.tz.setDefault(<?= json_encode($this->user->timezone) ?>);
 
     /* Daterangepicker */
     $('#daterangepicker').daterangepicker({
@@ -375,10 +375,13 @@
         ranges: {
             <?= json_encode(l('global.date.today')) ?>: [moment(), moment()],
             <?= json_encode(l('global.date.yesterday')) ?>: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            <?= json_encode(l('global.date.last_7_days')) ?>: [moment().subtract(6, 'days'), moment()],
+            <?= json_encode(l('global.date.this_week')) ?>: [moment().startOf('week'), moment().endOf('week')],
+
             <?= json_encode(l('global.date.last_30_days')) ?>: [moment().subtract(29, 'days'), moment()],
-            <?= json_encode(l('global.date.this_month')) ?>: [moment().startOf('month'), moment().endOf('month')],
+                <?= json_encode(l('global.date.this_month')) ?>: [moment().startOf('month'), moment().endOf('month')],
             <?= json_encode(l('global.date.last_month')) ?>: [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                <?= json_encode(l('global.date.this_year')) ?>: [moment().startOf('year'), moment()],
+                <?= json_encode(l('global.date.last_year')) ?>: [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
             <?= json_encode(l('global.date.all_time')) ?>: [moment($('#daterangepicker').data('min-date')), moment()]
         },
         alwaysShowCalendars: true,

@@ -54,8 +54,8 @@ class AdminHeatmaps extends Controller {
         }
 
         /* Export handler */
-        process_export_csv($heatmaps, 'include', ['heatmap_id', 'website_id', 'user_id', 'snapshot_id_desktop', 'desktop_size', 'snapshot_id_tablet', 'tablet_size', 'snapshot_id_mobile', 'mobile_size', 'name', 'path', 'is_enabled', 'last_datetime', 'datetime'], sprintf(l('heatmaps.title')));
-        process_export_json($heatmaps, 'include', ['heatmap_id', 'website_id', 'user_id', 'snapshot_id_desktop', 'desktop_size', 'snapshot_id_tablet', 'tablet_size', 'snapshot_id_mobile', 'mobile_size', 'name', 'path', 'is_enabled', 'last_datetime', 'datetime'], sprintf(l('heatmaps.title')));
+        process_export_csv($heatmaps, ['heatmap_id', 'website_id', 'user_id', 'snapshot_id_desktop', 'desktop_size', 'snapshot_id_tablet', 'tablet_size', 'snapshot_id_mobile', 'mobile_size', 'name', 'path', 'is_enabled', 'last_datetime', 'datetime'], sprintf(l('heatmaps.title')));
+        process_export_json($heatmaps, ['heatmap_id', 'website_id', 'user_id', 'snapshot_id_desktop', 'desktop_size', 'snapshot_id_tablet', 'tablet_size', 'snapshot_id_mobile', 'mobile_size', 'name', 'path', 'is_enabled', 'last_datetime', 'datetime'], sprintf(l('heatmaps.title')));
 
         /* Prepare the pagination view */
         $pagination = (new \Altum\View('partials/admin_pagination', (array) $this))->run(['paginator' => $paginator]);
@@ -98,6 +98,8 @@ class AdminHeatmaps extends Controller {
 
             set_time_limit(0);
 
+            session_write_close();
+
             switch($_POST['type']) {
                 case 'delete':
 
@@ -106,12 +108,14 @@ class AdminHeatmaps extends Controller {
                             /* Database query */
                             db()->where('heatmap_id', $heatmap_id)->delete('websites_heatmaps');
 
-                            /* Clear cache */
+                            /* Clear the cache */
                             cache()->deleteItem('website_heatmaps?website_id=' . $heatmap->website_id);
                         }
                     }
                     break;
             }
+
+            session_start();
 
             /* Set a nice success message */
             Alerts::add_success(l('bulk_delete_modal.success_message'));
@@ -140,7 +144,7 @@ class AdminHeatmaps extends Controller {
             /* Database query */
             db()->where('heatmap_id', $heatmap_id)->delete('websites_heatmaps');
 
-            /* Clear cache */
+            /* Clear the cache */
             cache()->deleteItem('website_heatmaps?website_id=' . $heatmap->website_id);
 
             /* Set a nice success message */

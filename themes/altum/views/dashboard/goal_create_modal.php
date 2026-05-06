@@ -76,8 +76,9 @@
 
 <?php ob_start() ?>
 <script>
-
-    /* Tab switcher */
+    'use strict';
+    
+/* Tab switcher */
     let goal_create_input_type_handler = () => {
         let type = document.querySelector('#goal_create_modal select[name="type"]').value;
 

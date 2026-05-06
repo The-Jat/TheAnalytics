@@ -78,18 +78,35 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
+                        <pre data-shiki="json">
 {
     "data": [
         {
             "id": 1,
-            "scheme": "https://",
-            "host": "example.com",
-            "custom_index_url": "",
-            "is_enabled": true,
-            "last_datetime": null,
-            "datetime": "<?= get_date() ?>"
-        },
+            "visitor_uuid": "4b3a71aeed5a4400913b84f38a11b6bf",
+            "website_id": 1,
+            "goals_conversions_ids": null,
+            "ip": "123.123.123.123",
+            "custom_parameters": {
+                "name": "John",
+                "website": "example.com"
+            },
+            "continent_code": "EU",
+            "country_code": "RO",
+            "city_name": "Bucharest",
+            "os_name": "OS X",
+            "os_version": "10.15.7",
+            "browser_name": "Chrome",
+            "browser_version": "140.0.0.0",
+            "browser_language": "en",
+            "browser_timezone": "UTC",
+            "device_type": "desktop",
+            "theme": "light",
+            "total_sessions": 10,
+            "last_event_id": 1,
+            "last_date": null,
+            "date": "<?= get_date() ?>"
+        }
     ],
     "meta": {
         "page": 1,
@@ -98,18 +115,18 @@
         "total_pages": 1
     },
     "links": {
-        "first": "<?= SITE_URL ?>api/domains?&page=1",
-        "last": "<?= SITE_URL ?>api/domains?&page=1",
+        "first": "<?= SITE_URL ?>api/domains?page=1",
+        "last": "<?= SITE_URL ?>api/domains?page=1",
         "next": null,
         "prev": null,
-        "self": "<?= SITE_URL ?>api/domains?&page=1"
+        "self": "<?= SITE_URL ?>api/domains?page=1"
     }
-}
+}</pre>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
 
         <div class="card">
             <div class="card-header bg-white p-3 position-relative">
@@ -145,23 +162,41 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
-                            {
-                            "data": {
-                            "id": 1,
-                            "scheme": "https://",
-                            "host": "example.com",
-                            "custom_index_url": "",
-                            "is_enabled": true,
-                            "last_datetime": null,
-                            "datetime": "<?= get_date() ?>"
-                            }
-                            }
+                        <pre data-shiki="json">
+{
+    "data": {
+        "id": 1,
+        "visitor_uuid": "4b3a71aeed5a4400913b84f38a11b6bf",
+        "website_id": 1,
+        "goals_conversions_ids": null,
+        "ip": "123.123.123.123",
+        "custom_parameters": {
+            "name": "John",
+            "website": "example.com"
+        },
+        "continent_code": "EU",
+        "country_code": "RO",
+        "city_name": "Bucharest",
+        "os_name": "OS X",
+        "os_version": "10.15.7",
+        "browser_name": "Chrome",
+        "browser_version": "140.0.0.0",
+        "browser_language": "en",
+        "browser_timezone": "UTC",
+        "device_type": "desktop",
+        "theme": "light",
+        "total_sessions": 10,
+        "last_event_id": 1,
+        "last_date": null,
+        "date": "<?= get_date() ?>"
+    }
+}
+</pre>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
 
         <div class="card">
             <div class="card-header bg-white p-3 position-relative">
@@ -239,18 +274,18 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
+                        <pre data-shiki="json">
 {
     "data": {
         "id": 1
     }
-}
+}</pre>
                         </div>
                     </div>
 
                 </div>
             </div>
-        </div>
+
 
         <div class="card">
             <div class="card-header bg-white p-3 position-relative">
@@ -326,18 +361,18 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
+                        <pre data-shiki="json">
 {
     "data": {
         "id": 1
     }
-}
+}</pre>
                         </div>
                     </div>
 
                 </div>
             </div>
-        </div>
+
 
         <div class="card">
             <div class="card-header bg-white p-3 position-relative">
@@ -373,7 +408,7 @@
 
                 </div>
             </div>
-        </div>
+
     </div>
 </div>
 

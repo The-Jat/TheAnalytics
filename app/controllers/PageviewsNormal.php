@@ -98,8 +98,8 @@ class PageviewsNormal extends Controller {
         Title::set(l('pageviews.title'));
 
         /* Export handler */
-        process_export_csv($pageviews, 'include', ['event_id', 'event_uuid', 'session_id', 'visitor_id', 'visitor_uuid_binary', 'website_id', 'ip', 'type', 'path', 'title', 'referrer_host', 'referrer_path', 'utm_source', 'utm_medium', 'utm_campaign', 'viewport_width', 'viewport_height', 'continent_code', 'country_code', 'city_name', 'os_name', 'os_version', 'browser_name', 'browser_version', 'browser_language', 'browser_timezone', 'screen_resolution', 'device_type', 'theme', 'date'], sprintf(l('pageviews.title')));
-        process_export_json($pageviews, 'include', ['event_id', 'event_uuid', 'session_id', 'visitor_id', 'visitor_uuid_binary', 'website_id', 'ip', 'type', 'path', 'title', 'referrer_host', 'referrer_path', 'utm_source', 'utm_medium', 'utm_campaign', 'viewport_width', 'viewport_height', 'custom_parameters', 'continent_code', 'country_code', 'city_name', 'os_name', 'os_version', 'browser_name', 'browser_version', 'browser_language', 'browser_timezone', 'screen_resolution', 'device_type', 'theme', 'date'], sprintf(l('pageviews.title')));
+        process_export_csv($pageviews, ['event_id', 'event_uuid', 'session_id', 'visitor_id', 'visitor_uuid_binary', 'website_id', 'ip', 'type', 'path', 'title', 'referrer_host', 'referrer_path', 'utm_source', 'utm_medium', 'utm_campaign', 'viewport_width', 'viewport_height', 'continent_code', 'country_code', 'city_name', 'os_name', 'os_version', 'browser_name', 'browser_version', 'browser_language', 'browser_timezone', 'screen_resolution', 'device_type', 'theme', 'date'], sprintf(l('pageviews.title')));
+        process_export_json($pageviews, ['event_id', 'event_uuid', 'session_id', 'visitor_id', 'visitor_uuid_binary', 'website_id', 'ip', 'type', 'path', 'title', 'referrer_host', 'referrer_path', 'utm_source', 'utm_medium', 'utm_campaign', 'viewport_width', 'viewport_height', 'custom_parameters', 'continent_code', 'country_code', 'city_name', 'os_name', 'os_version', 'browser_name', 'browser_version', 'browser_language', 'browser_timezone', 'screen_resolution', 'device_type', 'theme', 'date'], sprintf(l('pageviews.title')));
 
         /* Prepare the pagination view */
         $pagination = (new \Altum\View('partials/pagination', (array) $this))->run(['paginator' => $paginator]);
@@ -153,6 +153,8 @@ class PageviewsNormal extends Controller {
 
             set_time_limit(0);
 
+            session_write_close();
+
             switch($_POST['type']) {
                 case 'delete':
 
@@ -162,6 +164,8 @@ class PageviewsNormal extends Controller {
 
                     break;
             }
+
+            session_start();
 
             /* Set a nice success message */
             Alerts::add_success(l('bulk_delete_modal.success_message'));

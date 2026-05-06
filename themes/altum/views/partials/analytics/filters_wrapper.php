@@ -87,6 +87,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     /* Populate with already existing filters */
     let filters_cookie = get_cookie('filters');
     let template = document.querySelector('#template_filter');

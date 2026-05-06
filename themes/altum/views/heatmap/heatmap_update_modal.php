@@ -52,6 +52,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     /* On modal show load new data */
     $('#heatmap_update').on('show.bs.modal', event => {
         let heatmap_id = $(event.relatedTarget).data('heatmap-id');

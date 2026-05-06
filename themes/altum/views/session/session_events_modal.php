@@ -25,6 +25,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     /* On modal show load new data */
     $('#session_events_modal').on('show.bs.modal', event => {
         let session_id = $(event.relatedTarget).data('session-id');

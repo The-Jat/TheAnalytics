@@ -14,6 +14,10 @@ let altumcodestart = () => {
         /* Initiate the Events */
         let altumcodeevents = new AltumCodeEvents();
 
+        if (typeof track_outbound_links === 'function') {
+            track_outbound_links();
+        }
+
     } else {
 
         if(is_dnt) {

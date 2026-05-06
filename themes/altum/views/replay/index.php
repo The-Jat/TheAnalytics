@@ -212,6 +212,8 @@
 <script src="https://cdn.jsdelivr.net/npm/rrweb-player@2.0.0-alpha.14/dist/index.js"></script>
 
 <script>
+    'use strict';
+    
     /* Default loading state */
     let loading_html = document.querySelector('#loading').innerHTML;
     let notification_container = document.querySelector('.notification-container');
@@ -241,7 +243,7 @@
             $('#replay_events_result').html(result.replay_events_html);
 
         },
-        error: (event) => {
+        error: event => {
             document.querySelector('#replay').innerHTML = '';
             display_notifications(<?= json_encode(l('replay.error_message')) ?>, 'error',  notification_container);
         },

@@ -112,9 +112,9 @@
     <?php if(!count($data->replays)): ?>
 
         <?= include_view(THEME_PATH . 'views/partials/no_data.php', [
-            'filters_get' => $data->filters->get ?? [],
-            'name' => 'global',
-            'has_secondary_text' => false,
+                'filters_get' => $data->filters->get ?? [],
+                'name' => 'global',
+                'has_secondary_text' => false,
         ]); ?>
 
     <?php else: ?>
@@ -141,6 +141,7 @@
                         <th><?= l('replays.replay.visitor') ?></th>
                         <th></th>
                         <th></th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -148,8 +149,8 @@
                         <?php
                         /* Visitor */
                         $icon = new \Jdenticon\Identicon([
-                            'value' => $row->visitor_uuid_binary,
-                            'size' => 80
+                                'value' => $row->visitor_uuid_binary,
+                                'size' => 80
                         ]);
                         $row->icon = $icon->getImageDataUri();
                         ?>
@@ -222,13 +223,43 @@
                             </td>
 
                             <td class="text-nowrap">
-                                <span class="mr-2" data-toggle="tooltip" data-html="true" title="<?= l('replay.size') . '<br />' . get_formatted_bytes($row->size) ?>">
-                                    <i class="fas fa-fw fa-hdd text-muted"></i>
-                                </span>
+                                <div class="d-flex align-items-center">
+                                    <?php if($row->country_code): ?>
+                                        <img src="<?= ASSETS_FULL_URL . 'images/countries/' . mb_strtolower($row->country_code) . '.svg' ?>" class="icon-favicon mr-2" data-toggle="tooltip" title="<?= get_country_from_country_code($row->country_code) ?>" />
+                                    <?php else: ?>
+                                        <span class="mr-2" data-toggle="tooltip" title="<?= l('global.unknown') ?>">
+                                            <i class="fas fa-fw fa-flag text-muted"></i>
+                                        </span>
+                                    <?php endif ?>
 
-                                <span class="mr-2" data-toggle="tooltip" data-html="true" title="<?= l('replay.expiration_date') . '<br />' . \Altum\Date::get($row->expiration_date, 2) . '<br /><small>' . \Altum\Date::get($row->expiration_date, 3) . '</small>' . '<br /><small>(' . \Altum\Date::get_time_until($row->expiration_date) . ')</small>' ?>">
-                                    <i class="fas fa-fw fa-hourglass-half text-muted"></i>
-                                </span>
+                                    <span class="mr-2" data-toggle="tooltip" title="<?= $row->city_name ?? l('global.unknown') ?>">
+                                        <i class="fas fa-fw fa-city text-muted"></i>
+                                    </span>
+
+                                    <span class="mr-2" data-toggle="tooltip" title="<?= l('global.device.' . $row->device_type) ?>">
+                                        <i class="fas fa-fw fa-sm fa-<?= $row->device_type ?> text-muted"></i>
+                                    </span>
+
+                                    <img src="<?= ASSETS_FULL_URL . 'images/os/' . os_name_to_os_key($row->os_name) . '.svg' ?>" class="img-fluid icon-favicon mr-2" data-toggle="tooltip" title="<?= $row->os_name ?: l('global.unknown') ?>" />
+
+                                    <img src="<?= ASSETS_FULL_URL . 'images/browsers/' . browser_name_to_browser_key($row->browser_name) . '.svg' ?>" class="img-fluid icon-favicon mr-2" data-toggle="tooltip" title="<?= $row->browser_name ?: l('global.unknown') ?>" />
+                                </div>
+                            </td>
+
+                            <td class="text-nowrap">
+                                <div class="d-flex align-items-center">
+                                    <span class="mr-2" data-toggle="tooltip" data-html="true" title="<?= sprintf(l('global.datetime_tooltip'), '<br />' . \Altum\Date::get($row->date, 2) . '<br /><small>' . \Altum\Date::get($row->date, 3) . '</small>' . '<br /><small>(' . \Altum\Date::get_timeago($row->date) . ')</small>') ?>">
+                                        <i class="fas fa-fw fa-calendar text-muted"></i>
+                                    </span>
+
+                                    <span class="mr-2" data-toggle="tooltip" data-html="true" title="<?= l('replay.size') . '<br />' . get_formatted_bytes($row->size) ?>">
+                                        <i class="fas fa-fw fa-hdd text-muted"></i>
+                                    </span>
+
+                                    <span class="mr-2" data-toggle="tooltip" data-html="true" title="<?= l('replay.expiration_date') . '<br />' . \Altum\Date::get($row->expiration_date, 2) . '<br /><small>' . \Altum\Date::get($row->expiration_date, 3) . '</small>' . '<br /><small>(' . \Altum\Date::get_time_until($row->expiration_date) . ')</small>' ?>">
+                                        <i class="fas fa-fw fa-hourglass-half text-muted"></i>
+                                    </span>
+                                </div>
                             </td>
 
                             <td>
@@ -270,10 +301,13 @@
         ranges: {
             <?= json_encode(l('global.date.today')) ?>: [moment(), moment()],
             <?= json_encode(l('global.date.yesterday')) ?>: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            <?= json_encode(l('global.date.last_7_days')) ?>: [moment().subtract(6, 'days'), moment()],
+            <?= json_encode(l('global.date.this_week')) ?>: [moment().startOf('week'), moment().endOf('week')],
+
             <?= json_encode(l('global.date.last_30_days')) ?>: [moment().subtract(29, 'days'), moment()],
             <?= json_encode(l('global.date.this_month')) ?>: [moment().startOf('month'), moment().endOf('month')],
             <?= json_encode(l('global.date.last_month')) ?>: [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            <?= json_encode(l('global.date.this_year')) ?>: [moment().startOf('year'), moment()],
+            <?= json_encode(l('global.date.last_year')) ?>: [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
             <?= json_encode(l('global.date.all_time')) ?>: [moment($('#daterangepicker').data('min-date')), moment()]
         },
         alwaysShowCalendars: true,

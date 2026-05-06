@@ -103,21 +103,64 @@ class Replay extends Controller {
                 dil($exception->getMessage());
                 die();
             }
+
+			$rows = [];
+
+			foreach($file_data as $row) {
+				$row = [
+					'type' => (int) $row->type,
+					'data' => json_decode(gzdecode($row->data)),
+					'timestamp' => (int) $row->timestamp,
+				];
+
+				$rows[] = $row;
+			}
+
         } else {
-            /* Get from file store */
-            $file_data = cache('store_adapter')->getItem('session_replay_' . $session_id)->get();
-        }
 
-        $rows = [];
+			/* Get replay keys */
+			$index_item = cache('store_adapter')->getItem('session_replay_keys_' . $session_id);
+			$session_replay_keys = $index_item->get() ?: [];
 
-        foreach($file_data as $row) {
-            $row = [
-                'type' => (int) $row->type,
-                'data' => json_decode(gzdecode($row->data)),
-                'timestamp' => (int) $row->timestamp,
-            ];
+			if(empty($session_replay_keys)) {
+				Response::simple_json([
+					'rows' => [],
+					'replay_events_html' => ''
+				]);
+				return;
+			}
 
-            $rows[] = $row;
+			/* Retrieve and decode all session replay chunks */
+			$rows = [];
+
+			foreach($session_replay_keys as $chunk_key) {
+
+				/* Try to get each chunk */
+				$chunk_item = cache('store_adapter')->getItem($chunk_key);
+				$chunk_gzip = $chunk_item->get();
+
+				if(!$chunk_gzip) {
+					continue;
+				}
+
+				/* Decode chunk */
+				$chunk_json = gzdecode($chunk_gzip);
+				$batch_events = json_decode($chunk_json);
+
+				if(!is_array($batch_events)) {
+					continue;
+				}
+
+				/* Normalize rrweb event structure */
+				foreach($batch_events as $event) {
+					$rows[] = [
+						'type' => (int) $event->type,
+						'data' => json_decode(json_encode($event->data)),
+						'timestamp' => (int) ($event->timestamp ?? 0),
+					];
+				}
+			}
+
         }
 
         /* Prepare the events modal html */

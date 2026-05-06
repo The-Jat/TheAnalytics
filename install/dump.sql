@@ -1,103 +1,113 @@
 CREATE TABLE `users` (
-`user_id` int NOT NULL AUTO_INCREMENT,
-`email` varchar(320) NOT NULL,
-`password` varchar(128) DEFAULT NULL,
-`name` varchar(64) NOT NULL,
-`avatar` varchar(40) DEFAULT NULL,
-`billing` text,
-`api_key` varchar(32) DEFAULT NULL,
-`token_code` varchar(32) DEFAULT NULL,
-`twofa_secret` varchar(16) DEFAULT NULL,
-`anti_phishing_code` varchar(8) DEFAULT NULL,
-`one_time_login_code` varchar(32) DEFAULT NULL,
-`pending_email` varchar(128) DEFAULT NULL,
-`email_activation_code` varchar(32) DEFAULT NULL,
-`lost_password_code` varchar(32) DEFAULT NULL,
-`type` tinyint NOT NULL DEFAULT '0',
-`status` tinyint NOT NULL DEFAULT '0',
-`is_newsletter_subscribed` tinyint NOT NULL DEFAULT '0',
-`has_pending_internal_notifications` tinyint NOT NULL DEFAULT '0',
-`plan_id` varchar(16) NOT NULL DEFAULT '',
-`plan_expiration_date` datetime DEFAULT NULL,
-`plan_settings` text,
-`plan_trial_done` tinyint DEFAULT '0',
-`plan_expiry_reminder` tinyint DEFAULT '0',
-`payment_subscription_id` varchar(64) DEFAULT NULL,
-`payment_processor` varchar(16) DEFAULT NULL,
-`payment_total_amount` float DEFAULT NULL,
-`payment_currency` varchar(4) DEFAULT NULL,
-`referral_key` varchar(32) DEFAULT NULL,
-`referred_by` varchar(32) DEFAULT NULL,
-`referred_by_has_converted` tinyint DEFAULT '0',
-`language` varchar(32) DEFAULT 'english',
-`currency` varchar(4) DEFAULT NULL,
-`timezone` varchar(32) DEFAULT 'UTC',
-`preferences` text,
-`extra` text,
-`datetime` datetime DEFAULT NULL,
-`next_cleanup_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
-`ip` varchar(64) DEFAULT NULL,
-`continent_code` varchar(8) DEFAULT NULL,
-`country` varchar(8) DEFAULT NULL,
-`city_name` varchar(32) DEFAULT NULL,
-`device_type` varchar(16) DEFAULT NULL,
-`browser_language` varchar(32) DEFAULT NULL,
-`browser_name` varchar(32) DEFAULT NULL,
-`os_name` varchar(16) DEFAULT NULL,
-`last_activity` datetime DEFAULT NULL,
-`total_logins` int DEFAULT '0',
-`user_deletion_reminder` tinyint(4) DEFAULT '0',
-`source` varchar(32) DEFAULT 'direct',
-PRIMARY KEY (`user_id`),
-KEY `plan_id` (`plan_id`),
-KEY `api_key` (`api_key`)
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(320) NOT NULL,
+  `password` varchar(128) DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  `avatar` varchar(40) DEFAULT NULL,
+  `billing` text,
+  `api_key` varchar(32) DEFAULT NULL,
+  `token_code` varchar(32) DEFAULT NULL,
+  `twofa_secret` varchar(32) DEFAULT NULL,
+  `anti_phishing_code` varchar(8) DEFAULT NULL,
+  `one_time_login_code` varchar(32) DEFAULT NULL,
+  `pending_email` varchar(128) DEFAULT NULL,
+  `email_activation_code` varchar(32) DEFAULT NULL,
+  `lost_password_code` varchar(32) DEFAULT NULL,
+  `type` tinyint NOT NULL DEFAULT '0',
+  `status` tinyint NOT NULL DEFAULT '0',
+  `is_newsletter_subscribed` tinyint NOT NULL DEFAULT '0',
+  `has_pending_internal_notifications` tinyint NOT NULL DEFAULT '0',
+  `plan_id` varchar(16) NOT NULL DEFAULT '',
+  `plan_expiration_date` datetime DEFAULT NULL,
+  `plan_settings` text,
+  `plan_trial_done` tinyint DEFAULT '0',
+  `plan_expiry_reminder` tinyint DEFAULT '0',
+  `payment_subscription_id` varchar(64) DEFAULT NULL,
+  `payment_processor` varchar(16) DEFAULT NULL,
+  `payment_total_amount` float DEFAULT NULL,
+  `payment_currency` varchar(4) DEFAULT NULL,
+  `referral_key` varchar(32) DEFAULT NULL,
+  `referred_by` varchar(32) DEFAULT NULL,
+  `referred_by_has_converted` tinyint DEFAULT '0',
+  `language` varchar(32) DEFAULT 'english',
+  `currency` varchar(4) DEFAULT NULL,
+  `timezone` varchar(32) DEFAULT 'UTC',
+  `preferences` text,
+  `extra` text,
+  `datetime` datetime DEFAULT NULL,
+  `next_cleanup_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
+  `ip` varchar(64) DEFAULT NULL,
+  `continent_code` ENUM('AF', 'AN', 'AS', 'EU', 'NA', 'OC', 'SA') DEFAULT NULL,
+  `country` varchar(8) DEFAULT NULL,
+  `city_name` varchar(32) DEFAULT NULL,
+  `device_type` enum('mobile', 'tablet', 'desktop') DEFAULT NULL,
+  `browser_language` varchar(32) DEFAULT NULL,
+  `browser_name` varchar(32) DEFAULT NULL,
+  `os_name` varchar(16) DEFAULT NULL,
+  `last_activity` datetime DEFAULT NULL,
+  `total_logins` int DEFAULT '0',
+  `user_deletion_reminder` tinyint(4) DEFAULT '0',
+  `source` varchar(32) DEFAULT 'direct',
+  PRIMARY KEY (`user_id`),
+  KEY `plan_id` (`plan_id`),
+  KEY `api_key` (`api_key`),
+  KEY `idx_users_next_cleanup_datetime` (`next_cleanup_datetime`),
+  KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 INSERT INTO `users` (`user_id`, `email`, `password`, `api_key`, `referral_key`, `name`, `type`, `status`, `plan_id`, `plan_expiration_date`, `plan_settings`, `datetime`, `ip`, `last_activity`)
 VALUES (1,'admin','$2y$10$uFNO0pQKEHSFcus1zSFlveiPCB3EvG9ZlES7XKgJFTAl5JbRGFCWy', md5(rand()), md5(rand()), 'AltumCode',1,1,'custom','2030-01-01 12:00:00', '{"no_ads":true,"email_reports_is_enabled":true,"teams_is_enabled":true,"websites_limit":-1,"sessions_events_limit":-1,"events_children_limit":-1,"events_children_retention":365,"sessions_replays_limit":-1,"sessions_replays_retention":30,"sessions_replays_time_limit":60,"websites_heatmaps_limit":-1,"websites_goals_limit":-1,"api_is_enabled":true,"affiliate_is_enabled":true}', NOW(),'',NOW());
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `users_logs` (
-`id` bigint unsigned NOT NULL AUTO_INCREMENT,
-`user_id` int DEFAULT NULL,
-`type` varchar(64) DEFAULT NULL,
-`ip` varchar(64) DEFAULT NULL,
-`device_type` varchar(16) DEFAULT NULL,
-`os_name` varchar(16) DEFAULT NULL,
-`continent_code` varchar(8) DEFAULT NULL,
-`country_code` varchar(8) DEFAULT NULL,
-`city_name` varchar(32) DEFAULT NULL,
-`browser_language` varchar(32) DEFAULT NULL,
-`browser_name` varchar(32) DEFAULT NULL,
-`datetime` datetime DEFAULT NULL,
-PRIMARY KEY (`id`),
-KEY `users_logs_user_id` (`user_id`),
-KEY `users_logs_ip_type_datetime_index` (`ip`,`type`,`datetime`),
-CONSTRAINT `users_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `type` varchar(64) DEFAULT NULL,
+  `ip` varchar(64) DEFAULT NULL,
+  `device_type` enum('mobile', 'tablet', 'desktop') DEFAULT NULL,
+  `os_name` varchar(16) DEFAULT NULL,
+  `continent_code` ENUM('AF', 'AN', 'AS', 'EU', 'NA', 'OC', 'SA') DEFAULT NULL,
+  `country_code` varchar(8) DEFAULT NULL,
+  `city_name` varchar(32) DEFAULT NULL,
+  `browser_language` varchar(32) DEFAULT NULL,
+  `browser_name` varchar(32) DEFAULT NULL,
+  `datetime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `users_logs_user_id` (`user_id`),
+  KEY `users_logs_ip_type_datetime_index` (`ip`,`type`,`datetime`),
+  KEY `users_logs_datetime_index` (`datetime`),
+  CONSTRAINT `users_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
+
 
 CREATE TABLE `plans` (
-`plan_id` int NOT NULL AUTO_INCREMENT,
-`name` varchar(64) NOT NULL DEFAULT '',
-`description` varchar(256) NOT NULL DEFAULT '',
-`translations` text NOT NULL,
-`prices` text NOT NULL,
-`trial_days` int unsigned NOT NULL DEFAULT '0',
-`settings` longtext NOT NULL,
-`taxes_ids` text,
-`color` varchar(16) DEFAULT NULL,
-`status` tinyint(4) NOT NULL,
-`order` int(10) unsigned DEFAULT '0',
-`datetime` datetime NOT NULL,
-PRIMARY KEY (`plan_id`)
+  `plan_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL DEFAULT '',
+  `description` varchar(256) NOT NULL DEFAULT '',
+  `translations` text NOT NULL,
+  `prices` text NOT NULL,
+  `trial_days` int unsigned NOT NULL DEFAULT '0',
+  `settings` longtext NOT NULL,
+  `additional_settings` text,
+  `taxes_ids` text,
+  `color` varchar(16) DEFAULT NULL,
+  `status` tinyint(4) NOT NULL,
+  `order` int(10) unsigned DEFAULT '0',
+  `datetime` datetime NOT NULL,
+  PRIMARY KEY (`plan_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- SEPARATOR --
+
+
+
 
 CREATE TABLE `pages_categories` (
 `pages_category_id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -114,42 +124,46 @@ KEY `url` (`url`),
 KEY `pages_categories_url_language_index` (`url`,`language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `pages` (
-`page_id` bigint unsigned NOT NULL AUTO_INCREMENT,
-`pages_category_id` bigint unsigned DEFAULT NULL,
-`url` varchar(256) NOT NULL,
-`title` varchar(256) NOT NULL DEFAULT '',
-`description` varchar(256) DEFAULT NULL,
-`icon` varchar(32) DEFAULT NULL,
-`keywords` varchar(256) CHARACTER SET utf8mb4 DEFAULT NULL,
-`editor` varchar(16) DEFAULT NULL,
-`content` longtext,
-`type` varchar(16) DEFAULT '',
-`position` varchar(16) NOT NULL DEFAULT '',
-`language` varchar(32) DEFAULT NULL,
-`open_in_new_tab` tinyint DEFAULT '1',
-`order` int DEFAULT '0',
-`total_views` bigint unsigned DEFAULT '0',
-`is_published` tinyint DEFAULT '1',
-`datetime` datetime DEFAULT NULL,
-`last_datetime` datetime DEFAULT NULL,
-PRIMARY KEY (`page_id`),
-KEY `pages_pages_category_id_index` (`pages_category_id`),
-KEY `pages_url_index` (`url`),
-KEY `pages_is_published_index` (`is_published`),
-KEY `pages_language_index` (`language`),
-CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`pages_category_id`) REFERENCES `pages_categories` (`pages_category_id`) ON DELETE SET NULL ON UPDATE CASCADE
+  `page_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `pages_category_id` bigint unsigned DEFAULT NULL,
+  `plans_ids` text DEFAULT NULL,
+  `url` varchar(256) NOT NULL,
+  `title` varchar(256) NOT NULL DEFAULT '',
+  `description` varchar(256) DEFAULT NULL,
+  `icon` varchar(32) DEFAULT NULL,
+  `keywords` varchar(256) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `editor` varchar(16) DEFAULT NULL,
+  `content` longtext,
+  `type` enum('internal', 'external') DEFAULT 'internal',
+  `position` varchar(16) NOT NULL DEFAULT '',
+  `language` varchar(32) DEFAULT NULL,
+  `open_in_new_tab` tinyint DEFAULT '1',
+  `order` int DEFAULT '0',
+  `total_views` bigint unsigned DEFAULT '0',
+  `is_published` tinyint DEFAULT '1',
+  `datetime` datetime DEFAULT NULL,
+  `last_datetime` datetime DEFAULT NULL,
+  PRIMARY KEY (`page_id`),
+  KEY `pages_pages_category_id_index` (`pages_category_id`),
+  KEY `pages_url_index` (`url`),
+  KEY `pages_is_published_index` (`is_published`),
+  KEY `pages_language_index` (`language`),
+  CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`pages_category_id`) REFERENCES `pages_categories` (`pages_category_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 INSERT INTO `pages` (`pages_category_id`, `url`, `title`, `description`, `content`, `type`, `position`, `order`, `total_views`, `datetime`, `last_datetime`) VALUES
 (NULL, 'https://altumcode.com/', 'Software by AltumCode', '', '', 'external', 'bottom', 1, 0, NOW(), NOW()),
 (NULL, 'https://altumco.de/66analytics', 'Built with 66Analytics', '', '', 'external', 'bottom', 0, 0, NOW(), NOW());
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `blog_posts_categories` (
 `blog_posts_category_id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -165,7 +179,8 @@ KEY `url` (`url`),
 KEY `blog_posts_categories_url_language_index` (`url`,`language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `blog_posts` (
 `blog_post_id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -194,7 +209,8 @@ KEY `blog_posts_language_index` (`language`),
 CONSTRAINT `blog_posts_ibfk_1` FOREIGN KEY (`blog_posts_category_id`) REFERENCES `blog_posts_categories` (`blog_posts_category_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `blog_posts_ratings` (
 `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -210,98 +226,108 @@ CONSTRAINT `blog_posts_ratings_ibfk_1` FOREIGN KEY (`blog_post_id`) REFERENCES `
 CONSTRAINT `blog_posts_ratings_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `websites` (
-`website_id` int NOT NULL AUTO_INCREMENT,
-`pixel_key` varchar(16) NOT NULL DEFAULT '',
-`user_id` int NOT NULL,
-`domain_id` int DEFAULT NULL,
-`name` varchar(256) NOT NULL DEFAULT '',
-`scheme` varchar(8) NOT NULL DEFAULT '',
-`host` varchar(128) NOT NULL DEFAULT '',
-`path` varchar(256) DEFAULT NULL,
-`tracking_type` varchar(16) DEFAULT 'normal',
-`ip_storage_is_enabled` tinyint unsigned NOT NULL DEFAULT '0',
-`excluded_ips` text,
-`query_parameters_tracking_is_enabled` tinyint DEFAULT '0',
-`bot_exclusion_is_enabled` tinyint DEFAULT '1',
-`current_month_sessions_events` bigint unsigned NOT NULL DEFAULT '0',
-`current_month_events_children` bigint unsigned NOT NULL DEFAULT '0',
-`current_month_sessions_replays` bigint unsigned NOT NULL DEFAULT '0',
-`plan_sessions_events_limit_notice` tinyint DEFAULT '0',
-`plan_events_children_limit_notice` tinyint DEFAULT '0',
-`plan_sessions_replays_limit_notice` tinyint DEFAULT '0',
-`events_children_is_enabled` tinyint(4) NOT NULL DEFAULT '1',
-`sessions_replays_is_enabled` tinyint(4) NOT NULL DEFAULT '0',
-`email_reports_is_enabled` tinyint(4) NOT NULL DEFAULT '0',
-`email_reports_last_date` datetime DEFAULT NULL,
-`public_statistics_is_enabled` tinyint(4) NOT NULL DEFAULT '0',
-`public_statistics_password` varchar(128) DEFAULT NULL,
-`is_enabled` tinyint(4) NOT NULL DEFAULT '0',
-`datetime` datetime NOT NULL,
-`last_datetime` datetime DEFAULT NULL,
-PRIMARY KEY (`website_id`),
-KEY `user_id` (`user_id`),
-KEY `pixel` (`pixel_key`),
-KEY `host` (`host`),
-CONSTRAINT `websites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `website_id` int NOT NULL AUTO_INCREMENT,
+  `pixel_key` varchar(16) NOT NULL DEFAULT '',
+  `user_id` int NOT NULL,
+  `domain_id` int DEFAULT NULL,
+  `name` varchar(256) NOT NULL DEFAULT '',
+  `scheme` varchar(8) NOT NULL DEFAULT '',
+  `host` varchar(128) NOT NULL DEFAULT '',
+  `path` varchar(256) DEFAULT NULL,
+  `tracking_type` enum('normal', 'lightweight') DEFAULT 'normal',
+  `ip_storage_is_enabled` tinyint unsigned NOT NULL DEFAULT '0',
+  `excluded_ips` text,
+  `query_parameters_tracking_is_enabled` tinyint DEFAULT '0',
+  `bot_exclusion_is_enabled` tinyint DEFAULT '1',
+  `current_month_sessions_events` bigint unsigned NOT NULL DEFAULT '0',
+  `current_month_events_children` bigint unsigned NOT NULL DEFAULT '0',
+  `current_month_sessions_replays` bigint unsigned NOT NULL DEFAULT '0',
+  `plan_sessions_events_limit_notice` tinyint DEFAULT '0',
+  `plan_events_children_limit_notice` tinyint DEFAULT '0',
+  `plan_sessions_replays_limit_notice` tinyint DEFAULT '0',
+  `events_children_is_enabled` tinyint(4) NOT NULL DEFAULT '1',
+  `outbound_clicks_is_enabled` tinyint(4) DEFAULT '0',
+  `sessions_replays_is_enabled` tinyint(4) NOT NULL DEFAULT '0',
+  `sessions_replays_hide_text_selector` varchar(1024) DEFAULT NULL,
+  `email_reports_is_enabled` tinyint(4) NOT NULL DEFAULT '0',
+  `email_reports_last_date` datetime DEFAULT NULL,
+  `public_statistics_is_enabled` tinyint(4) NOT NULL DEFAULT '0',
+  `public_statistics_password` varchar(128) DEFAULT NULL,
+  `is_enabled` tinyint(4) NOT NULL DEFAULT '0',
+  `datetime` datetime NOT NULL,
+  `last_datetime` datetime DEFAULT NULL,
+  PRIMARY KEY (`website_id`),
+  KEY `user_id` (`user_id`),
+  KEY `pixel` (`pixel_key`),
+  KEY `host` (`host`),
+  CONSTRAINT `websites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ROW_FORMAT=DYNAMIC ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
+
 
 CREATE TABLE `domains` (
-`domain_id` int NOT NULL AUTO_INCREMENT,
-`user_id` int DEFAULT NULL,
-`scheme` varchar(8) NOT NULL DEFAULT '',
-`host` varchar(128) NOT NULL DEFAULT '',
-`custom_index_url` varchar(256) DEFAULT NULL,
-`custom_not_found_url` varchar(256) DEFAULT NULL,
-`is_enabled` tinyint(4) DEFAULT '0',
-`datetime` datetime DEFAULT NULL,
-`last_datetime` datetime DEFAULT NULL,
-PRIMARY KEY (`domain_id`),
-KEY `user_id` (`user_id`),
-KEY `host` (`host`),
-CONSTRAINT `domains_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `domain_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `scheme` varchar(8) NOT NULL DEFAULT '',
+  `host` varchar(128) NOT NULL DEFAULT '',
+  `custom_index_url` varchar(256) DEFAULT NULL,
+  `custom_not_found_url` varchar(256) DEFAULT NULL,
+  `type` tinyint DEFAULT '0',
+  `is_enabled` tinyint(4) DEFAULT '0',
+  `datetime` datetime DEFAULT NULL,
+  `last_datetime` datetime DEFAULT NULL,
+  PRIMARY KEY (`domain_id`),
+  KEY `user_id` (`user_id`),
+  KEY `host` (`host`),
+  CONSTRAINT `domains_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ROW_FORMAT=DYNAMIC ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- SEPARATOR --
+
+
 
 alter table websites add constraint websites_domains_domain_id_fk foreign key (domain_id) references domains (domain_id) on update cascade on delete set null;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `lightweight_events` (
-`event_id` int NOT NULL AUTO_INCREMENT,
-`website_id` int NOT NULL,
-`type` varchar(16) DEFAULT NULL,
-`path` varchar(1024) DEFAULT NULL,
-`referrer_host` varchar(256) DEFAULT NULL,
-`referrer_path` varchar(1024) DEFAULT NULL,
-`utm_source` varchar(128) DEFAULT NULL,
-`utm_medium` varchar(128) DEFAULT NULL,
-`utm_campaign` varchar(128) DEFAULT NULL,
-`continent_code` varchar(8) DEFAULT NULL,
-`country_code` varchar(8) DEFAULT NULL,
-`city_name` varchar(128) DEFAULT NULL,
-`os_name` varchar(32) DEFAULT NULL,
-`browser_name` varchar(32) DEFAULT NULL,
-`browser_language` varchar(16) DEFAULT NULL,
-`browser_timezone` varchar(32) DEFAULT NULL,
-`screen_resolution` varchar(16) DEFAULT NULL,
-`device_type` varchar(16) DEFAULT NULL,
-`theme` varchar(8) DEFAULT NULL,
-`date` datetime DEFAULT NULL,
-`expiration_date` date DEFAULT NULL,
-PRIMARY KEY (`event_id`),
-KEY `website_id` (`website_id`),
-KEY `date` (`date`) USING BTREE,
-KEY `expiration_date` (`expiration_date`),
-CONSTRAINT `lightweight_events_ibfk_1` FOREIGN KEY (`website_id`) REFERENCES `websites` (`website_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `event_id` int NOT NULL AUTO_INCREMENT,
+  `website_id` int NOT NULL,
+  `type` enum('landing_page', 'pageview') DEFAULT 'pageview',
+  `path` varchar(1024) DEFAULT NULL,
+  `referrer_host` varchar(256) DEFAULT NULL,
+  `referrer_path` varchar(1024) DEFAULT NULL,
+  `utm_source` varchar(128) DEFAULT NULL,
+  `utm_medium` varchar(128) DEFAULT NULL,
+  `utm_campaign` varchar(128) DEFAULT NULL,
+  `continent_code` ENUM('AF', 'AN', 'AS', 'EU', 'NA', 'OC', 'SA') DEFAULT NULL,
+  `country_code` varchar(8) DEFAULT NULL,
+  `city_name` varchar(128) DEFAULT NULL,
+  `os_name` varchar(32) DEFAULT NULL,
+  `browser_name` varchar(32) DEFAULT NULL,
+  `browser_language` varchar(16) DEFAULT NULL,
+  `browser_timezone` varchar(32) DEFAULT NULL,
+  `screen_resolution` varchar(16) DEFAULT NULL,
+  `device_type` enum('mobile', 'tablet', 'desktop') DEFAULT NULL,
+  `theme` enum('light', 'dark') DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  `expiration_date` date DEFAULT NULL,
+  PRIMARY KEY (`event_id`),
+  KEY `website_id` (`website_id`),
+  KEY `date` (`date`) USING BTREE,
+  KEY `expiration_date` (`expiration_date`),
+  KEY `idx_website_date_type` (`website_id`,`date`,`type`),
+  CONSTRAINT `lightweight_events_ibfk_1` FOREIGN KEY (`website_id`) REFERENCES `websites` (`website_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `teams` (
 `team_id` int NOT NULL AUTO_INCREMENT,
@@ -315,7 +341,8 @@ KEY `user_id` (`user_id`),
 CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `teams_associations` (
 `team_association_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -332,7 +359,8 @@ CONSTRAINT `teams_associations_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams
 CONSTRAINT `teams_associations_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `websites_visitors` (
 `visitor_id` int NOT NULL AUTO_INCREMENT,
@@ -341,7 +369,7 @@ CREATE TABLE `websites_visitors` (
 `goals_conversions_ids` text DEFAULT NULL,
 `ip` varchar(64) DEFAULT NULL,
 `custom_parameters` text,
-`continent_code` varchar(8) DEFAULT NULL,
+`continent_code` ENUM('AF', 'AN', 'AS', 'EU', 'NA', 'OC', 'SA') DEFAULT NULL,
 `country_code` varchar(8) DEFAULT NULL,
 `city_name` varchar(128) DEFAULT NULL,
 `os_name` varchar(32) DEFAULT NULL,
@@ -351,8 +379,8 @@ CREATE TABLE `websites_visitors` (
 `browser_language` varchar(16) DEFAULT NULL,
 `browser_timezone` varchar(32) DEFAULT NULL,
 `screen_resolution` varchar(16) DEFAULT NULL,
-`device_type` varchar(16) DEFAULT NULL,
-`theme`varchar(8) DEFAULT NULL,
+`device_type` enum('mobile', 'tablet', 'desktop') DEFAULT NULL,
+`theme` enum('light', 'dark') DEFAULT NULL,
 `total_sessions` int DEFAULT '0',
 `last_event_id` int DEFAULT NULL,
 `date` datetime NOT NULL,
@@ -363,7 +391,8 @@ KEY `website_id` (`website_id`),
 CONSTRAINT `websites_visitors_ibfk_1` FOREIGN KEY (`website_id`) REFERENCES `websites` (`website_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ROW_FORMAT=DYNAMIC ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `visitors_sessions` (
 `session_id` int NOT NULL AUTO_INCREMENT,
@@ -382,7 +411,8 @@ CONSTRAINT `visitors_sessions_ibfk_1` FOREIGN KEY (`visitor_id`) REFERENCES `web
 CONSTRAINT `visitors_sessions_ibfk_2` FOREIGN KEY (`website_id`) REFERENCES `websites` (`website_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ROW_FORMAT=DYNAMIC ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `sessions_events` (
 `event_id` int NOT NULL AUTO_INCREMENT,
@@ -390,7 +420,7 @@ CREATE TABLE `sessions_events` (
 `session_id` int NOT NULL,
 `visitor_id` int NOT NULL,
 `website_id` int NOT NULL,
-`type` varchar(16) NOT NULL DEFAULT '',
+`type` enum('landing_page', 'pageview') NOT NULL DEFAULT 'pageview',
 `path` varchar(1024) NOT NULL DEFAULT '',
 `title` varchar(512) DEFAULT NULL,
 `referrer_host` varchar(256) DEFAULT NULL,
@@ -415,7 +445,8 @@ CONSTRAINT `sessions_events_ibfk_2` FOREIGN KEY (`visitor_id`) REFERENCES `websi
 CONSTRAINT `sessions_events_ibfk_3` FOREIGN KEY (`session_id`) REFERENCES `visitors_sessions` (`session_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `events_children` (
 `id` int NOT NULL AUTO_INCREMENT,
@@ -424,7 +455,7 @@ CREATE TABLE `events_children` (
 `visitor_id` int NOT NULL,
 `snapshot_id` int DEFAULT NULL,
 `website_id` int NOT NULL,
-`type` varchar(16) NOT NULL DEFAULT '',
+`type` enum('click', 'scroll', 'form', 'resize') NOT NULL DEFAULT 'click',
 `data` longtext,
 `count` int DEFAULT '1',
 `date` datetime NOT NULL,
@@ -441,7 +472,8 @@ CONSTRAINT `events_children_ibfk_2` FOREIGN KEY (`website_id`) REFERENCES `websi
 CONSTRAINT `events_children_ibfk_3` FOREIGN KEY (`session_id`) REFERENCES `visitors_sessions` (`session_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `sessions_replays` (
 `replay_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -452,6 +484,7 @@ CREATE TABLE `sessions_replays` (
 `events` int DEFAULT NULL,
 `size` bigint unsigned NOT NULL DEFAULT '0',
 `is_offloaded` tinyint DEFAULT '0',
+`is_too_short` tinyint DEFAULT 1,
 `datetime` datetime NOT NULL,
 `last_datetime` datetime DEFAULT NULL,
 `expiration_date` date DEFAULT NULL,
@@ -468,7 +501,8 @@ CONSTRAINT `sessions_replays_ibfk_3` FOREIGN KEY (`website_id`) REFERENCES `webs
 CONSTRAINT `sessions_replays_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `websites_heatmaps` (
 `heatmap_id` int NOT NULL AUTO_INCREMENT,
@@ -495,13 +529,14 @@ CONSTRAINT `websites_heatmaps_ibfk_1` FOREIGN KEY (`website_id`) REFERENCES `web
 CONSTRAINT `websites_heatmaps_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `heatmaps_snapshots` (
 `snapshot_id` int NOT NULL AUTO_INCREMENT,
 `heatmap_id` int NOT NULL,
 `website_id` int NOT NULL,
-`type` varchar(16) NOT NULL DEFAULT '',
+`type` enum('desktop', 'mobile', 'tablet') NOT NULL DEFAULT 'desktop',
 `data` longblob NOT NULL,
 `date` datetime NOT NULL,
 PRIMARY KEY (`snapshot_id`),
@@ -512,29 +547,34 @@ CONSTRAINT `heatmaps_snapshots_ibfk_1` FOREIGN KEY (`heatmap_id`) REFERENCES `we
 CONSTRAINT `heatmaps_snapshots_ibfk_2` FOREIGN KEY (`website_id`) REFERENCES `websites` (`website_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 alter table events_children add constraint events_children_heatmaps_snapshots_snapshot_id_fk foreign key (snapshot_id) references heatmaps_snapshots (snapshot_id) on update cascade on delete set null;
 
--- SEPARATOR --
+
+
 
 alter table websites_heatmaps add CONSTRAINT `websites_heatmaps_ibfk_2` FOREIGN KEY (`snapshot_id_desktop`) REFERENCES `heatmaps_snapshots` (`snapshot_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
--- SEPARATOR --
+
+
 
 alter table websites_heatmaps add  CONSTRAINT `websites_heatmaps_ibfk_3` FOREIGN KEY (`snapshot_id_tablet`) REFERENCES `heatmaps_snapshots` (`snapshot_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
--- SEPARATOR --
+
+
 
 alter table websites_heatmaps add  CONSTRAINT `websites_heatmaps_ibfk_4` FOREIGN KEY (`snapshot_id_mobile`) REFERENCES `heatmaps_snapshots` (`snapshot_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `websites_goals` (
 `goal_id` int NOT NULL AUTO_INCREMENT,
 `website_id` int NOT NULL,
 `key` varchar(16) NOT NULL DEFAULT '',
-`type` varchar(16) NOT NULL DEFAULT '',
+`type` enum('pageview', 'custom') NOT NULL DEFAULT 'pageview',
 `path` varchar(256) DEFAULT NULL,
 `name` varchar(64) DEFAULT NULL,
 `date` datetime NOT NULL,
@@ -544,7 +584,8 @@ KEY `key` (`key`),
 CONSTRAINT `websites_goals_ibfk_1` FOREIGN KEY (`website_id`) REFERENCES `websites` (`website_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `goals_conversions` (
 `conversion_id` int NOT NULL AUTO_INCREMENT,
@@ -568,7 +609,8 @@ CONSTRAINT `goals_conversions_ibfk_4` FOREIGN KEY (`goal_id`) REFERENCES `websit
 CONSTRAINT `goals_conversions_ibfk_5` FOREIGN KEY (`website_id`) REFERENCES `websites` (`website_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `email_reports` (
 `id` bigint  unsigned NOT NULL AUTO_INCREMENT,
@@ -581,7 +623,8 @@ KEY `website_id` (`website_id`),
 KEY `datetime` (`datetime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `broadcasts` (
 `broadcast_id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -603,13 +646,14 @@ CREATE TABLE `broadcasts` (
 PRIMARY KEY (`broadcast_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `broadcasts_statistics` (
 `id` bigint unsigned NOT NULL AUTO_INCREMENT,
 `user_id` int DEFAULT NULL,
 `broadcast_id` bigint unsigned DEFAULT NULL,
-`type` varchar(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+`type` enum('view', 'click') COLLATE utf8mb4_unicode_ci DEFAULT 'view',
 `target` varchar(2048) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
 `datetime` datetime DEFAULT NULL,
 PRIMARY KEY (`id`),
@@ -619,27 +663,31 @@ CONSTRAINT `broadcasts_statistics_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `us
 CONSTRAINT `broadcasts_statistics_ibfk_2` FOREIGN KEY (`broadcast_id`) REFERENCES `broadcasts` (`broadcast_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
 
 CREATE TABLE `internal_notifications` (
-`internal_notification_id` bigint unsigned NOT NULL AUTO_INCREMENT,
-`user_id` int DEFAULT NULL,
-`for_who` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-`from_who` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-`icon` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-`title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-`description` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-`url` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-`is_read` tinyint unsigned DEFAULT '0',
-`datetime` datetime DEFAULT NULL,
-`read_datetime` datetime DEFAULT NULL,
-PRIMARY KEY (`internal_notification_id`),
-KEY `user_id` (`user_id`),
-KEY `users_notifications_for_who_idx` (`for_who`) USING BTREE,
-CONSTRAINT `internal_notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `internal_notification_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `for_who` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `from_who` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `icon` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_read` tinyint unsigned DEFAULT '0',
+  `datetime` datetime DEFAULT NULL,
+  `read_datetime` datetime DEFAULT NULL,
+  PRIMARY KEY (`internal_notification_id`),
+  KEY `user_id` (`user_id`),
+  KEY `users_notifications_for_who_idx` (`for_who`) USING BTREE,
+  KEY `internal_notifications_datetime_index` (`datetime`),
+  CONSTRAINT `internal_notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
+
 
 CREATE TABLE `settings` (
 `id` int NOT NULL AUTO_INCREMENT,
@@ -649,11 +697,32 @@ PRIMARY KEY (`id`),
 UNIQUE KEY `key` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
+
+
+
+CREATE TABLE `outbound_clicks` (
+  `outbound_click_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int DEFAULT NULL,
+  `session_id` int DEFAULT NULL,
+  `visitor_id` int DEFAULT NULL,
+  `website_id` int DEFAULT NULL,
+  `host` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `path` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `datetime` datetime DEFAULT NULL,
+  `expiration_date` date DEFAULT NULL,
+  PRIMARY KEY (`outbound_click_id`),
+  KEY `website_id` (`website_id`),
+  CONSTRAINT `outbound_clicks_ibfk_1` FOREIGN KEY (`website_id`) REFERENCES `websites` (`website_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 
 SET @cron_key = MD5(RAND());
 
--- SEPARATOR --
+
+
 
 INSERT INTO `settings` (`key`, `value`)
 VALUES
@@ -689,10 +758,15 @@ VALUES
 ('yookassa', '{"is_enabled":false,"shop_id":"","secret_key":""}'),
 ('crypto_com', '{"is_enabled":false,"publishable_key":"","secret_key":"","webhook_secret":""}'),
 ('paddle', '{"is_enabled":false,"mode":"sandbox","vendor_id":"","api_key":"","public_key":"","currencies":["USD"]}'),
+('paddle_billing', '{"is_enabled":1,"mode":"sandbox","api_key":"","secret_key":"","client_side_token":"","currencies":["USD"]}'),
 ('mercadopago', '{"is_enabled":false,"access_token":"","currencies":["USD"]}'),
 ('midtrans', '{"is_enabled":false,"server_key":"","mode":"sandbox","currencies":["USD"]}'),
 ('flutterwave', '{"is_enabled":false,"secret_key":"","currencies":["USD"]}'),
 ('lemonsqueezy', '{"is_enabled":false,"api_key":"","signing_secret":"","store_id":"","one_time_monthly_variant_id":"","one_time_annual_variant_id":"","one_time_lifetime_variant_id":"","recurring_monthly_variant_id":"","recurring_annual_variant_id":"","currencies":["USD"]}'),
+('klarna', '{"is_enabled":1,"mode":"https:\/\/api.playground.klarna.com\/","username":"","password":"","currencies":["USD"]}'),
+('plisio', '{\"is_enabled\":false,\"secret_key\":\"\",\"accepted_cryptocurrencies\":[\"DOGE\",\"SOL\",\"ETH\",\"BTC\"],\"default_cryptocurrency\":\"SOL\",\"currencies\":[\"USD\"]}'),
+('plisio_whitelabel', '{\"is_enabled\":false,\"secret_key\":\"\",\"accepted_cryptocurrencies\":[\"DOGE\",\"SOL\",\"ETH\",\"BTC\"],\"default_cryptocurrency\":\"SOL\",\"currencies\":[\"USD\"]}'),
+('revolut', '{\"is_enabled\":false,\"mode\":\"sandbox\",\"secret_key\":\"\",\"webhook_id\":\"\",\"currencies\":[\"USD\"]}'),
 ('smtp', '{"from_name":"","from":"","host":"","encryption":"tls","port":"","auth":false,"username":"","password":"","display_socials":false,"company_details":""}'),
 ('theme', '{"light_is_enabled": false, "dark_is_enabled": false}'),
 ('custom', '{"head_js":"","head_css":"","head_js_biolink":"","head_css_biolink":"","head_js_splash_page":"","head_css_splash_page":""}'),
@@ -702,87 +776,17 @@ VALUES
 ('webhooks', '{"user_new":"","user_delete":"","payment_new":"","code_redeemed":"","contact":"","cron_start":"","cron_end":"","domain_new":"","domain_update":""}'),
 ('analytics', '{\"pixel_cache\":300,\"blacklisted_domains\":[],\"blacklisted_keywords\":[],\"email_reports_is_enabled\":0,\"pixel_exposed_identifier\":\"analytics\",\"sessions_replays_is_enabled\":\"1\",\"websites_heatmaps_is_enabled\":\"1\",\"sessions_replays_minimum_duration\":\"1\"}'),
 ('cookie_consent', '{"is_enabled":false,"logging_is_enabled":false,"necessary_is_enabled":true,"analytics_is_enabled":true,"targeting_is_enabled":true,"layout":"bar","position_y":"middle","position_x":"center"}'),
-('license', '{\"license\":\"xxxx\",\"type\":\"extended\"}'),
+('license', '{\"license\":\"nulled\","type\":\"\"}'),
 ('support', '{}'),
 ('custom_images', '{}'),
-('product_info', '{\"version\":\"42.0.0\", \"code\":\"4200\"}');
+('product_info', '{\"version\":\"47.0.0\", \"code\":\"4700\"}');
 
--- SEPARATOR --
 
-CREATE TABLE `payments` (
-`id` int unsigned NOT NULL AUTO_INCREMENT,
-`user_id` int DEFAULT NULL,
-`plan_id` int DEFAULT NULL,
-`processor` varchar(16) DEFAULT NULL,
-`type` varchar(16) DEFAULT NULL,
-`frequency` varchar(16) DEFAULT NULL,
-`payment_id` varchar(128) DEFAULT NULL,
-`email` varchar(256) DEFAULT NULL,
-`name` varchar(256) DEFAULT NULL,
-`plan` text,
-`billing` text,
-`business` text,
-`taxes_ids` text,
-`base_amount` float DEFAULT NULL,
-`total_amount` float DEFAULT NULL,
-`total_amount_default_currency` float DEFAULT null,
-`code` varchar(32) DEFAULT NULL,
-`discount_amount` float DEFAULT NULL,
-`currency` varchar(4) DEFAULT NULL,
-`payment_proof` varchar(40) DEFAULT NULL,
-`status` tinyint(4) DEFAULT '1',
-`datetime` datetime DEFAULT NULL,
-PRIMARY KEY (`id`),
-KEY `payments_user_id` (`user_id`),
-KEY `plan_id` (`plan_id`),
-CONSTRAINT `payments_plans_plan_id_fk` FOREIGN KEY (`plan_id`) REFERENCES `plans` (`plan_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-CONSTRAINT `payments_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
 
-CREATE TABLE IF NOT EXISTS `codes` (
-`code_id` int NOT NULL AUTO_INCREMENT,
-`name` varchar(64) DEFAULT NULL,
-`type` varchar(16) DEFAULT NULL,
-`days` int unsigned DEFAULT NULL,
-`code` varchar(32) NOT NULL DEFAULT '',
-`discount` int unsigned NOT NULL,
-`quantity` int unsigned NOT NULL DEFAULT '1',
-`redeemed` int unsigned NOT NULL DEFAULT '0',
-`plans_ids` text,
-`datetime` datetime NOT NULL,
-PRIMARY KEY (`code_id`),
-KEY `type` (`type`),
-KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT IGNORE INTO `settings` (`key`, `value`) VALUES ('support', '{}');
 
--- SEPARATOR --
 
-CREATE TABLE IF NOT EXISTS `redeemed_codes` (
-`id` int NOT NULL AUTO_INCREMENT,
-`code_id` int NOT NULL,
-`user_id` int NOT NULL,
-`type` varchar(16) DEFAULT NULL,
-`datetime` datetime NOT NULL,
-PRIMARY KEY (`id`),
-KEY `code_id` (`code_id`),
-KEY `user_id` (`user_id`),
-CONSTRAINT `redeemed_codes_ibfk_1` FOREIGN KEY (`code_id`) REFERENCES `codes` (`code_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-CONSTRAINT `redeemed_codes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- SEPARATOR --
 
-CREATE TABLE `taxes` (
-`tax_id` int unsigned NOT NULL AUTO_INCREMENT,
-`name` varchar(64) DEFAULT NULL,
-`description` varchar(256) DEFAULT NULL,
-`value` float DEFAULT NULL,
-`value_type` enum('percentage','fixed') DEFAULT NULL,
-`type` enum('inclusive','exclusive') DEFAULT NULL,
-`billing_type` enum('personal','business','both') DEFAULT NULL,
-`countries` text,
-`datetime` datetime DEFAULT NULL,
-PRIMARY KEY (`tax_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+UPDATE `settings` SET `value` = '{"key": "nulled", "expiry_datetime": "2100-01-01 00:00:00"}' WHERE  `key` = 'support';

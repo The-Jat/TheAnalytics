@@ -17,5 +17,7 @@
 const PRODUCT_NAME = '66Analytics';
 const PRODUCT_KEY = '66analytics';
 const PRODUCT_URL = 'https://altumco.de/66analytics';
+const PRODUCT_BUY_URL = 'https://altumco.de/66analytics#pricing';
+
 const PRODUCT_DOCUMENTATION_URL = 'https://altumco.de/66analytics-docs';
 const PRODUCT_CHANGELOG_URL = 'https://altumco.de/66analytics-changelog';

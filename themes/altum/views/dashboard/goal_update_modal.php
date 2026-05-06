@@ -82,8 +82,9 @@
 
 <?php ob_start() ?>
 <script>
-
-    let goal_update_update_code = () => {
+    'use strict';
+    
+let goal_update_update_code = () => {
 
         let key = $('#goal_update_modal input[name="key"]').val();
 

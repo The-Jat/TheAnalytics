@@ -28,14 +28,14 @@ class AnalyticsFilters {
             $end_date = query_clean($_GET['end_date']);
 
             /* Set it to the session */
-            $_SESSION['analytics_start_date'] = $start_date;
-            $_SESSION['analytics_end_date'] = $end_date;
+            session_set('analytics_start_date', $start_date);
+            session_set('analytics_end_date', $end_date);
         }
 
         /* Try to get start / end date from sessions if any */
-        else if(isset($_SESSION['analytics_start_date'], $_SESSION['analytics_end_date'])) {
-            $start_date = query_clean($_SESSION['analytics_start_date']);
-            $end_date = query_clean($_SESSION['analytics_end_date']);
+        else if(session_has('analytics_start_date') && session_get('analytics_end_date')) {
+            $start_date = query_clean(session_get('analytics_start_date'));
+            $end_date = query_clean(session_get('analytics_end_date'));
         }
 
         /* Default start / end dates */

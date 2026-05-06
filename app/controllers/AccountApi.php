@@ -31,7 +31,7 @@ class AccountApi extends Controller {
             //ALTUMCODE:DEMO if(DEMO) if($this->user->user_id == 1) Alerts::add_error('Please create an account on the demo to test out this function.');
 
             /* Clean some posted variables */
-            $api_key = md5($this->user->email . microtime() . microtime());
+            $api_key = md5(uniqid('', true) . random_bytes(16));
 
             /* Check for any errors */
             if(!\Altum\Csrf::check()) {

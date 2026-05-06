@@ -32,6 +32,13 @@
 <script src="<?= ASSETS_FULL_URL ?>js/libraries/clipboard.min.js?v=<?= PRODUCT_CODE ?>"></script>
 
 <script>
+    'use strict';
+
+    <?php if(isset($_GET['install'])): ?>
+    /* Open the pixel key modal */
+    $('[data-target="#device_connect_modal"]').trigger('click');
+    <?php endif ?>
+
     /* On modal show */
     $('#website_pixel_key_modal').on('show.bs.modal', event => {
         let pixel_key = $(event.relatedTarget).data('pixel-key');

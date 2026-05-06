@@ -25,6 +25,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     /* On modal show load new data */
     $('#utms_medium_campaign_modal').on('show.bs.modal', event => {
         let loading_html = $('#loading').html();

@@ -1,7 +1,7 @@
 <?php defined('ALTUMCODE') || die() ?>
 
 <div class="altum-animate altum-animate-fill-none altum-animate-fade-in">
-    <?php if(count($data->events)): ?>
+    <?php if (!empty($data->events)): ?>
         <?php $i = 1; ?>
         <?php foreach($data->events as $event): ?>
             <div class="card bg-gray-200 border-0">

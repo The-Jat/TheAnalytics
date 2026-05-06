@@ -37,8 +37,8 @@
 <script src="<?= ASSETS_FULL_URL . 'js/libraries/svgMap.min.js?v=' . PRODUCT_CODE ?>"></script>
 <script>
     'use strict';
-
-    $(`#countries_map`).html($('#loading').html());
+    
+$(`#countries_map`).html($('#loading').html());
 
     /* Receive data */
     $('#countries_map').on('load', (event, data) => {

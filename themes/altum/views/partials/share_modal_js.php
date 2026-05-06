@@ -54,8 +54,8 @@
 
 <script>
     'use strict';
-
-    /* On modal show load new data */
+    
+/* On modal show load new data */
     $('#share_modal').on('show.bs.modal', event => {
         let url = $(event.relatedTarget).data('url');
         let qr = event.currentTarget.querySelector('[data-qr]');

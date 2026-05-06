@@ -1,0 +1,73 @@
+[06-May-2026 13:09:20 UTC] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on false in C:\xampp\htdocs\TheAnalytics\app\models\Page.php:35
+Stack trace:
+#0 C:\xampp\htdocs\TheAnalytics\app\core\Controller.php(60): Altum\Models\Page->get_pages()
+#1 C:\xampp\htdocs\TheAnalytics\app\core\App.php(375): Altum\Controllers\Controller->run()
+#2 C:\xampp\htdocs\TheAnalytics\index.php(22): Altum\App->__construct()
+#3 {main}
+  thrown in C:\xampp\htdocs\TheAnalytics\app\models\Page.php on line 35
+[06-May-2026 13:09:24 UTC] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on false in C:\xampp\htdocs\TheAnalytics\app\models\Page.php:35
+Stack trace:
+#0 C:\xampp\htdocs\TheAnalytics\app\core\Controller.php(60): Altum\Models\Page->get_pages()
+#1 C:\xampp\htdocs\TheAnalytics\app\core\App.php(375): Altum\Controllers\Controller->run()
+#2 C:\xampp\htdocs\TheAnalytics\index.php(22): Altum\App->__construct()
+#3 {main}
+  thrown in C:\xampp\htdocs\TheAnalytics\app\models\Page.php on line 35
+[06-May-2026 13:09:24 UTC] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on false in C:\xampp\htdocs\TheAnalytics\app\models\Page.php:35
+Stack trace:
+#0 C:\xampp\htdocs\TheAnalytics\app\core\Controller.php(60): Altum\Models\Page->get_pages()
+#1 C:\xampp\htdocs\TheAnalytics\app\core\App.php(375): Altum\Controllers\Controller->run()
+#2 C:\xampp\htdocs\TheAnalytics\index.php(22): Altum\App->__construct()
+#3 {main}
+  thrown in C:\xampp\htdocs\TheAnalytics\app\models\Page.php on line 35
+[06-May-2026 13:09:36 UTC] PHP Warning:  Undefined property: stdClass::$auto_currency_detection in C:\xampp\htdocs\TheAnalytics\app\core\App.php on line 128
+[06-May-2026 13:09:37 UTC] PHP Warning:  Undefined property: stdClass::$translations in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\plans.php on line 349
+[06-May-2026 13:09:37 UTC] PHP Warning:  Attempt to read property "english" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\plans.php on line 349
+[06-May-2026 13:09:37 UTC] PHP Warning:  Attempt to read property "name" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\plans.php on line 349
+[06-May-2026 13:09:37 UTC] PHP Warning:  Undefined property: stdClass::$example_url in C:\xampp\htdocs\TheAnalytics\themes\altum\views\index\index.php on line 29
+[06-May-2026 13:09:37 UTC] PHP Warning:  Undefined property: stdClass::$domains_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\index\index.php on line 424
+[06-May-2026 13:09:37 UTC] PHP Warning:  Undefined property: stdClass::$domains_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\index\index.php on line 481
+[06-May-2026 13:09:37 UTC] PHP Fatal error:  Uncaught Error: Call to a member function fetch_object() on false in C:\xampp\htdocs\TheAnalytics\app\models\Page.php:35
+Stack trace:
+#0 C:\xampp\htdocs\TheAnalytics\app\core\Controller.php(60): Altum\Models\Page->get_pages()
+#1 C:\xampp\htdocs\TheAnalytics\app\core\App.php(375): Altum\Controllers\Controller->run()
+#2 C:\xampp\htdocs\TheAnalytics\index.php(22): Altum\App->__construct()
+#3 {main}
+  thrown in C:\xampp\htdocs\TheAnalytics\app\models\Page.php on line 35
+[06-May-2026 13:28:22 UTC] PHP Warning:  Undefined property: stdClass::$auto_currency_detection in C:\xampp\htdocs\TheAnalytics\app\core\App.php on line 128
+[06-May-2026 13:28:22 UTC] PHP Warning:  Undefined property: stdClass::$translations in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\plans.php on line 349
+[06-May-2026 13:28:22 UTC] PHP Warning:  Attempt to read property "english" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\plans.php on line 349
+[06-May-2026 13:28:22 UTC] PHP Warning:  Attempt to read property "name" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\plans.php on line 349
+[06-May-2026 13:28:22 UTC] PHP Warning:  Undefined property: stdClass::$example_url in C:\xampp\htdocs\TheAnalytics\themes\altum\views\index\index.php on line 29
+[06-May-2026 13:28:22 UTC] PHP Warning:  Undefined property: stdClass::$domains_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\index\index.php on line 424
+[06-May-2026 13:28:22 UTC] PHP Warning:  Undefined property: stdClass::$domains_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\index\index.php on line 481
+[06-May-2026 13:28:22 UTC] PHP Warning:  Undefined property: stdClass::$guests_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\announcements.php on line 5
+[06-May-2026 13:28:22 UTC] PHP Warning:  Undefined property: stdClass::$users_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\announcements.php on line 5
+[06-May-2026 13:28:32 UTC] PHP Warning:  Undefined property: stdClass::$auto_currency_detection in C:\xampp\htdocs\TheAnalytics\app\core\App.php on line 128
+[06-May-2026 13:28:32 UTC] PHP Warning:  Undefined property: stdClass::$guests_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\announcements.php on line 5
+[06-May-2026 13:28:32 UTC] PHP Warning:  Undefined property: stdClass::$users_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\announcements.php on line 5
+[06-May-2026 13:28:42 UTC] PHP Warning:  Undefined property: stdClass::$auto_currency_detection in C:\xampp\htdocs\TheAnalytics\app\core\App.php on line 128
+[06-May-2026 13:28:42 UTC] DB QUERY:SELECT  COUNT(*) AS retval FROM users_logs WHERE  ip = '::1'  AND type = 'login.wrong_password'  AND datetime >= '2026-05-06 12:28:42'  LIMIT 1
+[06-May-2026 13:28:42 UTC] DB QUERY:SELECT  user_id, email, name, status, password, token_code, twofa_secret, language FROM users WHERE  email = 'admin'  LIMIT 1
+[06-May-2026 13:28:43 UTC] DB QUERY:UPDATE users SET `ip` = '::1', `continent_code` = 'NULL', `country` = 'NULL', `city_name` = 'NULL', `device_type` = 'desktop', `os_name` = 'Windows', `browser_name` = 'Edge', `browser_language` = 'en', `total_logins` = total_logins+1, `user_deletion_reminder` = '0' WHERE  user_id = '1' 
+[06-May-2026 13:28:43 UTC] DB QUERY:INSERT  INTO users_logs (`user_id`, `type`, `ip`, `device_type`, `os_name`, `continent_code`, `country_code`, `city_name`, `datetime`)  VALUES ('1', 'login.classic.success', '::1', 'desktop', 'Windows', 'NULL', 'NULL', 'NULL', '2026-05-06 13:28:43')
+[06-May-2026 13:28:43 UTC] DB QUERY:SELECT  * FROM users WHERE  user_id = '1'  LIMIT 1
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$domains_is_enabled in C:\xampp\htdocs\TheAnalytics\app\models\Domain.php on line 24
+[06-May-2026 13:28:43 UTC] PHP Warning:  Attempt to read property "websites_default_order_by" on null in C:\xampp\htdocs\TheAnalytics\app\controllers\Websites.php on line 35
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$export in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 50
+[06-May-2026 13:28:43 UTC] PHP Warning:  Attempt to read property "csv" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 50
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$export in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 50
+[06-May-2026 13:28:43 UTC] PHP Warning:  Attempt to read property "csv" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 50
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$export in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 53
+[06-May-2026 13:28:43 UTC] PHP Warning:  Attempt to read property "json" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 53
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$export in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 53
+[06-May-2026 13:28:43 UTC] PHP Warning:  Attempt to read property "json" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 53
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$export in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 56
+[06-May-2026 13:28:43 UTC] PHP Warning:  Attempt to read property "pdf" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 56
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$export in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 56
+[06-May-2026 13:28:43 UTC] PHP Warning:  Attempt to read property "pdf" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 56
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$domains_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\websites\index.php on line 112
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$domains_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\app_sidebar.php on line 73
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$export in C:\xampp\htdocs\TheAnalytics\themes\altum\views\app_wrapper.php on line 63
+[06-May-2026 13:28:43 UTC] PHP Warning:  Attempt to read property "pdf" on null in C:\xampp\htdocs\TheAnalytics\themes\altum\views\app_wrapper.php on line 63
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$guests_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\announcements.php on line 5
+[06-May-2026 13:28:43 UTC] PHP Warning:  Undefined property: stdClass::$users_is_enabled in C:\xampp\htdocs\TheAnalytics\themes\altum\views\partials\announcements.php on line 5

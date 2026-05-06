@@ -36,6 +36,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     /* On modal show load new data */
     $('#website_delete_modal').on('show.bs.modal', event => {
         let website_id = $(event.relatedTarget).data('website-id');

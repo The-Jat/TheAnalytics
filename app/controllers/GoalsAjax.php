@@ -48,7 +48,7 @@ class GoalsAjax extends Controller {
         }
 
         $_POST['type'] = in_array($_POST['type'], ['pageview', 'custom']) ? query_clean($_POST['type']) : 'pageview';
-        $_POST['name'] = trim(query_clean($_POST['name']));
+        $_POST['name'] = input_clean($_POST['name'], 32);
 
         switch($_POST['type']) {
             case 'pageview':
@@ -86,7 +86,7 @@ class GoalsAjax extends Controller {
             'date' => get_date(),
         ]);
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('website_goals?website_id=' . $this->website->website_id);
 
         /* Set a nice success message */
@@ -105,7 +105,7 @@ class GoalsAjax extends Controller {
         }
 
         $_POST['goal_id'] = (int) $_POST['goal_id'];
-        $_POST['name'] = trim(query_clean($_POST['name']));
+        $_POST['name'] = input_clean($_POST['name'], 32);
         $_POST['type'] = in_array($_POST['type'], ['pageview', 'custom']) ? query_clean($_POST['type']) : 'pageview';
 
         switch($_POST['type']) {
@@ -135,7 +135,7 @@ class GoalsAjax extends Controller {
             'name' => $_POST['name'],
         ]);
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('website_goals?website_id=' . $this->website->website_id);
 
         /* Set a nice success message */
@@ -162,7 +162,7 @@ class GoalsAjax extends Controller {
         /* Database query */
         db()->where('goal_id', $_POST['goal_id'])->where('website_id', $this->website->website_id)->delete('websites_goals');
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('website_goals?website_id=' . $this->website->website_id);
 
         /* Set a nice success message */

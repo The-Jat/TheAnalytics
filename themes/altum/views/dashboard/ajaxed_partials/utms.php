@@ -30,7 +30,7 @@
     <?php else: ?>
 
         <?php foreach($data->rows as $row): ?>
-            <?php $percentage = round($row->total / $data->total_sum * 100, 1) ?>
+            <?php $percentage = round($row->total / $data->total_sum * 100, 2) ?>
 
             <div class="mb-3 row-fade-show-icon">
                 <div class="d-flex justify-content-between mb-1">

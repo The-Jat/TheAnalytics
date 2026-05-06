@@ -38,9 +38,9 @@
 
     <div class="mb-4">
         <?php if($data->heatmap->is_enabled): ?>
-            <span class="badge badge-success"><i class="fas fa-fw fa-check"></i> <?= l('heatmaps.is_enabled_true') ?></span>
+            <span class="badge badge-success"><i class="fas fa-fw fa-sm fa-check mr-1"></i> <?= l('heatmaps.is_enabled_true') ?></span>
         <?php else: ?>
-            <span class="badge badge-warning"><i class="fas fa-fw fa-eye-slash"></i> <?= l('heatmaps.is_enabled_false') ?></span>
+            <span class="badge badge-warning"><i class="fas fa-fw fa-sm fa-eye-slash mr-1"></i> <?= l('heatmaps.is_enabled_false') ?></span>
         <?php endif ?>
 
         <small class="ml-3 text-muted">
@@ -86,6 +86,8 @@
     <script src="<?= ASSETS_FULL_URL . 'js/libraries/rrweb.mod.js?v=' . PRODUCT_CODE ?>"></script>
 
     <script>
+    'use strict';
+    
         /* Default loading state */
         let loading_html = $('#loading').html();
         $('#heatmap-loading').html(loading_html);
@@ -177,6 +179,8 @@
 
     <?php ob_start() ?>
     <script>
+    'use strict';
+    
         /* Count */
         $('#heatmap_data_count').html('0');
     </script>

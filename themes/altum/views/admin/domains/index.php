@@ -1,23 +1,40 @@
 <?php defined('ALTUMCODE') || die() ?>
 
+<?php if(!settings()->analytics->domains_is_enabled): ?>
+    <div class="alert alert-info">
+        <i class="fas fa-fw fa-info-circle mr-1"></i>
+		<?= sprintf(l('global.info_message.admin_feature_disabled'), url('admin/settings/links')) ?>
+    </div>
+<?php endif ?>
+
 <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
-    <h1 class="h3 mb-3 mb-md-0"><i class="fas fa-fw fa-xs fa-globe text-primary-900 mr-2"></i> <?= l('admin_domains.header') ?></h1>
+    <h1 class="h3 mb-3 mb-md-0 text-truncate"><i class="fas fa-fw fa-xs fa-globe text-primary-900 mr-2"></i> <?= l('admin_domains.header') ?></h1>
 
     <div class="d-flex position-relative d-print-none">
         <div>
+            <a href="<?= url('admin/domain-create') ?>" class="btn btn-primary text-nowrap"><i class="fas fa-fw fa-plus-circle fa-sm mr-1"></i> <?= l('admin_domain_create.menu') ?></a>
+        </div>
+
+        <div class="ml-3">
+            <a href="<?= url('admin/statistics/domains') ?>" class="btn btn-gray-300" data-tooltip title="<?= l('global.statistics') ?>">
+                <i class="fas fa-fw fa-sm fa-chart-bar"></i>
+            </a>
+        </div>
+
+        <div class="ml-3">
             <div class="dropdown">
                 <button type="button" class="btn btn-gray-300 dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport" data-tooltip title="<?= l('global.export') ?>" data-tooltip-hide-on-click>
                     <i class="fas fa-fw fa-sm fa-download"></i>
                 </button>
 
                 <div class="dropdown-menu dropdown-menu-right d-print-none">
-                    <a href="<?= url('admin/domains?' . $data->filters->get_get() . '&export=csv') ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->csv ? null : 'disabled' ?>">
+                    <a href="<?= url('admin/domains?' . $data->filters->get_get() . '&export=csv') ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->csv ? null : 'disabled pointer-events-all' ?>" <?= $this->user->plan_settings->export->csv ? null : get_plan_feature_disabled_info() ?>>
                         <i class="fas fa-fw fa-sm fa-file-csv mr-2"></i> <?= sprintf(l('global.export_to'), 'CSV') ?>
                     </a>
-                    <a href="<?= url('admin/domains?' . $data->filters->get_get() . '&export=json') ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->json ? null : 'disabled' ?>">
+                    <a href="<?= url('admin/domains?' . $data->filters->get_get() . '&export=json') ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->json ? null : 'disabled pointer-events-all' ?>" <?= $this->user->plan_settings->export->json ? null : get_plan_feature_disabled_info() ?>>
                         <i class="fas fa-fw fa-sm fa-file-code mr-2"></i> <?= sprintf(l('global.export_to'), 'JSON') ?>
                     </a>
-                    <a href="#" onclick="window.print();return false;" class="dropdown-item <?= $this->user->plan_settings->export->pdf ? null : 'disabled' ?>">
+                    <a href="#" class="dropdown-item <?= $this->user->plan_settings->export->pdf ? null : 'disabled pointer-events-all' ?>" <?= $this->user->plan_settings->export->pdf ? $this->user->plan_settings->export->pdf ? 'onclick="event.preventDefault(); window.print();"' : 'disabled pointer-events-all' : get_plan_feature_disabled_info() ?>>
                         <i class="fas fa-fw fa-sm fa-file-pdf mr-2"></i> <?= sprintf(l('global.export_to'), 'PDF') ?>
                     </a>
                 </div>
@@ -26,7 +43,7 @@
 
         <div class="ml-3">
             <div class="dropdown">
-                <button type="button" class="btn <?= $data->filters->has_applied_filters ? 'btn-secondary' : 'btn-gray-300' ?> filters-button dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport" data-tooltip title="<?= l('global.filters.header') ?>" data-tooltip-hide-on-click>
+                <button type="button" class="btn <?= $data->filters->has_applied_filters ? 'btn-secondary' : 'btn-gray-300' ?> filters-button dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport" data-tooltip data-html="true" title="<?= l('global.filters.tooltip') ?>" data-tooltip-hide-on-click>
                     <i class="fas fa-fw fa-sm fa-filter"></i>
                 </button>
 
@@ -34,9 +51,9 @@
                     <div class="dropdown-header d-flex justify-content-between">
                         <span class="h6 m-0"><?= l('global.filters.header') ?></span>
 
-                        <?php if($data->filters->has_applied_filters): ?>
+						<?php if($data->filters->has_applied_filters): ?>
                             <a href="<?= url(\Altum\Router::$original_request) ?>" class="text-muted"><?= l('global.filters.reset') ?></a>
-                        <?php endif ?>
+						<?php endif ?>
                     </div>
 
                     <div class="dropdown-divider"></div>
@@ -68,6 +85,7 @@
                             <select name="order_by" id="filters_order_by" class="custom-select custom-select-sm">
                                 <option value="domain_id" <?= $data->filters->order_by == 'domain_id' ? 'selected="selected"' : null ?>><?= l('global.id') ?></option>
                                 <option value="datetime" <?= $data->filters->order_by == 'datetime' ? 'selected="selected"' : null ?>><?= l('global.filters.order_by_datetime') ?></option>
+                                <option value="last_datetime" <?= $data->filters->order_by == 'last_datetime' ? 'selected="selected"' : null ?>><?= l('global.filters.order_by_last_datetime') ?></option>
                                 <option value="host" <?= $data->filters->order_by == 'host' ? 'selected="selected"' : null ?>><?= l('admin_domains.host') ?></option>
                             </select>
                         </div>
@@ -83,9 +101,9 @@
                         <div class="form-group px-4">
                             <label for="filters_results_per_page" class="small"><?= l('global.filters.results_per_page') ?></label>
                             <select name="results_per_page" id="filters_results_per_page" class="custom-select custom-select-sm">
-                                <?php foreach($data->filters->allowed_results_per_page as $key): ?>
+								<?php foreach($data->filters->allowed_results_per_page as $key): ?>
                                     <option value="<?= $key ?>" <?= $data->filters->results_per_page == $key ? 'selected="selected"' : null ?>><?= $key ?></option>
-                                <?php endforeach ?>
+								<?php endforeach ?>
                             </select>
                         </div>
 
@@ -104,7 +122,7 @@
             <div id="bulk_group" class="btn-group d-none" role="group">
                 <div class="btn-group dropdown" role="group">
                     <button id="bulk_actions" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" data-boundary="viewport" aria-haspopup="true" aria-expanded="false">
-                        <?= l('global.bulk_actions') ?> <span id="bulk_counter" class="d-none"></span>
+						<?= l('global.bulk_actions') ?> <span id="bulk_counter" class="d-none"></span>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="bulk_actions">
                         <a href="#" class="dropdown-item" data-toggle="modal" data-target="#bulk_delete_modal"><i class="fas fa-fw fa-sm fa-trash-alt mr-2"></i> <?= l('global.delete') ?></a>
@@ -137,7 +155,7 @@
                     </div>
                 </th>
                 <th><?= l('global.user') ?></th>
-                <th><?= l('admin_domains.table.host') ?></th>
+                <th><?= l('global.host') ?></th>
                 <th><?= l('global.type') ?></th>
                 <th><?= l('global.status') ?></th>
                 <th></th>
@@ -146,8 +164,8 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach($data->domains as $row): ?>
-                <?php //ALTUMCODE:DEMO if(DEMO) {$row->user_email = 'hidden@demo.com'; $row->user_name = $row->host = 'hidden on demo';} ?>
+			<?php foreach($data->domains as $row): ?>
+				<?php //ALTUMCODE:DEMO if(DEMO) {$row->user_email = 'hidden@demo.com'; $row->user_name = $row->host = 'hidden on demo';} ?>
                 <tr>
                     <td data-bulk-table class="d-none">
                         <div class="custom-control custom-checkbox">
@@ -174,46 +192,51 @@
                     <td class="text-nowrap">
                         <img referrerpolicy="no-referrer" src="<?= get_favicon_url_from_domain($row->host) ?>" class="img-fluid icon-favicon mr-1" loading="lazy" />
                         <a href="<?= url('admin/domain-update/' . $row->domain_id) ?>"><?= $row->host ?></a>
-                        <a href="<?= $row->scheme . $row->host ?>" rel="noreferrer"><i class="fas fa-fw fa-xs fa-external-link-alt text-muted ml-1"></i></a>
+                        <a href="<?= $row->scheme . $row->host ?>" target="_blank" rel="noreferrer"><i class="fas fa-fw fa-xs fa-external-link-alt text-muted ml-1"></i></a>
                     </td>
 
                     <td class="text-nowrap">
-                        <span class="badge badge-light">
-                            <i class="fas fa-fw fa-sm fa-user mr-1"></i> <?= l('admin_domains.type_user') ?>
-                        </span>
+						<?php if($row->type == 1): ?>
+                            <span class="badge badge-primary">
+                                <i class="fas fa-fw fa-sm fa-globe mr-1"></i> <?= l('admin_domains.type_global') ?>
+                            </span>
+						<?php elseif($row->type == 0): ?>
+                            <span class="badge badge-light">
+                                <i class="fas fa-fw fa-sm fa-user mr-1"></i> <?= l('admin_domains.type_user') ?>
+                            </span>
+						<?php endif ?>
                     </td>
 
                     <td class="text-nowrap">
-                        <?php if($row->is_enabled == 0): ?>
+						<?php if($row->is_enabled == 0): ?>
                             <span class="badge badge-warning"><i class="fas fa-fw fa-sm fa-eye-slash mr-1"></i> <?= l('global.disabled') ?></span>
-                        <?php elseif($row->is_enabled == 1): ?>
+						<?php elseif($row->is_enabled == 1): ?>
                             <span class="badge badge-success"><i class="fas fa-fw fa-sm fa-check mr-1"></i> <?= l('global.active') ?></span>
-                        <?php endif ?>
+						<?php endif ?>
                     </td>
-
                     <td class="text-nowrap">
-                        <a href="<?= url('admin/websites?domain_id=' . $row->domain_id) ?>" class="mr-2" data-toggle="tooltip" title="<?= l('admin_websites.menu') ?>">
-                            <i class="fas fa-fw fa-pager text-muted"></i>
-                        </a>
+                        <div class="d-flex align-items-center">
+                            <a href="<?= url('admin/links?domain_id=' . $row->domain_id) ?>" class="mr-2" data-toggle="tooltip" title="<?= l('admin_links.menu') ?>">
+                                <i class="fas fa-fw fa-link text-muted"></i>
+                            </a>
+                        </div>
                     </td>
-
                     <td class="text-nowrap">
                         <span class="mr-2" data-toggle="tooltip" data-html="true" title="<?= sprintf(l('global.datetime_tooltip'), '<br />' . \Altum\Date::get($row->datetime, 2) . '<br /><small>' . \Altum\Date::get($row->datetime, 3) . '</small>' . '<br /><small>(' . \Altum\Date::get_timeago($row->datetime) . ')</small>') ?>">
                             <i class="fas fa-fw fa-calendar text-muted"></i>
                         </span>
 
-                        <span class="mr-2" data-toggle="tooltip" data-html="true" title="<?= sprintf(l('global.last_datetime_tooltip'), ($row->last_datetime ? '<br />' . \Altum\Date::get($row->last_datetime, 2) . '<br /><small>' . \Altum\Date::get($row->last_datetime, 3) . '</small>' . '<br /><small>(' . \Altum\Date::get_timeago($row->last_datetime) . ')</small>' : '<br />-')) ?>">
+                        <span class="mr-2" data-toggle="tooltip" data-html="true" title="<?= sprintf(l('global.last_datetime_tooltip'), ($row->last_datetime ? '<br />' . \Altum\Date::get($row->last_datetime, 2) . '<br /><small>' . \Altum\Date::get($row->last_datetime, 3) . '</small>' . '<br /><small>(' . \Altum\Date::get_timeago($row->last_datetime) . ')</small>' : '<br />' . l('global.na'))) ?>">
                             <i class="fas fa-fw fa-history text-muted"></i>
                         </span>
                     </td>
-
                     <td>
                         <div class="d-flex justify-content-end">
-                            <?= include_view(THEME_PATH . 'views/admin/domains/admin_domain_dropdown_button.php', ['id' => $row->domain_id, 'resource_name' => $row->host]) ?>
+							<?= include_view(THEME_PATH . 'views/admin/domains/admin_domain_dropdown_button.php', ['id' => $row->domain_id, 'resource_name' => $row->host]) ?>
                         </div>
                     </td>
                 </tr>
-            <?php endforeach ?>
+			<?php endforeach ?>
             </tbody>
         </table>
     </div>
@@ -224,8 +247,8 @@
 <?php require THEME_PATH . 'views/partials/js_bulk.php' ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/partials/bulk_delete_modal.php'), 'modals'); ?>
 <?php \Altum\Event::add_content(include_view(THEME_PATH . 'views/partials/universal_delete_modal_url.php', [
-    'name' => 'domain',
-    'resource_id' => 'domain_id',
-    'has_dynamic_resource_name' => true,
-    'path' => 'admin/domains/delete/'
+	'name' => 'domain',
+	'resource_id' => 'domain_id',
+	'has_dynamic_resource_name' => true,
+	'path' => 'admin/domains/delete/'
 ]), 'modals'); ?>

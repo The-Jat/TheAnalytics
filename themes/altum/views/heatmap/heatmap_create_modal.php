@@ -49,8 +49,9 @@
 
 <?php ob_start() ?>
 <script>
-
-    $('form[name="heatmap_create"]').on('submit', event => {
+    'use strict';
+    
+$('form[name="heatmap_create"]').on('submit', event => {
         let notification_container = event.currentTarget.querySelector('.notification-container');
         notification_container.innerHTML = '';
         pause_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));

@@ -228,6 +228,27 @@
             </div>
         </div>
     <?php endif ?>
+
+    <div class="row justify-content-between mt-9" data-aos="fade-up">
+        <div class="col-12 col-md-5 text-center mb-5 mb-md-0" >
+            <img src="<?= get_custom_image_if_any('index/outbound_clicks.webp') ?>" class="img-fluid index-highly-rounded border border-primary-100" loading="lazy" alt="<?= l('index.outbound_clicks_image_alt') ?>" />
+        </div>
+
+        <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+            <div class="text-uppercase font-weight-bold text-primary mb-3"><?= l('index.outbound_clicks.name') ?></div>
+
+            <div>
+                <h2 class="mb-4"><?= l('index.outbound_clicks.header') ?></h2>
+
+                <p class="text-muted mb-4"><?= l('index.outbound_clicks.subheader') ?></p>
+
+                <div class="small mb-2"><i class="fas fa-fw fa-external-link-alt text-primary mr-1"></i> <?= l('index.outbound_clicks.total_clicks') ?></div>
+                <div class="small mb-2"><i class="fas fa-fw fa-link text-primary mr-1"></i> <?= l('index.outbound_clicks.top_links') ?></div>
+                <div class="small mb-2"><i class="fas fa-fw fa-globe text-primary mr-1"></i> <?= l('index.outbound_clicks.top_domains') ?></div>
+                <div class="small mb-2"><i class="fas fa-fw fa-history text-primary mr-1"></i> <?= l('index.outbound_clicks.recent_activity') ?></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php
@@ -438,6 +459,148 @@ $brands = [
     </div>
 </div>
 
+<?php if(settings()->main->api_is_enabled): ?>
+    <div class="container mt-9">
+        <div class="row align-items-center justify-content-between" data-aos="fade-up">
+            <div class="col-12 col-lg-5 mb-5 mb-lg-0 d-flex flex-column justify-content-center">
+                <div class="text-uppercase font-weight-bold text-primary mb-3"><?= l('index.api.name') ?></div>
+
+                <div>
+                    <h2 class="mb-2"><?= l('index.api.header') ?></h2>
+                    <p class="text-muted mb-4"><?= l('index.api.subheader') ?></p>
+
+                    <div class="position-relative">
+                        <div class="index-fade"></div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="small mb-2"><i class="fas fa-fw fa-check-circle text-success mr-1"></i> <?= l('websites.title') ?></div>
+                                <div class="small mb-2"><i class="fas fa-fw fa-check-circle text-success mr-1"></i> <?= l('api_documentation.statistics') ?></div>
+                            </div>
+
+                            <div class="col">
+                                <?php if(settings()->analytics->domains_is_enabled): ?>
+                                    <div class="small mb-2"><i class="fas fa-fw fa-check-circle text-success mr-1"></i> <?= l('domains.title') ?></div>
+                                <?php endif ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="<?= url('api-documentation') ?>" class="btn btn-block btn-outline-primary mt-5">
+                        <?= l('api_documentation.menu') ?> <i class="fas fa-fw fa-xs fa-code ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card rounded-2x bg-dark text-white">
+                    <div class="card-body p-4 text-monospace reveal-effect font-size-small" style="line-height: 1.75">
+                        curl --request POST \<br />
+                        --url '<?= SITE_URL ?>api/campaigns' \<br />
+                        --header 'Authorization: Bearer <span class="text-primary" <?= is_logged_in() ? 'data-toggle="tooltip" title="' . l('api_documentation.api_key') . '"' : null ?>><?= is_logged_in() ? $this->user->api_key : '{api_key}' ?></span>' \<br />
+                        --header 'Content-Type: multipart/form-data' \<br />
+                        --form 'name=<span class="text-primary">Example</span>' \<br />
+                        --form 'domain=<span class="text-primary">example.com</span>' \<br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* hide until words are wrapped to avoid flash */
+        .reveal-effect { visibility: hidden; }
+
+        /* base state for each word */
+        .reveal-effect-prepared .reveal-effect-word {
+            opacity: 0;
+            filter: blur(6px);
+            transform: translate3d(0, 8px, 0);
+            display: inline-block;
+            transition: opacity .5s ease, filter .5s ease, transform .5s ease;
+        }
+
+        /* animate in when container gets .reveal-effect-in */
+        .reveal-effect-prepared.reveal-effect-in .reveal-effect-word {
+            opacity: 1;
+            filter: blur(0);
+            transform: none;
+        }
+    </style>
+
+    <script defer>
+        /* wrap words in a text node while preserving existing HTML */
+        const wrap_words_in_text_node = (text_node) => {
+            /* split into words + spaces, keep spacing intact */
+            const tokens = text_node.textContent.split(/(\s+)/);
+            const fragment = document.createDocumentFragment();
+
+            tokens.forEach((token) => {
+                if (token.trim().length === 0) {
+                    fragment.appendChild(document.createTextNode(token));
+                } else {
+                    const span_node = document.createElement('span');
+                    span_node.className = 'reveal-effect-word';
+                    span_node.textContent = token;
+                    fragment.appendChild(span_node);
+                }
+            });
+
+            text_node.parentNode.replaceChild(fragment, text_node);
+        };
+
+        /* prepare a container: wrap only pure text nodes, not tags */
+        const prepare_reveal_container = (container_node) => {
+            /* collect first to avoid live-walking issues while replacing */
+            const walker = document.createTreeWalker(
+                container_node,
+                NodeFilter.SHOW_TEXT,
+                { acceptNode: (node) => node.textContent.trim().length ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT }
+            );
+            const text_nodes = [];
+            while (walker.nextNode()) { text_nodes.push(walker.currentNode); }
+            text_nodes.forEach(wrap_words_in_text_node);
+
+            /* add stagger */
+            const word_nodes = container_node.querySelectorAll('.reveal-effect-word');
+            word_nodes.forEach((word_node, index) => {
+                word_node.style.transitionDelay = (index * 40) + 'ms';
+            });
+
+            /* mark as prepared and reveal visibility */
+            container_node.classList.add('reveal-effect-prepared');
+            container_node.style.visibility = 'visible';
+        };
+
+        /* set up scroll trigger */
+        document.addEventListener('DOMContentLoaded', () => {
+            const container_node = document.querySelector('.reveal-effect');
+            if (!container_node) { return; }
+
+            /* prepare once (preserves HTML) */
+            prepare_reveal_container(container_node);
+
+            /* trigger when in view */
+            const on_intersect = (entries, observer) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        /* start the animation */
+                        container_node.classList.add('reveal-effect-in');
+                        observer.unobserve(container_node);
+                    }
+                });
+            };
+
+            const intersection_observer = new IntersectionObserver(on_intersect, {
+                root: null,
+                rootMargin: '0px 0px -10% 0px',
+                threshold: 0.1
+            });
+
+            intersection_observer.observe(container_node);
+        });
+    </script>
+<?php endif ?>
+
 <?php if(settings()->main->display_index_testimonials): ?>
 <div class="p-4">
     <div class="mt-9 py-7 bg-primary-100 rounded-2x">
@@ -462,9 +625,9 @@ $brands = [
             $testimonials_language_keys = array_unique($testimonials_language_keys);
             ?>
 
-            <div class="row mt-8">
+            <div class="row mt-8 mx-n3">
                 <?php foreach($testimonials_language_keys as $key => $value): ?>
-                    <div class="col-12 col-lg-4 mb-6 mb-lg-0" data-aos="fade-up" data-aos-delay="<?= $key * 100 ?>">
+                    <div class="col-12 col-lg-4 mb-7 mb-lg-0 px-4" data-aos="fade-up" data-aos-delay="<?= $key * 100 ?>">
                         <div class="card border-0 zoom-animation-subtle">
                             <div class="card-body">
                                 <img src="<?= get_custom_image_if_any('index/testimonial-' . $value . '.webp') ?>" class="img-fluid index-testimonial-avatar" alt="<?= l('index.testimonials.' . $value . '.name') . ', ' . l('index.testimonials.' . $value . '.attribute') ?>" loading="lazy" />
@@ -476,7 +639,7 @@ $brands = [
                                 </p>
 
                                 <div class="blockquote-footer mt-4">
-                                    <span class="font-weight-bold"><?= l('index.testimonials.' . $value . '.name') ?></span>, <span class="text-muted"><?= l('index.testimonials.' . $value . '.attribute') ?></span>
+                                    <span class="font-weight-bold"><?= l('index.testimonials.' . $value . '.name') ?></span><br /> <span class="text-muted index-testimonial-comment"><?= l('index.testimonials.' . $value . '.attribute') ?></span>
                                 </div>
                             </div>
                         </div>
@@ -505,7 +668,7 @@ $brands = [
 
     <div class="container">
         <div class="text-center mb-5">
-            <h2><?= sprintf(l('index.faq.header'), '<span class="text-primary">', '</span>') ?></h2>
+            <h2><?= l('index.faq.header') ?></h2>
         </div>
 
         <?php
@@ -530,8 +693,8 @@ $brands = [
                     <div class="card-body">
                         <div class="" id="<?= 'faq_accordion_' . $key ?>">
                             <h3 class="mb-0">
-                                <button class="btn btn-lg font-weight-bold btn-block d-flex justify-content-between text-gray-800 px-0 icon-zoom-animation" type="button" data-toggle="collapse" data-target="<?= '#faq_accordion_answer_' . $key ?>" aria-expanded="true" aria-controls="<?= 'faq_accordion_answer_' . $key ?>">
-                                    <span><?= l('index.faq.' . $key . '.question') ?></span>
+                                <button class="btn btn-lg font-weight-500 btn-block d-flex justify-content-between text-gray-800 px-0 icon-zoom-animation no-focus" type="button" data-toggle="collapse" data-target="<?= '#faq_accordion_answer_' . $key ?>" aria-expanded="true" aria-controls="<?= 'faq_accordion_answer_' . $key ?>">
+                                    <span class="text-left"><?= l('index.faq.' . $key . '.question') ?></span>
 
                                     <span data-icon>
                                 <i class="fas fa-fw fa-circle-chevron-down"></i>
@@ -602,7 +765,7 @@ $brands = [
 <?php endif ?>
 
 
-<?php if(count($data->blog_posts)): ?>
+<?php if (!empty($data->blog_posts)): ?>
     <div class="my-5">&nbsp;</div>
 
     <div class="container">
@@ -610,10 +773,10 @@ $brands = [
             <h2><?= sprintf(l('index.blog.header'), '<span class="text-primary">', '</span>') ?></h2>
         </div>
 
-        <div class="row">
+        <div class="row m-n4">
             <?php foreach($data->blog_posts as $blog_post): ?>
                 <div class="col-12 col-lg-4 p-4">
-                    <div class="card h-100 zoom-animation-subtle">
+                    <div class="card h-100 zoom-animation-subtle position-relative">
                         <div class="card-body">
                             <?php if($blog_post->image): ?>
                                 <a href="<?= SITE_URL . ($blog_post->language ? \Altum\Language::$active_languages[$blog_post->language] . '/' : null) . 'blog/' . $blog_post->url ?>" aria-label="<?= $blog_post->title ?>">
@@ -621,8 +784,8 @@ $brands = [
                                 </a>
                             <?php endif ?>
 
-                            <a href="<?= SITE_URL . ($blog_post->language ? \Altum\Language::$active_languages[$blog_post->language] . '/' : null) . 'blog/' . $blog_post->url ?>">
-                                <h3 class="h5 card-title mb-2"><?= $blog_post->title ?></h3>
+                            <a href="<?= SITE_URL . ($blog_post->language ? \Altum\Language::$active_languages[$blog_post->language] . '/' : null) . 'blog/' . $blog_post->url ?>" class="stretched-link text-decoration-none">
+                                <h3 class="h5 card-title mb-2 d-inline"><?= $blog_post->title ?></h3>
                             </a>
 
                             <p class="text-muted mb-0"><?= $blog_post->description ?></p>
@@ -643,8 +806,9 @@ $brands = [
 <script src="<?= ASSETS_FULL_URL . 'js/libraries/aos.min.js?v=' . PRODUCT_CODE ?>"></script>
 
 <script>
+    'use strict';
+
     AOS.init({
-        delay: 100,
         duration: 600
     });
 </script>
@@ -707,3 +871,7 @@ $brands = [
     </script>
 <?php endif ?>
 <?php \Altum\Event::add_content(ob_get_clean(), 'javascript') ?>
+
+<?php ob_start() ?>
+    <link href="<?= ASSETS_FULL_URL . 'css/index-custom.css?v=' . PRODUCT_CODE ?>" rel="stylesheet" media="screen,print">
+<?php \Altum\Event::add_content(ob_get_clean(), 'head') ?>

@@ -1,7 +1,7 @@
 <?php
 
-define('NEW_PRODUCT_VERSION', '42.0.0');
-define('NEW_PRODUCT_CODE', '4200');
+define('NEW_PRODUCT_VERSION', '47.0.0');
+define('NEW_PRODUCT_CODE', '4700');
 
 
 /* List of updates available */
@@ -18,5 +18,7 @@ $updates = [
     '3900',
     '4000',
     '4100',
-    '4200'
+    '4200',
+    '4300',
+    '4700'
 ];

@@ -36,6 +36,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     /* On modal show load new data */
     $('#team_delete').on('show.bs.modal', event => {
         let team_id = $(event.relatedTarget).data('team-id');

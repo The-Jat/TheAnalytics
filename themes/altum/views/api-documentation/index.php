@@ -2,13 +2,13 @@
 
 <div class="container">
     <?php if(settings()->main->breadcrumbs_is_enabled): ?>
-<nav aria-label="breadcrumb">
-        <ol class="custom-breadcrumbs small">
-            <li><a href="<?= url() ?>"><?= l('index.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
-            <li class="active" aria-current="page"><?= l('api_documentation.breadcrumb') ?></li>
-        </ol>
-    </nav>
-<?php endif ?>
+        <nav aria-label="breadcrumb">
+            <ol class="custom-breadcrumbs small">
+                <li><a href="<?= url() ?>"><?= l('index.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
+                <li class="active" aria-current="page"><?= l('api_documentation.breadcrumb') ?></li>
+            </ol>
+        </nav>
+    <?php endif ?>
 
     <h1 class="h4"><?= l('api_documentation.header') ?></h1>
     <p class="text-muted"><?= l('api_documentation.subheader') ?></p>
@@ -19,7 +19,12 @@
                 <?php if(is_logged_in()): ?>
                     <div class="form-group">
                         <label for="api_key"><?= l('api_documentation.api_key') ?></label>
+                        <?php
+                        //ALTUMCODE:DEMO if(DEMO) if($this->user->user_id == 1) $this->user->api_key = 'hidden on demo';
+                        ?>
+
                         <input type="text" id="api_key" value="<?= $this->user->api_key ?>" class="form-control" onclick="this.select();" readonly="readonly" />
+
                     </div>
                 <?php else: ?>
                     <div class="mb-3">
@@ -80,6 +85,20 @@
 
                 <div class="card-body d-flex align-items-center">
                     <?= l('api_documentation.websites') ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-4 p-3 position-relative">
+            <div class="card d-flex flex-row h-100 overflow-hidden">
+                <div class="border-right border-gray-100 px-3 d-flex flex-column justify-content-center">
+                    <a href="<?= url('api-documentation/visitors') ?>" class="stretched-link">
+                        <i class="fas fa-fw fa-users text-primary-600"></i>
+                    </a>
+                </div>
+
+                <div class="card-body d-flex align-items-center">
+                    <?= l('visitors.title') ?>
                 </div>
             </div>
         </div>
@@ -158,6 +177,7 @@
             </div>
         <?php endif ?>
 
+        <?php if(settings()->payment->is_enabled): ?>
         <div class="col-12 col-sm-6 col-xl-4 p-3 position-relative">
             <div class="card d-flex flex-row h-100 overflow-hidden">
                 <div class="border-right border-gray-100 px-3 d-flex flex-column justify-content-center">
@@ -171,6 +191,7 @@
                 </div>
             </div>
         </div>
+        <?php endif ?>
 
         <div class="col-12 col-sm-6 col-xl-4 p-3 position-relative">
             <div class="card d-flex flex-row h-100 overflow-hidden">
@@ -189,15 +210,15 @@
 </div>
 
 <?php ob_start() ?>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-                {
-                    "@type": "ListItem",
-                    "position": 1,
-                    "name": "<?= l('index.title') ?>",
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "<?= l('index.title') ?>",
                     "item": "<?= url() ?>"
                 },
                 {
@@ -208,5 +229,5 @@
                 }
             ]
         }
-    </script>
+</script>
 <?php \Altum\Event::add_content(ob_get_clean(), 'javascript') ?>

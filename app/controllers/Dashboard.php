@@ -33,7 +33,7 @@ class Dashboard extends Controller {
             redirect('websites');
         }
 
-        $type = isset($this->params[0]) && in_array($this->params[0], ['paths', 'referrers', 'screen-resolutions', 'utms', 'operating-systems', 'device-types', 'continents', 'countries', 'cities', 'browser-names', 'browser-languages', 'browser-timezones', 'goals', 'realtime', 'themes']) ? query_clean(str_replace('-', '_', $this->params[0])) : 'default';
+        $type = isset($this->params[0]) && in_array($this->params[0], ['paths', 'referrers', 'screen-resolutions', 'utms', 'operating-systems', 'device-types', 'continents', 'countries', 'cities', 'browser-names', 'browser-languages', 'browser-timezones', 'goals', 'realtime', 'themes', 'outbound-clicks']) ? query_clean(str_replace('-', '_', $this->params[0])) : 'default';
 
         /* Check to see if we need to switch the selected website */
         if(isset($_GET['website_id']) && array_key_exists($_GET['website_id'], $this->websites)) {
@@ -65,6 +65,10 @@ class Dashboard extends Controller {
 
             /* Load data based on the website type */
             $dashboard = $this->{$this->website->tracking_type}();
+
+            /* Outbound Clicks Modal */
+            $view = new \Altum\View('dashboard/outbound_clicks_paths_modal', (array)$this);
+            \Altum\Event::add_content($view->run(), 'modals');
 
             /* Referrer Paths Modal */
             $view = new \Altum\View('dashboard/referrer_paths_modal', (array)$this);

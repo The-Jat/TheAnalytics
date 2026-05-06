@@ -9,6 +9,7 @@
     let pixel_heatmaps = <?= json_encode($data->pixel_heatmaps) ?>;
     let pixel_goals = <?= json_encode($data->pixel_goals) ?>;
     let pixel_query_parameters_tracking_is_enabled = <?= json_encode($data->pixel_query_parameters_tracking_is_enabled) ?>;
+    let sessions_replays_hide_text_selector = <?= json_encode($data->pixel_sessions_replays_hide_text_selector ?? null) ?>;
 
     /* Helper messages */
     let pixel_key_dnt_message = <?= json_encode(l('pixel.info_message.dnt')) ?>;
@@ -21,6 +22,10 @@
     <?php endif ?>
 
     <?php require_once ASSETS_PATH . 'js/pixel/normal/pixel-header.js' ?>
+
+    <?php if($data->pixel_outbound_clicks_is_enabled ?? false): ?>
+        <?php require_once ASSETS_PATH . 'js/pixel/lightweight/pixel-outbound.js' ?>
+    <?php endif ?>
 
     <?php require_once ASSETS_PATH . 'js/pixel/normal/pixel-footer.js' ?>
 })();

@@ -2,14 +2,14 @@
 
 <div class="container">
     <?php if(settings()->main->breadcrumbs_is_enabled): ?>
-<nav aria-label="breadcrumb">
-        <ol class="custom-breadcrumbs small">
-            <li><a href="<?= url() ?>"><?= l('index.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
-            <li><a href="<?= url('api-documentation') ?>"><?= l('api_documentation.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
-            <li class="active" aria-current="page"><?= l('api_documentation.websites') ?></li>
-        </ol>
-    </nav>
-<?php endif ?>
+        <nav aria-label="breadcrumb">
+            <ol class="custom-breadcrumbs small">
+                <li><a href="<?= url() ?>"><?= l('index.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
+                <li><a href="<?= url('api-documentation') ?>"><?= l('api_documentation.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
+                <li class="active" aria-current="page"><?= l('api_documentation.websites') ?></li>
+            </ol>
+        </nav>
+    <?php endif ?>
 
     <h1 class="h4 mb-4"><?= l('api_documentation.websites') ?></h1>
 
@@ -78,7 +78,7 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
+                        <pre data-shiki="json">
 {
     "data": [
         {
@@ -90,6 +90,7 @@
             "path": "/",
             "tracking_type": "normal",
             "excluded_ips": "",
+            "outbound_clicks_is_enabled": false,
             "events_children_is_enabled": false,
             "sessions_replays_is_enabled": false,
             "email_reports_is_enabled": false,
@@ -100,7 +101,7 @@
             "public_statistics_is_enabled": false,
             "public_statistics_password": false,
             "is_enabled": true,
-            "datetime": "<?= get_date() ?>"
+            "datetime": "<?= get_date() ?>",
             "last_datetime": null
         },
     ],
@@ -111,18 +112,18 @@
         "total_pages": 1
     },
     "links": {
-        "first": "<?= SITE_URL ?>api/websites?&page=1",
-        "last": "<?= SITE_URL ?>api/websites?&page=1",
+        "first": "<?= SITE_URL ?>api/websites?page=1",
+        "last": "<?= SITE_URL ?>api/websites?page=1",
         "next": null,
         "prev": null,
-        "self": "<?= SITE_URL ?>api/websites?&page=1"
+        "self": "<?= SITE_URL ?>api/websites?page=1"
     }
-}
-                        </div>
+}</pre>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <div class="card">
             <div class="card-header bg-white p-3 position-relative">
@@ -159,7 +160,7 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
+                        <pre data-shiki="json">
 {
     "data": {
         "id": 1,
@@ -170,6 +171,7 @@
         "path": "/",
         "tracking_type": "normal",
         "excluded_ips": "",
+        "outbound_clicks_is_enabled": false,
         "events_children_is_enabled": false,
         "sessions_replays_is_enabled": false,
         "email_reports_is_enabled": false,
@@ -180,15 +182,15 @@
         "public_statistics_is_enabled": false,
         "public_statistics_password": false,
         "is_enabled": true,
-        "datetime": "<?= get_date() ?>"
+        "datetime": "<?= get_date() ?>",
         "last_datetime": null
     }
-}
-                        </div>
+}</pre>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <div class="card">
             <div class="card-header bg-white p-3 position-relative">
@@ -221,6 +223,15 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <tr>
+                                <td>domain_id</td>
+                                <td>
+                                    <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
+                                    <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-hashtag mr-1"></i> <?= l('api_documentation.int') ?></span>
+                                </td>
+                                <td>-</td>
+                            </tr>
+
                             <tr>
                                 <td>name</td>
                                 <td>
@@ -262,6 +273,14 @@
                                 <td><?= l('api_documentation.websites.excluded_ips') ?></td>
                             </tr>
                             <tr>
+                                <td>outbound_clicks_is_enabled</td>
+                                <td>
+                                    <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
+                                    <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-toggle-on mr-1"></i> <?= l('api_documentation.boolean') ?></span>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
                                 <td>events_children_is_enabled</td>
                                 <td>
                                     <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
@@ -278,6 +297,14 @@
                                 <td><?= l('api_documentation.websites.sessions_replays_is_enabled') ?></td>
                             </tr>
                             <tr>
+                                <td>sessions_replays_hide_text_selector</td>
+                                <td>
+                                    <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
+                                    <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-signature mr-1"></i> <?= l('api_documentation.string') ?></span>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
                                 <td>email_reports_is_enabled</td>
                                 <td>
                                     <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
@@ -286,14 +313,14 @@
                                 <td><?= l('api_documentation.websites.email_reports_is_enabled') ?></td>
                             </tr>
                             <?php if(settings()->analytics->ip_storage_is_enabled): ?>
-                            <tr>
-                                <td>ip_storage_is_enabled</td>
-                                <td>
-                                    <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
-                                    <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-toggle-on mr-1"></i> <?= l('api_documentation.boolean') ?></span>
-                                </td>
-                                <td><?= sprintf(l('api_documentation.available_when'), '<span class="badge badge-light">tracking_type = normal</span>') ?></td>
-                            </tr>
+                                <tr>
+                                    <td>ip_storage_is_enabled</td>
+                                    <td>
+                                        <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
+                                        <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-toggle-on mr-1"></i> <?= l('api_documentation.boolean') ?></span>
+                                    </td>
+                                    <td><?= sprintf(l('api_documentation.available_when'), '<span class="badge badge-light">tracking_type = normal</span>') ?></td>
+                                </tr>
                             <?php endif ?>
                             <tr>
                                 <td>query_parameters_tracking_is_enabled</td>
@@ -355,18 +382,18 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
+                        <pre data-shiki="json">
 {
     "data": {
         "id": 1
     }
-}
-                        </div>
+}</pre>
                     </div>
-
                 </div>
+
             </div>
         </div>
+
 
         <div class="card">
             <div class="card-header bg-white p-3 position-relative">
@@ -400,6 +427,15 @@
                             </thead>
                             <tbody>
                             <tr>
+                                <td>domain_id</td>
+                                <td>
+                                    <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
+                                    <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-hashtag mr-1"></i> <?= l('api_documentation.int') ?></span>
+                                </td>
+                                <td>-</td>
+                            </tr>
+
+                            <tr>
                                 <td>name</td>
                                 <td>
                                     <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
@@ -432,6 +468,14 @@
                                 <td><?= l('api_documentation.websites.excluded_ips') ?></td>
                             </tr>
                             <tr>
+                                <td>outbound_clicks_is_enabled</td>
+                                <td>
+                                    <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
+                                    <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-toggle-on mr-1"></i> <?= l('api_documentation.boolean') ?></span>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
                                 <td>events_children_is_enabled</td>
                                 <td>
                                     <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
@@ -446,6 +490,14 @@
                                     <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-toggle-on mr-1"></i> <?= l('api_documentation.boolean') ?></span>
                                 </td>
                                 <td><?= l('api_documentation.websites.sessions_replays_is_enabled') ?></td>
+                            </tr>
+                            <tr>
+                                <td>sessions_replays_hide_text_selector</td>
+                                <td>
+                                    <span class="badge badge-info"><i class="fas fa-fw fa-sm fa-circle-notch mr-1"></i> <?= l('api_documentation.optional') ?></span>
+                                    <span class="badge badge-secondary"><i class="fas fa-fw fa-sm fa-signature mr-1"></i> <?= l('api_documentation.string') ?></span>
+                                </td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>email_reports_is_enabled</td>
@@ -525,18 +577,18 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
+                        <pre data-shiki="json">
 {
     "data": {
         "id": 1
     }
-}
-                        </div>
+}</pre>
                     </div>
-
                 </div>
+
             </div>
         </div>
+
 
         <div class="card">
             <div class="card-header bg-white p-3 position-relative">
@@ -572,6 +624,7 @@
 
                 </div>
             </div>
+
         </div>
     </div>
 </div>

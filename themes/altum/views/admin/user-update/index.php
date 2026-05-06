@@ -19,7 +19,7 @@
 
 <?= \Altum\Alerts::output_alerts() ?>
 
-<?php //ALTUMCODE:DEMO if(DEMO) {$data->user->email = 'hidden@demo.com'; $data->user->name = $data->user->ip = 'hidden on demo';} ?>
+<?php //ALTUMCODE:DEMO if(DEMO) {$data->user->email = 'hidden@demo.com'; $data->user->name = $data->user->ip = $data->user->api_key = 'hidden on demo';} ?>
 
 <div class="card <?= \Altum\Alerts::has_field_errors() ? 'border-danger' : null ?>">
     <div class="card-body">
@@ -128,7 +128,7 @@
                 <div class="form-group">
                     <label for="events_children_limit"><?= l('admin_plans.plan.events_children_limit') ?> <small class="form-text text-muted"><?= l('admin_plans.plan.per_month') ?></small></label>
                     <input type="number" id="events_children_limit" name="events_children_limit" min="-1" class="form-control" value="<?= $data->user->plan_settings->events_children_limit ?>" />
-                    <small class="form-text text-muted"><?= l('admin_plans.plan.events_children_limit_help') ?></small>
+                    <small class="form-text text-muted"><?= l('admin_plans.plan.events_children_limit_help') ?> <?= l('admin_plans.plan.unlimited') ?></small>
                 </div>
 
                 <div class="form-group">
@@ -145,7 +145,7 @@
                 <div class="form-group">
                     <label for="sessions_replays_limit"><?= l('admin_plans.plan.sessions_replays_limit') ?> <small class="form-text text-muted"><?= l('admin_plans.plan.per_month') ?></small></label>
                     <input type="number" id="sessions_replays_limit" name="sessions_replays_limit" min="-1" class="form-control" value="<?= $data->user->plan_settings->sessions_replays_limit ?>" />
-                    <small class="form-text text-muted"><?= l('admin_plans.plan.sessions_replays_limit_help') ?></small>
+                    <small class="form-text text-muted"><?= l('admin_plans.plan.sessions_replays_limit_help') ?> <?= l('admin_plans.plan.unlimited') ?></small>
                 </div>
 
                 <div class="form-group">
@@ -168,19 +168,30 @@
                 <div class="form-group">
                     <label for="websites_heatmaps_limit"><?= l('admin_plans.plan.websites_heatmaps_limit') ?></label>
                     <input type="number" id="websites_heatmaps_limit" name="websites_heatmaps_limit" min="-1" class="form-control" value="<?= $data->user->plan_settings->websites_heatmaps_limit ?>" />
-                    <small class="form-text text-muted"><?= l('admin_plans.plan.websites_heatmaps_limit_help') ?></small>
+                    <small class="form-text text-muted"><?= l('admin_plans.plan.websites_heatmaps_limit_help') ?> <?= l('admin_plans.plan.unlimited') ?></small>
                 </div>
 
                 <div class="form-group">
                     <label for="websites_goals_limit"><?= l('admin_plans.plan.websites_goals_limit') ?></label>
                     <input type="number" id="websites_goals_limit" name="websites_goals_limit" min="-1" class="form-control" value="<?= $data->user->plan_settings->websites_goals_limit ?>" />
-                    <small class="form-text text-muted"><?= l('admin_plans.plan.websites_goals_limit_help') ?></small>
+                    <small class="form-text text-muted"><?= l('admin_plans.plan.websites_goals_limit_help') ?> <?= l('admin_plans.plan.unlimited') ?></small>
                 </div>
 
                 <div class="form-group">
                     <label for="domains_limit"><?= l('admin_plans.plan.domains_limit') ?></label>
                     <input type="number" id="domains_limit" name="domains_limit" min="-1" class="form-control" value="<?= $data->user->plan_settings->domains_limit ?>" />
                     <small class="form-text text-muted"><?= l('admin_plans.plan.unlimited') ?></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="additional_domains"><?= l('admin_plans.plan.additional_domains') ?></label>
+                    <select id="additional_domains" name="additional_domains[]" class="custom-select" multiple="multiple">
+						<?php foreach($data->additional_domains as $domain): ?>
+                            <option value="<?= $domain->domain_id ?>" <?= in_array($domain->domain_id, $data->user->plan_settings->additional_domains ?? [])  ? 'selected="selected"' : null ?>>
+								<?= $domain->host ?>
+                            </option>
+						<?php endforeach ?>
+                    </select>
                 </div>
 
                 <?php if(\Altum\Plugin::is_active('affiliate')): ?>
@@ -280,7 +291,7 @@
 <script>
     'use strict';
 
-    moment.tz.setDefault(<?= json_encode($this->user->timezone) ?>);
+moment.tz.setDefault(<?= json_encode($this->user->timezone) ?>);
 
     let check_plan_id = () => {
         let selected_plan_id = document.querySelector('[name="plan_id"]').value;
@@ -323,7 +334,7 @@
     /* Daterangepicker */
     $('[name="plan_expiration_date"]').daterangepicker({
         startDate: <?= json_encode($data->user->plan_expiration_date) ?>,
-        minDate: new Date(),
+        minDate: "<?= (new \DateTime('', new \DateTimeZone(\Altum\Date::$default_timezone)))->setTimezone(new \DateTimeZone($this->user->timezone))->format('Y-m-d H:i:s'); ?>",
         alwaysShowCalendars: true,
         singleCalendar: true,
         singleDatePicker: true,

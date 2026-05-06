@@ -1,4 +1,3 @@
-
 /* Sending data via ES6 Fetch */
 let send_data_fetch = async data => {
     try {
@@ -200,17 +199,29 @@ class AltumCodeEvents {
                 /* Check if goal url matches the current url */
                 if(goal.type == 'pageview' && (goal.url == current_domain || goal.url == 'www.'+current_domain)) {
 
-                    await this.event_goal_conversion(goal.key);
+                    this.event_goal_conversion(goal.key);
 
                 }
             }
         }
 
-        /* Events array to be used by heatmaps and session recordings */
-        let events = [];
-        let events_tracking_initiated = false;
+        /* Heatmaps & RRWEB replays */
+        /* Session replay buffer */
+        let session_replay_events_buffer = [];
+        let session_replay_send_timer = null;
+        const session_replay_batch_delay = 1000; /* 1.5 seconds */
+        const session_replay_batch_size = 100;
 
-        /* Initiate heatmaps tracking if needed */
+        /* Heatmap snapshot buffer, will be used if a heatmap for this page is detected */
+        let heatmap_events = null;
+        let heatmap_should_capture = false;
+        let heatmap_id_active = null;
+
+        /* Helpers to capture exactly one [meta, fullsnapshot] pair for heatmap */
+        let heatmap_meta_event = null;
+        let heatmap_snapshot_sent = false;
+
+        /* Heatmap detection */
         if(pixel_heatmaps.length) {
             let device = get_device_type();
             let current_domain = get_current_url_domain_no_www();
@@ -223,41 +234,13 @@ class AltumCodeEvents {
 
                     /* If needed, snapshot the page and send the data */
                     if(!heatmap[`snapshot_id_${device}`]) {
+                        heatmap_events = [];
+                        heatmap_should_capture = true;
+                        heatmap_id_active = heatmap.heatmap_id;
 
-                        rrwebRecord({
-                            emit: async event => {
-                                events_tracking_initiated = true;
-
-                                /* Push events here */
-                                events.push(event);
-
-                                /* Send the snapshot data */
-                                if(events.length == 2 && events[0].type == 4 && events[1].type == 2) {
-                                    /* Send the caught snapshot */
-                                    await send_data_fetch({
-                                        type: 'heatmap_snapshot',
-                                        heatmap_id: heatmap.heatmap_id,
-                                        data: events
-                                    });
-                                }
-                            },
-
-                            /* Convert all text inputs to *** for privacy reasons */
-                            maskAllInputs: true,
-
-                            /* Remove unnecessary parts of the page */
-                            slimDOMOptions: {
-                                comment: true,
-                                headFavicon: true,
-                                headWhitespace: true,
-                                headMetaDescKeywords: true,
-                                headMetaSocial: true,
-                                headMetaRobots: true,
-                                headMetaHttpEquiv: true,
-                                headMetaAuthorship: true,
-                                headMetaVerification: true
-                            },
-                        });
+                        /* Reset helpers to ensure a single snapshot is sent */
+                        heatmap_meta_event = null;
+                        heatmap_snapshot_sent = false;
                     }
 
                     /* Initiate the events handlers for heatmaps */
@@ -270,80 +253,148 @@ class AltumCodeEvents {
             }
         }
 
-        /* Session replay tracking */
-        if(pixel_track_sessions_replays) {
+        let replay_events_this_second = 0;
+        const replay_max_events_per_second = 100;
 
-            if(!events_tracking_initiated) {
-                rrwebRecord({
-                    /* Convert all text inputs to *** for privacy reasons */
-                    maskAllInputs: true,
+        setInterval(() => { replay_events_this_second = 0; }, 1000);
 
-                    /* Remove unnecessary parts of the page */
-                    slimDOMOptions: {
-                        comment: true,
-                        headFavicon: true,
-                        headWhitespace: true,
-                        headMetaDescKeywords: true,
-                        headMetaSocial: true,
-                        headMetaRobots: true,
-                        headMetaHttpEquiv: true,
-                        headMetaAuthorship: true,
-                        headMetaVerification: true
-                    },
+        const safe_add_replay_event = event => {
+            if(replay_events_this_second >= replay_max_events_per_second) {
+                return;
+            }
+            replay_events_this_second++;
+            add_session_replay_event_to_buffer(event);
+        };
 
-                    emit: event => {
-                        events.push(event);
-                    },
-                });
+        /* Add session replay event to buffer and batch send */
+        const add_session_replay_event_to_buffer = event => {
+            session_replay_events_buffer.push(event);
+
+            /* If buffer is full, send now */
+            if(session_replay_events_buffer.length >= session_replay_batch_size) {
+                flush_session_replay_buffer_now();
+                return;
             }
 
-            let send_sessions_replays = async () => {
+            /* Start/reset timer */
+            if(session_replay_send_timer) clearTimeout(session_replay_send_timer);
+            session_replay_send_timer = setTimeout(flush_session_replay_buffer_now, session_replay_batch_delay);
+        };
 
-                if(events.length) {
-                    await send_data_fetch({
-                        visitor_uuid: this.visitor_uuid,
-                        visitor_session_uuid: this.visitor_session_uuid,
-                        visitor_session_event_uuid: this.visitor_session_event_uuid,
-                        type: 'replays',
-                        data: events
-                    });
+        /* Flush the session replay buffer now */
+        const flush_session_replay_buffer_now = async (use_beacon = false) => {
+            if(session_replay_events_buffer.length === 0) return;
 
-                    events = [];
-                }
-
+            let replay_data = {
+                visitor_uuid: this.visitor_uuid,
+                visitor_session_uuid: this.visitor_session_uuid,
+                visitor_session_event_uuid: this.visitor_session_event_uuid,
+                type: 'replays',
+                data: session_replay_events_buffer
             };
 
-            setInterval(send_sessions_replays, 1000);
 
-            /* Timer for the click so we dont spam the server */
-            let timer = false;
+            if(use_beacon) {
+                /* Use beacon for final flush on unload */
+                send_data_beacon(replay_data);
+            } else {
+                /* Use fetch for normal batch sending */
+                await send_data_fetch(replay_data);
+            }
 
-            document.addEventListener('click', event => {
+            session_replay_events_buffer = [];
+            if(session_replay_send_timer) clearTimeout(session_replay_send_timer);
+            session_replay_send_timer = null;
+        };
 
-                /* Make sure the event was fired by the actual user and not programatically */
-                if(!event.isTrusted) {
-                    return false;
+        /* Use ONE rrwebRecord for both replay and heatmap */
+        if(pixel_track_sessions_replays || heatmap_should_capture) {
+            rrwebRecord({
+                sampling: {
+                    mouseInteraction: {
+                        MouseUp: true,
+                        MouseDown: true,
+                        Click: true,
+                        Focus: true,
+                        Blur: true,
+                        DblClick: false,
+                        ContextMenu: false,
+                        TouchStart: false,
+                        TouchEnd: false
+                    },
+                    mousemove: 200,
+                    scroll: 200,
+                    media: 200,
+                    mutation: 150
+                },
+
+                /* Convert all text inputs to *** for privacy reasons */
+                maskAllInputs: true,
+
+                /* Remove unnecessary parts of the page */
+                slimDOMOptions: {
+                    comment: true,
+                    headFavicon: true,
+                    headWhitespace: true,
+                    headMetaDescKeywords: true,
+                    headMetaSocial: true,
+                    headMetaRobots: true,
+                    headMetaHttpEquiv: true,
+                    headMetaAuthorship: true,
+                    headMetaVerification: true
+                },
+                emit: event => {
+                    /* Handle heatmap FIRST and synchronously */
+                    if(heatmap_should_capture && !heatmap_snapshot_sent) {
+                        /* Remember the very first META event */
+                        if(event.type === 4 && !heatmap_meta_event) {
+                            heatmap_meta_event = event;
+                        }
+
+                        /* On the first FULL SNAPSHOT after META, send snapshot */
+                        if(event.type === 2 && heatmap_meta_event) {
+                            /* Send only the minimal [meta, fullsnapshot] pair */
+                            send_data_fetch({
+                                type: 'heatmap_snapshot',
+                                heatmap_id: heatmap_id_active,
+                                data: [heatmap_meta_event, event]
+                            }).catch(() => { /* swallow to avoid breaking rrweb emit */ });
+
+                            heatmap_snapshot_sent = true;
+                            heatmap_should_capture = false; /* Only send once */
+                            heatmap_events = null; /* free memory */
+                        }
+                    }
+
+                    /* Always push to session replay if enabled */
+                    if(pixel_track_sessions_replays) {
+                        /* Block selection-change spam: incremental event with source = 14 */
+                        if(event.type === 3 && event.data && event.data.source === 14) {
+                            return;
+                        }
+
+                        safe_add_replay_event(event);
+
+                        /* If the buffer holds the initial [meta, fullsnapshot], flush soon but don't block emit */
+                        if(
+                            session_replay_events_buffer.length >= 2 &&
+                            session_replay_events_buffer[0].type === 4 &&
+                            session_replay_events_buffer[1].type === 2
+                        ) {
+                            /* Defer flush so rrweb’s emit path is never awaited */
+                            setTimeout(() => {
+                                flush_session_replay_buffer_now().catch(() => {});
+                            }, 0);
+                        }
+                    }
                 }
-
-                /* Timeout depending on the element that has been clicked so that we can detect actual url changes clicks */
-                let timeout = event.target.tagName == 'A' && !event.target.getAttribute('href').startsWith('#') ? 0 : 500;
-
-                timer = setTimeout(() => send_sessions_replays, timeout);
-
             });
-
-            document.querySelectorAll('form').forEach(form_element => {
-
-                form_element.addEventListener('submit', send_sessions_replays);
-
-            });
-
-            /* On page changes */
-            const termination_event = 'onpagehide' in self ? 'pagehide' : 'unload';
-
-            window.addEventListener(termination_event, send_sessions_replays, {capture: true});
         }
 
+        /* Always flush session replay buffer on pagehide and beforeunload */
+        const termination_event = 'onpagehide' in self ? 'pagehide' : 'unload';
+        window.addEventListener(termination_event, () => { flush_session_replay_buffer_now(true); }, {capture: true});
+        window.addEventListener('beforeunload', () => { flush_session_replay_buffer_now(true); });
     }
 
     initiate_event_handlers() {
@@ -378,7 +429,9 @@ class AltumCodeEvents {
             let timeout = event.target.tagName == 'A' && !event.target.getAttribute('href').startsWith('#') ? 0 : 500;
 
             /* Get the text of the area that the user clicked */
-            let text = event.target.innerText.length > 61 ? `${event.target.innerText.substr(0, 61)}...` : event.target.innerText;
+            let text = (typeof event.target.innerText === 'string' && event.target.innerText.length > 61)
+                ? `${event.target.innerText.substr(0, 61)}...`
+                : event.target.innerText || '';
 
             let data = {
                 mouse: {
@@ -428,11 +481,11 @@ class AltumCodeEvents {
                 scroll: {
                     percentage: parseInt((document.documentElement['scrollTop'] || document.body['scrollTop']) / ((document.documentElement['scrollHeight'] || document.body['scrollHeight']) - document.documentElement.clientHeight) * 100)
 
-                    // Do not store the top value, store the percentage of scrolling instead
-                    // top: window.pageYOffset || document.documentElement.scrollTop,
+                    /* Do not store the top value, store the percentage of scrolling instead */
+                    /* top: window.pageYOffset || document.documentElement.scrollTop, */
 
-                    // Most websites do not have a horizontal scroll
-                    // left: window.pageXOffset || document.documentElement.scrollLeft
+                    /* Most websites do not have a horizontal scroll */
+                    /* left: window.pageXOffset || document.documentElement.scrollLeft */
                 }
             };
 
@@ -445,7 +498,7 @@ class AltumCodeEvents {
 
             }, 500);
 
-        });
+        }, { passive: true });
     }
 
     /* Inputs event handler */
@@ -460,23 +513,19 @@ class AltumCodeEvents {
                 }
             };
 
-            // INPUT VALUES ARE NOT STORED ANYMORE FOR PRIVACY REASONS
-            // let form_element = event.target;
-            //
-            // /* Parse all the input fields */
-            // form_element.querySelectorAll('input').forEach(input_element => {
-            //
-            //     if(input_element.type == 'password' || input_element.type == 'hidden') {
-            //         return;
-            //     }
-            //
-            //     if(input_element.name.indexOf('captcha') !== -1) {
-            //         return;
-            //     }
-            //
-            //     data.form[input_element.name] = input_element.value;
-            //
-            // });
+            /* INPUT VALUES ARE NOT STORED ANYMORE FOR PRIVACY REASONS */
+            /* let form_element = event.target; */
+            /*
+            form_element.querySelectorAll('input').forEach(input_element => {
+                if(input_element.type == 'password' || input_element.type == 'hidden') {
+                    return;
+                }
+                if(input_element.name.indexOf('captcha') !== -1) {
+                    return;
+                }
+                data.form[input_element.name] = input_element.value;
+            });
+            */
 
             /* Submit the event */
             this.event_child('form', data);

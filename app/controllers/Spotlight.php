@@ -114,6 +114,11 @@ class Spotlight extends Controller {
             ];
 
             $available_pages[] = [
+                'name' => l('websites_import.title'),
+                'url'  => 'websites-import'
+            ];
+
+            $available_pages[] = [
                 'name' => l('teams.title'),
                 'url'  => 'teams'
             ];
@@ -309,6 +314,11 @@ class Spotlight extends Controller {
                     ];
 
                     $available_pages[] = [
+                        'name' => l('global.menu.admin') . ' - ' . l('admin_taxes_import.title'),
+                        'url' => 'admin/taxes-import'
+                    ];
+
+                    $available_pages[] = [
                         'name' => l('global.menu.admin') . ' - ' . l('admin_tax_create.title'),
                         'url' => 'admin/tax-create'
                     ];
@@ -476,6 +486,20 @@ class Spotlight extends Controller {
                     ];
                 }
 
+                if(\Altum\Plugin::is_active('image-optimizer')) {
+                    $available_pages[] = [
+                        'name' => l('global.menu.admin') . ' - ' . l('admin_image_optimizer.title'),
+                        'url' => 'admin/image-optimizer'
+                    ];
+                }
+
+                if(\Altum\Plugin::is_active('dynamic-og-images')) {
+                    $available_pages[] = [
+                        'name' => l('global.menu.admin') . ' - ' . l('admin_dynamic_og_images.title'),
+                        'url' => 'admin/dynamic-og-images'
+                    ];
+                }
+
                 /* Per product */
                 $available_pages[] = [
                     'name' => l('global.menu.admin') . ' - ' . l('admin_websites.menu'),
@@ -493,11 +517,6 @@ class Spotlight extends Controller {
                     'name' => l('global.menu.admin') . ' - ' . l('admin_domains.menu'),
                     'url'  => 'admin/domains'
                 ];
-
-
-
-
-
             }
 
             $available_pages[] = [

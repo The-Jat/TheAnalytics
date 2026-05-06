@@ -1925,7 +1925,7 @@ var rrwebRecord = (function () {
         const handlers = [];
         let currentPointerType = null;
         const getHandler = (eventKey) => {
-            return (event) => {
+            return event => {
                 const target = getEventTarget(event);
                 if(isBlocked(target, blockClass, blockSelector, true)) {
                     return;
@@ -3406,7 +3406,7 @@ var rrwebRecord = (function () {
             const canvasContextReset = initCanvasContextObserver(win, blockClass, blockSelector, true);
             const snapshotInProgressMap = /* @__PURE__ */ new Map();
             const worker = new WorkerFactory();
-            worker.onmessage = (e) => {
+            worker.onmessage = event => {
                 const { id } = e.data;
                 snapshotInProgressMap.set(id, false);
                 if(!("base64" in e.data))
@@ -3741,7 +3741,7 @@ var rrwebRecord = (function () {
         polyfill();
         let lastFullSnapshotEvent;
         let incrementalSnapshotCount = 0;
-        const eventProcessor = (e) => {
+        const eventProcessor = event => {
             for (const plugin of plugins || []) {
                 if(plugin.eventProcessor) {
                     e = plugin.eventProcessor(e);

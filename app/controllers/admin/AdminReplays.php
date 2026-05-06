@@ -56,8 +56,8 @@ class AdminReplays extends Controller {
         }
 
         /* Export handler */
-        process_export_csv($replays, 'include', ['replay_id', 'session_id', 'visitor_id', 'website_id', 'user_id', 'events', 'size', 'is_offloaded', 'last_datetime', 'datetime', 'expiration_date'], sprintf(l('replays.title')));
-        process_export_json($replays, 'include', ['replay_id', 'session_id', 'visitor_id', 'website_id', 'user_id', 'events', 'size', 'is_offloaded', 'last_datetime', 'datetime', 'expiration_date'], sprintf(l('replays.title')));
+        process_export_csv($replays, ['replay_id', 'session_id', 'visitor_id', 'website_id', 'user_id', 'events', 'size', 'is_offloaded', 'last_datetime', 'datetime', 'expiration_date'], sprintf(l('replays.title')));
+        process_export_json($replays, ['replay_id', 'session_id', 'visitor_id', 'website_id', 'user_id', 'events', 'size', 'is_offloaded', 'last_datetime', 'datetime', 'expiration_date'], sprintf(l('replays.title')));
 
         /* Prepare the pagination view */
         $pagination = (new \Altum\View('partials/admin_pagination', (array) $this))->run(['paginator' => $paginator]);
@@ -100,6 +100,8 @@ class AdminReplays extends Controller {
 
             set_time_limit(0);
 
+            session_write_close();
+
             switch($_POST['type']) {
                 case 'delete':
 
@@ -108,6 +110,8 @@ class AdminReplays extends Controller {
                     }
                     break;
             }
+
+            session_start();
 
             /* Set a nice success message */
             Alerts::add_success(l('bulk_delete_modal.success_message'));

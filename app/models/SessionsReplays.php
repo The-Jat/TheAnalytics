@@ -22,35 +22,49 @@ defined('ALTUMCODE') || die();
 
 class SessionsReplays extends Model {
 
-    public function delete($replay_id) {
-        Cache::store_initialize();
+	public function delete($replay_id) {
+		Cache::store_initialize();
 
-        /* Database query */
-        $replay = db()->where('replay_id', $replay_id)->getOne('sessions_replays');
+		/* Get replay */
+		$replay = db()->where('replay_id', $replay_id)->getOne('sessions_replays');
 
-        /* Clear cache */
-        cache('store_adapter')->deleteItem('session_replay_' . $replay->session_id);
+		if(!$replay) {
+			return;
+		}
 
-        /* Offload uploading */
-        if(\Altum\Plugin::is_active('offload') && settings()->offload->uploads_url && $replay->is_offloaded) {
-            $file_name = base64_encode($replay->session_id . $replay->date) . '.txt';
+		$session_id = $replay->session_id;
 
-            try {
-                $s3 = new \Aws\S3\S3Client(get_aws_s3_config());
+		/* Load chunk index */
+		$index_item = cache('store_adapter')->getItem('session_replay_keys_' . $session_id);
+		$chunk_keys = $index_item->get() ?: [];
 
-                /* Upload image */
-                $s3_result = $s3->deleteObject([
-                    'Bucket' => settings()->offload->storage_name,
-                    'Key' => UPLOADS_URL_PATH . 'store/' . $file_name,
-                ]);
-            } catch (\Exception $exception) {
-                dil($exception->getMessage());
-            }
-        }
+		/* Delete chunk index */
+		cache('store_adapter')->deleteItem('session_replay_keys_' . $session_id);
 
-        /* Database query */
-        db()->where('replay_id', $replay_id)->delete('sessions_replays');
+		/* Delete each chunk */
+		foreach($chunk_keys as $chunk_key) {
+			cache('store_adapter')->deleteItem($chunk_key);
+		}
 
-    }
+		/* Delete offloaded file if needed */
+		if(\Altum\Plugin::is_active('offload') && settings()->offload->uploads_url && $replay->is_offloaded) {
 
+			$file_name = base64_encode($replay->session_id . $replay->date) . '.txt';
+
+			try {
+				$s3 = new \Aws\S3\S3Client(get_aws_s3_config());
+
+				$s3->deleteObject([
+					'Bucket' => settings()->offload->storage_name,
+					'Key' => UPLOADS_URL_PATH . 'store/' . $file_name,
+				]);
+
+			} catch (\Exception $exception) {
+				dil($exception->getMessage());
+			}
+		}
+
+		/* Delete database entry */
+		db()->where('replay_id', $replay_id)->delete('sessions_replays');
+	}
 }

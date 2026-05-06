@@ -54,8 +54,8 @@ class AdminWebsites extends Controller {
         }
 
         /* Export handler */
-        process_export_csv($websites, 'include', ['website_id', 'domain_id', 'user_id', 'pixel_key', 'name', 'scheme', 'host', 'path', 'tracking_type', 'excluded_ips', 'events_children_is_enabled', 'sessions_replays_is_enabled', 'email_reports_is_enabled', 'email_reports_last_date', 'is_enabled', 'last_datetime', 'datetime'], sprintf(l('websites.title')));
-        process_export_json($websites, 'include', ['website_id', 'domain_id', 'user_id', 'pixel_key', 'name', 'scheme', 'host', 'path', 'tracking_type', 'excluded_ips', 'events_children_is_enabled', 'sessions_replays_is_enabled', 'email_reports_is_enabled', 'email_reports_last_date', 'is_enabled', 'last_datetime', 'datetime'], sprintf(l('websites.title')));
+        process_export_csv($websites, ['website_id','domain_id','pixel_key','user_id','name','scheme','host','path','tracking_type','ip_storage_is_enabled','excluded_ips','query_parameters_tracking_is_enabled','bot_exclusion_is_enabled','current_month_sessions_events','current_month_events_children','current_month_sessions_replays','plan_sessions_events_limit_notice','plan_events_children_limit_notice','plan_sessions_replays_limit_notice','events_children_is_enabled','outbound_clicks_is_enabled','sessions_replays_is_enabled','email_reports_is_enabled','email_reports_last_date','public_statistics_is_enabled','public_statistics_password','is_enabled','last_datetime','datetime'], sprintf(l('websites.title')));
+        process_export_json($websites, ['website_id','domain_id','pixel_key','user_id','name','scheme','host','path','tracking_type','ip_storage_is_enabled','excluded_ips','query_parameters_tracking_is_enabled','bot_exclusion_is_enabled','current_month_sessions_events','current_month_events_children','current_month_sessions_replays','plan_sessions_events_limit_notice','plan_events_children_limit_notice','plan_sessions_replays_limit_notice','events_children_is_enabled','outbound_clicks_is_enabled','sessions_replays_is_enabled','email_reports_is_enabled','email_reports_last_date','public_statistics_is_enabled','public_statistics_password','is_enabled','last_datetime','datetime'], sprintf(l('websites.title')));
 
         /* Prepare the pagination view */
         $pagination = (new \Altum\View('partials/admin_pagination', (array) $this))->run(['paginator' => $paginator]);
@@ -98,6 +98,8 @@ class AdminWebsites extends Controller {
 
             set_time_limit(0);
 
+            session_write_close();
+
             switch($_POST['type']) {
                 case 'delete':
 
@@ -111,7 +113,7 @@ class AdminWebsites extends Controller {
                         $sessions_replays = db()->where('website_id', $website_id)->get('sessions_replays');
 
                         foreach($sessions_replays as $session_replay) {
-                            /* Clear cache */
+                            /* Clear the cache */
                             cache('store_adapter')->deleteItem('session_replay_' . $session_replay->session_id);
 
                             /* Offload uploading */
@@ -135,13 +137,15 @@ class AdminWebsites extends Controller {
                         /* Delete the website */
                         db()->where('website_id', $website_id)->delete('websites');
 
-                        /* Clear cache */
+                        /* Clear the cache */
                         cache()->deleteItem('websites_' . $website->user_id);
                         cache()->deleteItemsByTag('website_id=' . $website_id);
 
                     }
                     break;
             }
+
+            session_start();
 
             /* Set a nice success message */
             Alerts::add_success(l('bulk_delete_modal.success_message'));
@@ -171,7 +175,7 @@ class AdminWebsites extends Controller {
             $sessions_replays = db()->where('website_id', $website_id)->get('sessions_replays');
 
             foreach($sessions_replays as $session_replay) {
-                /* Clear cache */
+                /* Clear the cache */
                 cache('store_adapter')->deleteItem('session_replay_' . $session_replay->session_id);
 
                 /* Offload uploading */
@@ -195,7 +199,7 @@ class AdminWebsites extends Controller {
             /* Delete the website */
             db()->where('website_id', $website->website_id)->delete('websites');
 
-            /* Clear cache */
+            /* Clear the cache */
             cache()->deleteItem('websites_' . $website->user_id);
             cache()->deleteItemsByTag('website_id=' . $website->website_id);
 

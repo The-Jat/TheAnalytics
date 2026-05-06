@@ -2,14 +2,14 @@
 
 <div class="container">
     <?php if(settings()->main->breadcrumbs_is_enabled): ?>
-<nav aria-label="breadcrumb">
-        <ol class="custom-breadcrumbs small">
-            <li><a href="<?= url() ?>"><?= l('index.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
-            <li><a href="<?= url('api-documentation') ?>"><?= l('api_documentation.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
-            <li class="active" aria-current="page"><?= l('api_documentation.statistics') ?></li>
-        </ol>
-    </nav>
-<?php endif ?>
+        <nav aria-label="breadcrumb">
+            <ol class="custom-breadcrumbs small">
+                <li><a href="<?= url() ?>"><?= l('index.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
+                <li><a href="<?= url('api-documentation') ?>"><?= l('api_documentation.breadcrumb') ?></a> <i class="fas fa-fw fa-angle-right"></i></li>
+                <li class="active" aria-current="page"><?= l('api_documentation.statistics') ?></li>
+            </ol>
+        </nav>
+    <?php endif ?>
 
     <h1 class="h4 mb-4"><?= l('api_documentation.statistics') ?></h1>
 
@@ -102,41 +102,42 @@
 
                     <div class="form-group">
                         <label><?= l('api_documentation.response') ?></label>
-                        <div data-shiki="json">
+                        <pre data-shiki="json">
 {
     "data": [
         {
-          "path": "/dashboard",
-          "pageviews": 500,
-          "bounces": 10
+            "path": "/dashboard",
+            "pageviews": 500,
+            "bounces": 10
         },
         {
-          "path": "/websites",
-          "pageviews": 250,
-          "bounces": 0
+            "path": "/websites",
+            "pageviews": 250,
+            "bounces": 0
         },
         {
-          "path": "/",
-          "pageviews": 200,
-          "bounces": 36
+            "path": "/",
+            "pageviews": 200,
+            "bounces": 36
         },
         {
-          "path": "/register",
-          "pageviews": 100,
-          "bounces": 25
+            "path": "/register",
+            "pageviews": 100,
+            "bounces": 25
         },
         {
-          "path": "login",
-          "pageviews": 50,
-          "bounces": 10
+            "path": "login",
+            "pageviews": 50,
+            "bounces": 10
         },
     ]
 }
-                        </div>
+</pre>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 

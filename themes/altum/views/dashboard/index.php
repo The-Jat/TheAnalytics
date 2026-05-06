@@ -3,7 +3,7 @@
 <div class="container">
     <?= \Altum\Alerts::output_alerts() ?>
 
-    <?php if(!in_array($data->type, ['default', 'goals'])): ?>
+    <?php if(!in_array($data->type, ['default', 'goals', 'outbound-clicks'])): ?>
         <?php if(settings()->main->breadcrumbs_is_enabled): ?>
             <nav aria-label="breadcrumb">
                 <ol class="custom-breadcrumbs small">
@@ -16,19 +16,29 @@
 
     <div class="row mb-4">
         <?php if($data->type == 'goals'): ?>
-        <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0 text-truncate">
-            <h1 class="h4 m-0 text-truncate"><i class="fas fa-fw fa-xs fa-bullseye mr-1"></i> <?= l('goals.header') ?></h1>
+            <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0 text-truncate">
+                <h1 class="h4 m-0 text-truncate"><i class="fas fa-fw fa-xs fa-bullseye mr-1"></i> <?= l('goals.header') ?></h1>
 
-            <div class="ml-2">
-                <span data-toggle="tooltip" title="<?= l('goals.subheader') ?>">
-                    <i class="fas fa-fw fa-info-circle text-muted"></i>
-                </span>
+                <div class="ml-2">
+                    <span data-toggle="tooltip" title="<?= l('goals.subheader') ?>">
+                        <i class="fas fa-fw fa-info-circle text-muted"></i>
+                    </span>
+                </div>
             </div>
-        </div>
+        <?php elseif($data->type == 'outbound_clicks'): ?>
+            <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0 text-truncate">
+                <h1 class="h4 m-0 text-truncate"><i class="fas fa-fw fa-xs fa-external-link-alt mr-1"></i> <?= l('outbound_clicks.header') ?></h1>
+
+                <div class="ml-2">
+                    <span data-toggle="tooltip" title="<?= l('outbound_clicks.subheader') ?>">
+                        <i class="fas fa-fw fa-info-circle text-muted"></i>
+                    </span>
+                </div>
+            </div>
         <?php else: ?>
-        <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0 text-truncate">
-            <h1 class="h4 m-0 text-truncate"><?= $this->website->host . $this->website->path ?></h1>
-        </div>
+            <div class="col-12 col-lg d-flex align-items-center mb-3 mb-lg-0 text-truncate">
+                <h1 class="h4 m-0 text-truncate"><?= $this->website->host . $this->website->path ?></h1>
+            </div>
         <?php endif ?>
 
         <div class="col-12 col-lg-auto d-flex flex-wrap gap-3 d-print-none">
@@ -81,13 +91,13 @@
                         </button>
 
                         <div class="dropdown-menu dropdown-menu-right d-print-none">
-                            <a href="<?= url('dashboard/export_' . $this->website->tracking_type . '/csv')  ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->csv ? null : 'disabled' ?>">
+                            <a href="<?= url('dashboard/export_' . $this->website->tracking_type . '/csv')  ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->csv ? null : 'disabled pointer-events-all' ?>" <?= $this->user->plan_settings->export->csv ? null : get_plan_feature_disabled_info() ?>>
                                 <i class="fas fa-fw fa-sm fa-file-csv mr-2"></i> <?= sprintf(l('global.export_to'), 'CSV') ?>
                             </a>
-                            <a href="<?= url('dashboard/export_' . $this->website->tracking_type . '/json') ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->json ? null : 'disabled' ?>">
+                            <a href="<?= url('dashboard/export_' . $this->website->tracking_type . '/json') ?>" target="_blank" class="dropdown-item <?= $this->user->plan_settings->export->json ? null : 'disabled pointer-events-all' ?>" <?= $this->user->plan_settings->export->json ? null : get_plan_feature_disabled_info() ?>>
                                 <i class="fas fa-fw fa-sm fa-file-code mr-2"></i> <?= sprintf(l('global.export_to'), 'JSON') ?>
                             </a>
-                            <button type="button" class="dropdown-item <?= $this->user->plan_settings->export->pdf ? null : 'disabled' ?>" onclick="window.print()">
+                            <button type="button" class="dropdown-item <?= $this->user->plan_settings->export->pdf ? null : 'disabled' ?>" onclick="window.print();return false;">
                                 <i class="fas fa-fw fa-file-pdf mr-2"></i> <?= sprintf(l('global.export_to'), 'PDF') ?>
                             </button>
                         </div>
@@ -134,8 +144,8 @@
                                 </div>
 
                                 <span class="round-circle-md bg-gray-200 text-primary-700 p-3">
-                                        <i class="fas fa-fw fa-lg fa-hourglass-half"></i>
-                                    </span>
+                                    <i class="fas fa-fw fa-lg fa-hourglass-half"></i>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -200,15 +210,15 @@
 
     <?php endif ?>
 
-        <?= (new \Altum\View('partials/analytics/filters_wrapper', (array) $this))->run(['available_filters' => null, 'tracking_type' => $this->website->tracking_type]) ?>
+    <?= (new \Altum\View('partials/analytics/filters_wrapper', (array) $this))->run(['available_filters' => null, 'tracking_type' => $this->website->tracking_type]) ?>
 
     <?php if(!$data->has_logs): ?>
 
         <?= include_view(THEME_PATH . 'views/partials/no_data.php', [
-            'filters_get' => isset($_COOKIE['filters']) ? json_decode($_COOKIE['filters']) : [],
-            'name' => 'dashboard.basic',
-            'has_secondary_text' => true,
-            'has_clear_filters_button' => false,
+                'filters_get' => isset($_COOKIE['filters']) ? json_decode($_COOKIE['filters']) : [],
+                'name' => 'dashboard.basic',
+                'has_secondary_text' => true,
+                'has_clear_filters_button' => false,
         ]); ?>
 
     <?php else: ?>
@@ -235,8 +245,8 @@
 
 <script>
     'use strict';
-
-    moment.tz.setDefault(<?= json_encode($this->user->timezone ?? \Altum\Date::$default_timezone) ?>);
+    
+moment.tz.setDefault(<?= json_encode($this->user->timezone ?? \Altum\Date::$default_timezone) ?>);
 
     /* Daterangepicker */
     $('#daterangepicker').daterangepicker({
@@ -247,10 +257,13 @@
         ranges: {
             <?= json_encode(l('global.date.today')) ?>: [moment(), moment()],
             <?= json_encode(l('global.date.yesterday')) ?>: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            <?= json_encode(l('global.date.last_7_days')) ?>: [moment().subtract(6, 'days'), moment()],
+            <?= json_encode(l('global.date.this_week')) ?>: [moment().startOf('week'), moment().endOf('week')],
+            
             <?= json_encode(l('global.date.last_30_days')) ?>: [moment().subtract(29, 'days'), moment()],
-            <?= json_encode(l('global.date.this_month')) ?>: [moment().startOf('month'), moment().endOf('month')],
+                <?= json_encode(l('global.date.this_month')) ?>: [moment().startOf('month'), moment().endOf('month')],
             <?= json_encode(l('global.date.last_month')) ?>: [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                <?= json_encode(l('global.date.this_year')) ?>: [moment().startOf('year'), moment()],
+                <?= json_encode(l('global.date.last_year')) ?>: [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
             <?= json_encode(l('global.date.all_time')) ?>: [moment($('#daterangepicker').data('min-date')), moment()]
         },
         alwaysShowCalendars: true,
@@ -407,7 +420,7 @@
         })();
     }
 
-    for(let request_type of ['paths', 'landing_paths', 'exit_paths', 'referrers', 'social_media_referrers', 'search_engines_referrers', 'continents', 'countries', 'cities', 'utms_source', 'screen_resolutions', 'themes', 'browser_languages', 'operating_systems', 'device_types', 'browser_names', 'goals']) {
+    for(let request_type of ['paths', 'landing_paths', 'exit_paths', 'referrers', 'social_media_referrers', 'search_engines_referrers', 'continents', 'countries', 'cities', 'utms_source', 'screen_resolutions', 'themes', 'browser_languages', 'operating_systems', 'device_types', 'browser_names', 'goals', 'outbound_clicks']) {
         if(document.querySelector(`#${request_type}_result`) && !document.querySelector(`#${request_type}_result`).classList.contains('d-none')) {
             get_and_output_data(request_type);
         }

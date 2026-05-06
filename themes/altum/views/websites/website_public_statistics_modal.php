@@ -33,6 +33,8 @@
 <script src="<?= ASSETS_FULL_URL ?>js/libraries/clipboard.min.js?v=<?= PRODUCT_CODE ?>"></script>
 
 <script>
+    'use strict';
+    
     /* On modal show */
     $('#website_public_statistics_modal').on('show.bs.modal', event => {
         let pixel_key = $(event.relatedTarget).data('pixel-key');

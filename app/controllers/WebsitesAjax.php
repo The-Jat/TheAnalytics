@@ -54,11 +54,12 @@ class WebsitesAjax extends Controller {
     }
 
     private function create() {
-        $_POST['name'] = trim(query_clean($_POST['name']));
+        $_POST['name'] = input_clean($_POST['name'], 256);
         $_POST['scheme'] = in_array($_POST['scheme'], ['https://', 'http://']) ? query_clean($_POST['scheme']) : 'https://';
         $_POST['host'] = str_replace(' ', '', mb_strtolower(input_clean($_POST['host'], 128)));
         $_POST['host'] = string_starts_with('http://', $_POST['host']) || string_starts_with('https://', $_POST['host']) ? parse_url($_POST['host'], PHP_URL_HOST) : $_POST['host'];
         $_POST['tracking_type'] = in_array($_POST['tracking_type'], ['lightweight', 'normal']) ? query_clean($_POST['tracking_type']) : 'lightweight';
+        $_POST['outbound_clicks_is_enabled'] = (int) isset($_POST['outbound_clicks_is_enabled']);
         $_POST['events_children_is_enabled'] = (int) isset($_POST['events_children_is_enabled']);
         $_POST['sessions_replays_is_enabled'] = (int) isset($_POST['sessions_replays_is_enabled']);
         $_POST['email_reports_is_enabled'] = $this->user->plan_settings->email_reports_is_enabled ? (int) isset($_POST['email_reports_is_enabled']) : 0;
@@ -101,7 +102,7 @@ class WebsitesAjax extends Controller {
             $pixel_key = string_generate(16);
         }
 
-        /* Make sure that the user didn't exceed the limit */
+        /* Check for the plan limit */
         $total_rows = db()->where('user_id', $this->user->user_id)->getValue('websites', 'count(`website_id`)');
         if($this->user->plan_settings->websites_limit != -1 && $total_rows >= $this->user->plan_settings->websites_limit) {
             Response::json(l('global.info_message.plan_feature_limit'), 'error');
@@ -117,6 +118,7 @@ class WebsitesAjax extends Controller {
             'host' => $_POST['host'],
             'path' => $path,
             'tracking_type' => $_POST['tracking_type'],
+            'outbound_clicks_is_enabled' => $_POST['outbound_clicks_is_enabled'],
             'events_children_is_enabled' => $_POST['events_children_is_enabled'],
             'sessions_replays_is_enabled' => $_POST['sessions_replays_is_enabled'],
             'email_reports_is_enabled' => $_POST['email_reports_is_enabled'],
@@ -125,7 +127,7 @@ class WebsitesAjax extends Controller {
             'datetime' => get_date(),
         ]);
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('websites_' . $this->user->user_id);
         cache()->deleteItemsByTag('website_id=' . $website_id);
 
@@ -140,12 +142,13 @@ class WebsitesAjax extends Controller {
             Response::json(l('global.error_message.basic'), 'error');
         }
 
-        $_POST['name'] = trim(query_clean($_POST['name']));
+        $_POST['name'] = input_clean($_POST['name'], 256);
         $_POST['scheme'] = in_array($_POST['scheme'], ['https://', 'http://']) ? query_clean($_POST['scheme']) : 'https://';
         $_POST['host'] = str_replace(' ', '', mb_strtolower(input_clean($_POST['host'], 128)));
         $_POST['host'] = string_starts_with('http://', $_POST['host']) || string_starts_with('https://', $_POST['host']) ? parse_url($_POST['host'], PHP_URL_HOST) : $_POST['host'];
 
         $_POST['is_enabled'] = (int) isset($_POST['is_enabled']);
+        $_POST['outbound_clicks_is_enabled'] = (int) isset($_POST['outbound_clicks_is_enabled']);
         $_POST['events_children_is_enabled'] = (int) isset($_POST['events_children_is_enabled']);
         $_POST['sessions_replays_is_enabled'] = (int) isset($_POST['sessions_replays_is_enabled']);
         $_POST['email_reports_is_enabled'] = $this->user->plan_settings->email_reports_is_enabled ? (int) isset($_POST['email_reports_is_enabled']) : 0;
@@ -201,6 +204,7 @@ class WebsitesAjax extends Controller {
             'host' => $_POST['host'],
             'path' => $path,
             'excluded_ips' => $_POST['excluded_ips'],
+            'outbound_clicks_is_enabled' => $_POST['outbound_clicks_is_enabled'],
             'events_children_is_enabled' => $_POST['events_children_is_enabled'],
             'sessions_replays_is_enabled' => $_POST['sessions_replays_is_enabled'],
             'email_reports_is_enabled' => $_POST['email_reports_is_enabled'],
@@ -213,7 +217,7 @@ class WebsitesAjax extends Controller {
             'last_datetime' => get_date(),
         ]);
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('websites_' . $this->user->user_id);
         cache()->deleteItemsByTag('website_id=' . $_POST['website_id']);
 
@@ -232,7 +236,7 @@ class WebsitesAjax extends Controller {
         $sessions_replays = db()->where('website_id', $_POST['website_id'])->get('sessions_replays');
 
         foreach($sessions_replays as $session_replay) {
-            /* Clear cache */
+            /* Clear the cache */
             cache('store_adapter')->deleteItem('session_replay_' . $session_replay->session_id);
 
             /* Offload uploading */
@@ -256,7 +260,7 @@ class WebsitesAjax extends Controller {
         /* Database query */
         db()->where('website_id', $_POST['website_id'])->where('user_id', $this->user->user_id)->delete('websites');
 
-        /* Clear cache */
+        /* Clear the cache */
         cache()->deleteItem('websites_' . $this->user->user_id);
         cache()->deleteItemsByTag('website_id=' . $_POST['website_id']);
 

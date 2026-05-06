@@ -29,6 +29,10 @@ class Statistics extends Controller {
 
     public function index()
     {
+        /* Make sure there are no extra URL additions */
+        if(isset($this->params[2])) {
+            redirect('not-found');
+        }
 
         $pixel_key = isset($this->params[0]) ? input_clean($this->params[0]) : null;
 
@@ -92,7 +96,7 @@ class Statistics extends Controller {
         /* Show statistics */
         else {
             /* Subpage */
-            $type = isset($this->params[1]) && in_array($this->params[1], ['paths', 'referrers', 'screen-resolutions', 'utms', 'operating-systems', 'device-types', 'continents', 'countries', 'cities', 'browser-names', 'browser-languages', 'browser-timezones', 'goals', 'realtime', 'themes']) ? query_clean(str_replace('-', '_', $this->params[1])) : 'default';
+            $type = isset($this->params[1]) && in_array($this->params[1], ['paths', 'referrers', 'screen-resolutions', 'utms', 'operating-systems', 'device-types', 'continents', 'countries', 'cities', 'browser-names', 'browser-languages', 'browser-timezones', 'goals', 'realtime', 'themes', 'outbound-clicks']) ? query_clean(str_replace('-', '_', $this->params[1])) : 'default';
 
             $base_url_path = 'statistics/' . $website->pixel_key . '/';
 
@@ -109,6 +113,10 @@ class Statistics extends Controller {
             } else {
                 /* Load data based on the website type */
                 $dashboard = $this->{$this->website->tracking_type}();
+
+                /* Outbound Clicks Modal */
+                $view = new \Altum\View('dashboard/outbound_clicks_paths_modal', (array)$this);
+                \Altum\Event::add_content($view->run(), 'modals');
 
                 /* Referrer Paths Modal */
                 $view = new \Altum\View('dashboard/referrer_paths_modal', (array)$this);

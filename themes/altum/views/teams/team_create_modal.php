@@ -46,6 +46,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     $('form[name="team_create"]').on('submit', event => {
         pause_submit_button(event.currentTarget.querySelector('[type="submit"][name="submit"]'));
 

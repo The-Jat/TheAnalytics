@@ -75,6 +75,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
 
 </script>
 <?php \Altum\Event::add_content(ob_get_clean(), 'javascript') ?>

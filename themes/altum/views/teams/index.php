@@ -241,6 +241,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     /* Login for the team */
     $('[data-team-login]').on('click', event => {
         let team_id = $(event.currentTarget).data('team-id');

@@ -46,8 +46,8 @@ class Heatmaps extends Controller {
         while($row = $heatmaps_result->fetch_object()) $heatmaps[] = $row;
 
         /* Export handler */
-        process_export_csv($heatmaps, 'include', ['heatmap_id', 'user_id', 'website_id', 'snapshot_id_desktop', 'snapshot_id_tablet', 'snapshot_id_mobile', 'name', 'path', 'is_enabled', 'datetime', 'last_datetime'], sprintf(l('heatmaps.title')));
-        process_export_json($heatmaps, 'include', ['heatmap_id', 'user_id', 'website_id', 'snapshot_id_desktop', 'snapshot_id_tablet', 'snapshot_id_mobile', 'name', 'path', 'is_enabled', 'datetime', 'last_datetime'], sprintf(l('heatmaps.title')));
+        process_export_csv($heatmaps, ['heatmap_id', 'user_id', 'website_id', 'snapshot_id_desktop', 'snapshot_id_tablet', 'snapshot_id_mobile', 'name', 'path', 'is_enabled', 'datetime', 'last_datetime'], sprintf(l('heatmaps.title')));
+        process_export_json($heatmaps, ['heatmap_id', 'user_id', 'website_id', 'snapshot_id_desktop', 'snapshot_id_tablet', 'snapshot_id_mobile', 'name', 'path', 'is_enabled', 'datetime', 'last_datetime'], sprintf(l('heatmaps.title')));
 
         /* Prepare the pagination view */
         $pagination = (new \Altum\View('partials/pagination', (array) $this))->run(['paginator' => $paginator]);
@@ -109,6 +109,8 @@ class Heatmaps extends Controller {
 
             set_time_limit(0);
 
+            session_write_close();
+
             switch($_POST['type']) {
                 case 'delete':
 
@@ -119,8 +121,10 @@ class Heatmaps extends Controller {
                     break;
             }
 
-            /* Clear cache */
+            /* Clear the cache */
             cache()->deleteItem('website_heatmaps?website_id=' . $this->website->website_id);
+
+            session_start();
 
             /* Set a nice success message */
             Alerts::add_success(l('bulk_delete_modal.success_message'));

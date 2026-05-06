@@ -193,6 +193,30 @@ class Router {
                 ]
             ],
 
+            'websites-import' => [
+                'controller' => 'WebsitesImport',
+                'settings' => [
+                    'wrapper' => 'app_wrapper',
+                    'ads' => true,
+                ]
+            ],
+
+            'website-update' => [
+                'controller' => 'WebsiteUpdate',
+                'settings' => [
+                    'wrapper' => 'app_wrapper',
+                    'ads' => true,
+                ]
+            ],
+
+            'website-create' => [
+                'controller' => 'WebsiteCreate',
+                'settings' => [
+                    'wrapper' => 'app_wrapper',
+                    'ads' => true,
+                ]
+            ],
+
             'websites-ajax' => [
                 'controller' => 'WebsitesAjax',
                 'settings' => [
@@ -455,6 +479,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -465,6 +490,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -483,6 +509,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => true,
                 ]
             ],
 
@@ -492,6 +519,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => true,
                 ]
             ],
 
@@ -501,6 +529,7 @@ class Router {
                     'allow_team_access' => false,
                     'has_view' => false,
                     'no_browser_language_detection' => true,
+                    'allow_sessions' => true,
                 ]
             ],
 
@@ -512,6 +541,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -522,6 +552,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -532,6 +563,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -542,6 +574,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -552,6 +585,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -562,6 +596,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -572,6 +607,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -582,6 +618,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -592,6 +629,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -602,6 +640,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -612,6 +651,18 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+					'allow_sessions' => false,
+                ]
+            ],
+
+            'webhook-paddle-billing' => [
+                'controller' => 'WebhookPaddleBilling',
+                'settings' => [
+                    'no_authentication_check' => true,
+                    'has_view' => false,
+                    'no_browser_language_detection' => true,
+                    'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -622,6 +673,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -632,6 +684,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -642,6 +695,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -652,6 +706,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -662,6 +717,51 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
+                ]
+            ],
+
+            'webhook-klarna' => [
+                'controller' => 'WebhookKlarna',
+                'settings' => [
+                    'no_authentication_check' => true,
+                    'has_view' => false,
+                    'no_browser_language_detection' => true,
+                    'allow_indexing' => false,
+                    'allow_sessions' => false,
+                ]
+            ],
+
+            'webhook-plisio' => [
+                'controller' => 'WebhookPlisio',
+                'settings' => [
+                    'no_authentication_check' => true,
+                    'has_view' => false,
+                    'no_browser_language_detection' => true,
+                    'allow_indexing' => false,
+                    'allow_sessions' => false,
+                ]
+            ],
+
+            'webhook-plisio-whitelabel' => [
+                'controller' => 'WebhookPlisioWhitelabel',
+                'settings' => [
+                    'no_authentication_check' => true,
+                    'has_view' => false,
+                    'no_browser_language_detection' => true,
+                    'allow_indexing' => false,
+                    'allow_sessions' => false,
+                ]
+            ],
+
+            'webhook-revolut' => [
+                'controller' => 'WebhookRevolut',
+                'settings' => [
+                    'no_authentication_check' => true,
+                    'has_view' => false,
+                    'no_browser_language_detection' => true,
+                    'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -671,6 +771,7 @@ class Router {
                 'settings' => [
                     'no_authentication_check' => true,
                     'no_browser_language_detection' => true,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -680,6 +781,7 @@ class Router {
                     'no_authentication_check' => true,
                     'no_browser_language_detection' => true,
                     'has_view' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -690,6 +792,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -699,6 +802,7 @@ class Router {
                     'no_authentication_check' => true,
                     'has_view' => false,
                     'no_browser_language_detection' => true,
+                    'allow_sessions' => false,
                 ]
             ],
         ],
@@ -711,6 +815,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
             'websites' => [
@@ -720,6 +825,17 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
+                ]
+            ],
+            'visitors' => [
+                'controller' => 'ApiVisitors',
+                'settings' => [
+                    'no_authentication_check' => true,
+                    'has_view' => false,
+                    'no_browser_language_detection' => true,
+                    'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
             'statistics' => [
@@ -729,6 +845,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
             'teams' => [
@@ -759,6 +876,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
             'payments' => [
@@ -768,6 +886,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
             'logs' => [
@@ -777,6 +896,7 @@ class Router {
                     'has_view' => false,
                     'no_browser_language_detection' => true,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
         ],
@@ -798,6 +918,10 @@ class Router {
             'domains' => [
                 'controller' => 'AdminDomains',
             ],
+
+			'domain-create' => [
+				'controller' => 'AdminDomainCreate',
+			],
 
             'domain-update' => [
                 'controller' => 'AdminDomainUpdate',
@@ -908,6 +1032,10 @@ class Router {
                 'controller' => 'AdminTaxes'
             ],
 
+            'taxes-import' => [
+                'controller' => 'AdminTaxesImport'
+            ],
+
             'tax-create' => [
                 'controller' => 'AdminTaxCreate'
             ],
@@ -918,6 +1046,10 @@ class Router {
 
             'payments' => [
                 'controller' => 'AdminPayments'
+            ],
+
+            'payment-create' => [
+                'controller' => 'AdminPaymentCreate',
             ],
 
             'affiliates-withdrawals' => [
@@ -1022,6 +1154,10 @@ class Router {
             'dynamic-og-images' => [
                 'controller' => 'AdminDynamicOgImages',
             ],
+
+            'image-optimizer' => [
+                'controller' => 'AdminImageOptimizer',
+            ],
         ],
 
         'admin-api' => [
@@ -1031,6 +1167,7 @@ class Router {
                     'no_authentication_check' => true,
                     'has_view' => false,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -1040,6 +1177,7 @@ class Router {
                     'no_authentication_check' => true,
                     'has_view' => false,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -1049,6 +1187,7 @@ class Router {
                     'no_authentication_check' => true,
                     'has_view' => false,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -1058,6 +1197,7 @@ class Router {
                     'no_authentication_check' => true,
                     'has_view' => false,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -1067,6 +1207,7 @@ class Router {
                     'no_authentication_check' => true,
                     'has_view' => false,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
 
@@ -1076,6 +1217,7 @@ class Router {
                     'no_authentication_check' => true,
                     'has_view' => false,
                     'allow_indexing' => false,
+                    'allow_sessions' => false,
                 ]
             ],
         ],
@@ -1130,7 +1272,7 @@ class Router {
 
         /* Check if the current link accessed is actually the original url or not (multi domain use) */
         $original_url_host = parse_url(url(), PHP_URL_HOST);
-        $request_url_host = input_clean($_SERVER['HTTP_HOST']);
+        $request_url_host = php_sapi_name() == 'cli' ? null : input_clean($_SERVER['HTTP_HOST']);
 
         if(!empty($request_url_host) && $original_url_host != $request_url_host) {
             if(function_exists('idn_to_utf8')) {
@@ -1182,6 +1324,11 @@ class Router {
                 }
             }
 
+        }
+
+        /* Check for a custom index url redirect in case there is no link requested  */
+        if(isset(self::$data['domain']) && !self::$data['domain']->custom_index_url) {
+            self::$data['domain']->custom_index_url = url();
         }
 
         /* Check for a custom index url  */

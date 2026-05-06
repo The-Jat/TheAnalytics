@@ -14,5 +14,10 @@
 
     <?php require_once ASSETS_PATH . 'js/pixel/lightweight/pixel-header.js' ?>
 
+    <?php if($data->pixel_outbound_clicks_is_enabled ?? false): ?>
+        <?php require_once ASSETS_PATH . 'js/pixel/lightweight/pixel-outbound.js' ?>
+    <?php endif ?>
+
     <?php require_once ASSETS_PATH . 'js/pixel/lightweight/pixel-footer.js' ?>
+
 })();

@@ -25,7 +25,7 @@ class Pageviews extends Controller {
         \Altum\Authentication::guard();
 
         if(!$this->website) {
-            redirect('pageviews');
+            redirect('websites');
         }
 
         redirect('pageviews-' . $this->website->tracking_type);

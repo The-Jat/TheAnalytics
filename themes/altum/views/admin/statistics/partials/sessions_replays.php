@@ -40,8 +40,8 @@
 <?php ob_start() ?>
 <script>
     'use strict';
-
-    let get_formatted_bytes = (bytes) => {
+    
+let get_formatted_bytes = (bytes) => {
         let selected_size = 0;
         let selected_unit = 'B';
 

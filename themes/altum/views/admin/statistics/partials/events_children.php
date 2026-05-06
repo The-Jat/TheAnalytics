@@ -15,7 +15,7 @@
         </div>
 
         <div class="chart-container <?= $data->total['click'] + $data->total['form'] + $data->total['scroll'] + $data->total['resize'] ? null : 'd-none' ?>">
-            <canvas id="email_reports"></canvas>
+            <canvas id="events_children"></canvas>
         </div>
         <?= $data->total['click'] + $data->total['form'] + $data->total['scroll'] + $data->total['resize'] ? null : include_view(THEME_PATH . 'views/partials/no_chart_data.php', ['has_wrapper' => false]); ?>
     </div>
@@ -24,6 +24,8 @@
 
 <?php ob_start() ?>
 <script>
+    'use strict';
+    
     let click_color = css.getPropertyValue('--teal');
     let form_color = css.getPropertyValue('--indigo');
     let scroll_color = css.getPropertyValue('--cyan');

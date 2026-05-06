@@ -54,7 +54,7 @@ class Pixel extends Controller {
         }
 
         /* Check excluded IPs */
-        $excluded_ips = $this->website->excluded_ips ? array_flip(explode(',', $this->website->excluded_ips)) : [];
+        $excluded_ips = $website->excluded_ips ? array_flip(explode(',', $website->excluded_ips)) : [];
 
         /* Do not track if it's an excluded ip */
         if(isset($excluded_ips[get_ip()])) {
@@ -87,6 +87,7 @@ class Pixel extends Controller {
 
         $pixel_track_events_children = (bool) $website->events_children_is_enabled && ($user->plan_settings->events_children_limit == -1 || $website->current_month_events_children < $user->plan_settings->events_children_limit);
         $pixel_track_sessions_replays = (bool) settings()->analytics->sessions_replays_is_enabled && $website->sessions_replays_is_enabled && ($user->plan_settings->sessions_replays_limit == -1 || $website->current_month_sessions_replays < $user->plan_settings->sessions_replays_limit);
+        $pixel_sessions_replays_hide_text_selector = settings()->analytics->sessions_replays_is_enabled && $website->sessions_replays_is_enabled && !empty($website->sessions_replays_hide_text_selector) ? $website->sessions_replays_hide_text_selector : null;
 
         /* Get heatmaps if any and if the user has rights */
         $pixel_heatmaps = [];
@@ -130,13 +131,15 @@ class Pixel extends Controller {
                 $data = [
                     'pixel_heatmaps'                => $pixel_heatmaps,
                     'pixel_track_events_children'   => $pixel_track_events_children,
-                    'pixel_track_sessions_replays'  => $pixel_track_sessions_replays
+                    'pixel_track_sessions_replays'  => $pixel_track_sessions_replays,
+                    'pixel_sessions_replays_hide_text_selector' => $pixel_sessions_replays_hide_text_selector,
                 ];
 
                 break;
         }
 
         $data['pixel_key'] = $pixel_key;
+        $data['pixel_outbound_clicks_is_enabled'] = $website->outbound_clicks_is_enabled;
         $data['pixel_goals'] = $pixel_goals ?? [];
         $data['pixel_query_parameters_tracking_is_enabled'] = $website->query_parameters_tracking_is_enabled;
 

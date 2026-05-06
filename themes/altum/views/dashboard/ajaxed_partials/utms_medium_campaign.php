@@ -42,7 +42,7 @@
     <?php else: ?>
 
         <?php foreach($data->rows as $row): ?>
-            <?php $percentage = round($row->total / $data->total_sum * 100, 1) ?>
+            <?php $percentage = round($row->total / $data->total_sum * 100, 2) ?>
             <?php $bounce_rate = !isset($row->bounces) || is_null($row->bounces) ? null : round($row->bounces / $row->total * 100, 1) ?>
 
             <div class="mb-3 row-fade-show-icon">
@@ -61,7 +61,7 @@
                         <div class="col p-0 text-right" style="min-width:50px;"><small class="text-muted"><?= $percentage ?>%</small></div>
 
                         <?php if($data->options['bounce_rate']): ?>
-                            <div class="col p-0 text-right" style="min-width:70px;"><small class="text-muted"><?= !is_null($bounce_rate) ? $bounce_rate . '%' : '-' ?></small></div>
+                            <div class="col p-0 text-right" style="min-width:70px;"><small class="text-muted"><?= !is_null($bounce_rate) ? $bounce_rate . '%' : l('global.na') ?></small></div>
                         <?php endif ?>
                     </div>
                 </div>

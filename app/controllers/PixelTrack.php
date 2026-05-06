@@ -62,7 +62,10 @@ class PixelTrack extends Controller {
             'heatmap_snapshot',
 
             /* Goal conversions */
-            'goal_conversion'
+            'goal_conversion',
+
+            /* Outbound clicks */
+            'outbound_click'
         ];
 
         if(!isset($post->type) || isset($post->type) && !in_array($post->type, $allowed_types)) {
@@ -95,13 +98,13 @@ class PixelTrack extends Controller {
         }
 
         /* Check against bots */
-        if($website->bot_exclusion_is_enabled) {
-            $CrawlerDetect = new \Jaybizzle\CrawlerDetect\CrawlerDetect();
-
-            if($CrawlerDetect->isCrawler()) {
-                die(settings()->main->title . " (" . SITE_URL. "): Bot usage has been detected, pixel stopped from executing.");
-            }
-        }
+//        if($website->bot_exclusion_is_enabled) {
+//            $CrawlerDetect = new \Jaybizzle\CrawlerDetect\CrawlerDetect();
+//
+//            if($CrawlerDetect->isCrawler()) {
+//                die(settings()->main->title . " (" . SITE_URL. "): Bot usage has been detected, pixel stopped from executing.");
+//            }
+//        }
 
         /* Check excluded IPs */
         $excluded_ips = $this->website->excluded_ips ? array_flip(explode(',', $this->website->excluded_ips)) : [];
@@ -176,7 +179,7 @@ class PixelTrack extends Controller {
                         isset($referrer['host'])
                         && $referrer['host'] == $this->website->host
                         && (
-                            isset($referrer['path']) && mb_substr($referrer['path'], 0, mb_strlen($this->website->path)) == $this->website->path
+                            isset($referrer['path']) && mb_substr($referrer['path'], 0, mb_strlen($this->website->path ?? '')) == $this->website->path
                         )
                     ) {
                         $referrer = [
@@ -203,7 +206,7 @@ class PixelTrack extends Controller {
                     ];
 
                     /* Detect extra details about the user */
-                    $whichbrowser = new \WhichBrowser\Parser($_SERVER['HTTP_USER_AGENT']);
+                    $whichbrowser = get_whichbrowser();
 
                     /* Detect extra details about the user */
                     $os = [
@@ -286,6 +289,22 @@ class PixelTrack extends Controller {
                     ]);
 
                     break;
+
+                case 'outbound_click':
+
+                    $outbound_url = get_url($post->url);
+                    $outbound_title = input_clean($post->title, 256);
+                    $outbound_url_parsed = parse_url($outbound_url);
+
+                    db()->insert('outbound_clicks', [
+                        'website_id' => $this->website->website_id,
+                        'host' => $outbound_url_parsed['host'],
+                        'path' => $outbound_url_parsed['path'],
+                        'title' => $outbound_title,
+                        'datetime' => $date,
+                    ]);
+
+                    break;
             }
 
             /* Update the website usage */
@@ -324,7 +343,7 @@ class PixelTrack extends Controller {
                             $key = input_clean($key, '64');
                             $value = input_clean($value, '512');
 
-                            if($i++ >= 10) {
+                            if($i++ >= 20) {
                                 break;
                             } else {
                                 $custom_parameters[$key] = $value;
@@ -355,7 +374,7 @@ class PixelTrack extends Controller {
                     ];
 
                     /* Detect extra details about the user */
-                    $whichbrowser = new \WhichBrowser\Parser($_SERVER['HTTP_USER_AGENT']);
+                    $whichbrowser = get_whichbrowser();
 
                     /* Detect extra details about the user */
                     $os = [
@@ -372,7 +391,7 @@ class PixelTrack extends Controller {
 
                     $theme = isset($post->data->theme) && in_array($post->data->theme, ['dark', 'light']) ? $post->data->theme : null;
                     $device_type = get_this_device_type();
-                    $screen_resolution = (int) $post->data->resolution->width . 'x' . (int)$post->data->resolution->height;
+                    $screen_resolution = (int) $post->data->resolution->width . 'x' . (int) $post->data->resolution->height;
 
                     /* Insert or update the visitor */
                     $stmt = database()->prepare("
@@ -447,7 +466,7 @@ class PixelTrack extends Controller {
                     $post->data = json_encode($post->data);
 
                     /* Make sure to check if the visitor exists */
-                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid), 'website_id=' . $this->website->website_id, function() use ($post) {
+                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid_binary), 'website_id=' . $this->website->website_id, function() use ($post) {
                         return db()->where('visitor_uuid_binary', $post->visitor_uuid_binary)->where('website_id', $this->website->website_id)->getOne('websites_visitors', ['visitor_id']);
                     });
 
@@ -490,7 +509,7 @@ class PixelTrack extends Controller {
                     $post->data = json_encode($post->data);
 
                     /* Make sure to check if the visitor exists */
-                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid), 'website_id=' . $this->website->website_id, function() use ($post) {
+                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid_binary), 'website_id=' . $this->website->website_id, function() use ($post) {
                         return db()->where('visitor_uuid_binary', $post->visitor_uuid_binary)->where('website_id', $this->website->website_id)->getOne('websites_visitors', ['visitor_id']);
                     });
 
@@ -538,7 +557,7 @@ class PixelTrack extends Controller {
                     $post->data = json_encode($post->data);
 
                     /* Make sure to check if the visitor exists */
-                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid), 'website_id=' . $this->website->website_id, function() use ($post) {
+                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid_binary), 'website_id=' . $this->website->website_id, function() use ($post) {
                         return db()->where('visitor_uuid_binary', $post->visitor_uuid_binary)->where('website_id', $this->website->website_id)->getOne('websites_visitors', ['visitor_id']);
                     });
 
@@ -606,7 +625,7 @@ class PixelTrack extends Controller {
                         $this->website->website_id,
                         $post->type,
                         $post->data,
-                        (int)$post->count,
+                        (int) $post->count,
                         $date,
                         $expiration_date
                     );
@@ -617,7 +636,7 @@ class PixelTrack extends Controller {
                 case 'replays':
 
                     /* Make sure to check if the visitor exists */
-                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid), 'website_id=' . $this->website->website_id, function() use ($post) {
+                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid_binary), 'website_id=' . $this->website->website_id, function() use ($post) {
                         return db()->where('visitor_uuid_binary', $post->visitor_uuid_binary)->where('website_id', $this->website->website_id)->getOne('websites_visitors', ['visitor_id']);
                     });
 
@@ -647,68 +666,83 @@ class PixelTrack extends Controller {
                     /* Expiration date for the replay */
                     $expiration_date = (new \DateTime($date))->modify('+' . $this->website_user->plan_settings->sessions_replays_retention . ' days')->format('Y-m-d');
 
-                    /* New events to save */
+					/* Prepare the expiration seconds data */
+					$expiration_seconds = (new \DateTime($date))->modify('+' . $this->website_user->plan_settings->sessions_replays_retention . ' days')->getTimestamp() - (new \DateTime())->getTimestamp();
+
+					/* New events to save */
                     $events = count($post->data);
 
+					$startTime = microtime(true);
+
+					/* New session replay key */
+					$chunk_id = sprintf('%.6f', microtime(true));
+					$chunk_key = 'session_replay_' . $session->session_id . '_' . $chunk_id;
+
                     /* Try to get already existing session replay data, if any */
-                    $cache_instance = cache('store_adapter')->getItem('session_replay_' . $session->session_id);
+                    $cache_instance = cache('store_adapter')->getItem('session_replay_keys_' . $session->session_id);
+					$session_replay_keys = $cache_instance->get() ?: [];
 
-                    $session_replay_data = $cache_instance->get();
+					/* Add new chunk id */
+					$session_replay_keys[] = $chunk_key;
 
-                    if(is_null($session_replay_data)) {
-                        $session_replay_data = [];
-                    }
+					/* Save ids */
+					$cache_instance->set($session_replay_keys)->expiresAfter($expiration_seconds)->addTag('session_replay_user_' . $this->website->user_id)->addTag('session_replay_website_' . $this->website->website_id);
+					cache('store_adapter')->save($cache_instance);
 
-                    /* Gzencode the big data */
-                    foreach($post->data as $key => $value) {
-                        $post->data[$key]->data = gzencode(json_encode($post->data[$key]->data), 4);
+					/* Prepare to save the session replay data */
+					$batch_events = $post->data;
 
-                        $session_replay_data[] = $post->data[$key];
-                    }
+					/* Serialize + compress once for the whole batch */
+					$batch_json = json_encode($batch_events);
+					$batch_gzip = gzencode($batch_json, 4);
 
-                    /* Prepare the expiration seconds data */
-                    $expiration_seconds = (new \DateTime($date))->modify('+' . $this->website_user->plan_settings->sessions_replays_retention . ' days')->getTimestamp() - (new \DateTime())->getTimestamp();
+					/* Save replay chunk */
+					$cache_instance = cache('store_adapter')->getItem($chunk_key);
+					$cache_instance->set($batch_gzip)->expiresAfter($expiration_seconds)->addTag('session_replay_user_' . $this->website->user_id)->addTag('session_replay_website_' . $this->website->website_id);
+					cache('store_adapter')->save($cache_instance);
 
-                    $cache_instance->set($session_replay_data)->expiresAfter($expiration_seconds)->addTag('session_replay_user_' . $this->website->user_id)->addTag('session_replay_website_' . $this->website->website_id);
+					error_log('[TEST] Execution time: '.(microtime(true) - $startTime).' seconds <br /><br />');
 
-                    cache('store_adapter')->save($cache_instance);
+					/* Get chunk size */
+					$chunk_size = strlen($batch_gzip);
 
-                    /* Get the current size */
-                    try {
-                        $session_replay_data_key = $cache_instance->getEncodedKey('session_replay_' . $session->session_id);
-                        $session_replay_data_path = UPLOADS_PATH . 'store/' . PRODUCT_KEY . '/Files/' . mb_substr($session_replay_data_key, 0, 2) . '/' . mb_substr($session_replay_data_key, 2, 2) . '/' . $session_replay_data_key . '.txt';
-                        $session_replay_data_size = filesize($session_replay_data_path);
-                    } catch (\Exception $exception) {
-                        $session_replay_data_size = 0;
+                    /* Determine if its too short still or not */
+                    $is_too_short = 1;
+                    if($replay) {
+                        $replay_duration = strtotime($date) - strtotime($replay->datetime);
+                        $is_too_short = (int) (settings()->analytics->sessions_replays_minimum_duration > $replay_duration);
                     }
 
                     /* Database query */
                     $stmt = database()->prepare("
                         INSERT INTO
-                            `sessions_replays` (`user_id`, `session_id`, `visitor_id`, `website_id`, `events`, `size`, `datetime`, `last_datetime`, `expiration_date`) 
+                            `sessions_replays` (`user_id`, `session_id`, `visitor_id`, `website_id`, `events`, `size`, `datetime`, `last_datetime`, `expiration_date`, `is_too_short`) 
                         VALUES
-                            (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ON DUPLICATE KEY UPDATE
                             `events` = `events` + VALUES (events),
-                            `size` = VALUES (size),
+        					`size` = `size` + VALUES(size),
                             `last_datetime` = VALUES (last_datetime),
-                            `expiration_date` = VALUES (expiration_date)
+                            `expiration_date` = VALUES (expiration_date),
+                            `is_too_short` = VALUES (is_too_short)
                     ");
                     $stmt->bind_param(
-                        'sssssssss',
+                        'ssssssssss',
                         $this->website->user_id,
                         $session->session_id,
                         $visitor->visitor_id,
                         $this->website->website_id,
                         $events,
-                        $session_replay_data_size,
+                        $chunk_size,
                         $date,
                         $date,
-                        $expiration_date
+                        $expiration_date,
+                        $is_too_short
                     );
                     $stmt->execute();
                     $affected_rows = $stmt->affected_rows;
                     $stmt->close();
+
 
                     /* If its a new session replay, insert the usage */
                     if($affected_rows == 1) {
@@ -765,7 +799,7 @@ class PixelTrack extends Controller {
                 case 'goal_conversion':
 
                     /* Make sure to check if the visitor exists */
-                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid), 'website_id=' . $this->website->website_id, function() use ($post) {
+                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid_binary), 'website_id=' . $this->website->website_id, function() use ($post) {
                         return db()->where('visitor_uuid_binary', $post->visitor_uuid_binary)->where('website_id', $this->website->website_id)->getOne('websites_visitors', ['visitor_id', 'goals_conversions_ids']);
                     });
 
@@ -835,6 +869,52 @@ class PixelTrack extends Controller {
                     ]);
 
                     break;
+
+                case 'outbound_click':
+
+                    /* Make sure to check if the visitor exists */
+                    $visitor = \Altum\Cache::cache_function_result('visitor?visitor_uuid=' . md5($post->visitor_uuid_binary), 'website_id=' . $this->website->website_id, function() use ($post) {
+                        return db()->where('visitor_uuid_binary', $post->visitor_uuid_binary)->where('website_id', $this->website->website_id)->getOne('websites_visitors', ['visitor_id', 'goals_conversions_ids']);
+                    });
+
+                    if(!$visitor) {
+                        Response::json('', 'error', ['refresh' => 'visitor']);
+                    }
+
+                    $visitor->goals_conversions_ids = json_decode($visitor->goals_conversions_ids ?? '[]');
+
+                    /* Make sure to check if the session exists */
+                    $session = \Altum\Cache::cache_function_result('session?session_uuid=' . md5($post->session_uuid_binary), 'website_id=' . $this->website->website_id, function() use ($post, $visitor) {
+                        return db()->where('session_uuid_binary', $post->session_uuid_binary)->where('visitor_id', $visitor->visitor_id)->where('website_id', $this->website->website_id)->getOne('visitors_sessions', ['session_id']);
+                    });
+
+                    if(!$session) {
+                        Response::json('', 'error', ['refresh' => 'session']);
+                    }
+
+                    /* Make sure to check if the main event exists */
+                    $event = db()->where('event_uuid_binary', $post->event_uuid_binary)->where('session_id', $session->session_id)->where('visitor_id', $visitor->visitor_id)->where('website_id', $this->website->website_id)->getOne('sessions_events', ['event_id']);
+
+                    if(!$event) {
+                        die('13');
+                    }
+
+                    $outbound_url = get_url($post->outbound_url);
+                    $outbound_title = input_clean($post->outbound_title ?? '', 256);
+                    $outbound_url_parsed = parse_url($outbound_url);
+
+                    db()->insert('outbound_clicks', [
+                        'event_id' => $event->event_id,
+                        'session_id' => $session->session_id,
+                        'visitor_id' => $visitor->visitor_id,
+                        'website_id' => $this->website->website_id,
+                        'host' => $outbound_url_parsed['host'],
+                        'path' => $outbound_url_parsed['path'],
+                        'title' => $outbound_title,
+                        'datetime' => $date,
+                    ]);
+
+                    break;
             }
         }
     }
@@ -855,7 +935,7 @@ class PixelTrack extends Controller {
             isset($referrer['host'])
             && $referrer['host'] == $this->website->host
             && (
-                isset($referrer['path']) && mb_substr($referrer['path'], 0, mb_strlen($this->website->path)) == $this->website->path
+                isset($referrer['path']) && mb_substr($referrer['path'], 0, mb_strlen($this->website->path ?? '')) == $this->website->path
             )
         ) {
             $referrer = [
